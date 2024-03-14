@@ -3,15 +3,19 @@
 namespace StartupGateway.DAL;
 public class ProjectDAL<TEntity> : IProjectDAL<TEntity> where TEntity : class
 {
-    //
     private readonly DataContext _context;
     public ProjectDAL(DataContext context)
     {
         _context = context;
     }
+    public void AddEntity(TEntity entity)
+    {
+        _context.Add(entity);
+    }
+
     /// <inheritdoc />
     ///<summary>
-    /// This method will return all users
+    /// This method will return all Projects
     /// </summary>
     /// <returns></returns>
     public IEnumerable<TEntity> GetAllProjects()
@@ -19,16 +23,26 @@ public class ProjectDAL<TEntity> : IProjectDAL<TEntity> where TEntity : class
         // Retrieve all entities of the specified type
         return _context.Set<TEntity>().ToList();
     }
+    /// <inheritdoc />
+    ///<summary>
+    /// This method will return a project by id
+    /// </summary>
+    /// <returns></returns>
     public TEntity GetProjectById(int Projectid)
     {
         // Retrieve the entity by its primary key
         return _context.Set<TEntity>().Find(Projectid);
     }
-    public TEntity GetProjectByName(string ProjectName)
+    /// <inheritdoc />
+    ///<summary>
+    /// This method will return a project by name
+    /// </summary>
+    /// <returns></returns>
+    public TEntity GetProjectByName(Func<TEntity, bool> predicate)
     {
-        // Retrieve the entity by its Name
-        return _context.Set<TEntity>().Find(ProjectName);
+        return _context.Set<TEntity>().FirstOrDefault(predicate);
     }
+
 
 }
 

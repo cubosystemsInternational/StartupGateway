@@ -17,19 +17,24 @@ using StartupGateway.BusinessEntities;
 
 namespace StartupGateway.BusinessEntities
 {
-	public class Project
+    [Table("projects")]
+    public class Project
 	{
         [Key]
 		public int Projectid {get; set;}
         //[ForeignKey]
-        public Company CompanyId { get; set; }
-        public string ProjectName {get; set;}
-        public string ProjectTitle { get; set; }
+        public int? CompanyId { get; set; }
+        public string? ProjectName {get; set;}
+        
+        public string? ProjectTitle { get; set; }
+        public string? ProjectDesc { get; set; }
+
         public enum Status {}
-        public string ModifiedBy { get; set; }
-        public DateTime ModifiedAt { get; set; }
+        public string? ModifiedBy { get; set; }
+        public DateTime? ModifiedAt { get; set; }
         
     }
+
 }
 
 //byall

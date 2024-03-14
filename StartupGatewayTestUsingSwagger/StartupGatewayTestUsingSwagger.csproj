@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.16" />
+    <PackageReference Include="MySql.EntityFrameworkCore" Version="8.0.0" />
+    <PackageReference Include="MySqlConnector" Version="2.3.5" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\StartupGateway.BusinessLogic\StartupGateway.BusinessLogic.csproj" />
+    <ProjectReference Include="..\StartupGateway.Controller\StartupGateway.Controller.csproj" />
+    <ProjectReference Include="..\StartupGateway.DAL\StartupGateway.DAL.csproj" />
+    <ProjectReference Include="..\StartupGateway\StartupGateway.BusinessEntities.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -3,9 +3,11 @@ namespace StartupGateway.DAL
 {
 	public interface IProjectDAL<TEntity> where TEntity : class
 	{
-		IEnumerable<TEntity> GetAllProjects();
+		public void AddEntity(TEntity entity);
+
+        IEnumerable<TEntity> GetAllProjects();
 		public TEntity GetProjectById(int Projectid);
-		public TEntity GetProjectByName(string ProjectName);
+		public TEntity GetProjectByName(Func<TEntity, bool> predicate);
 
     }
 

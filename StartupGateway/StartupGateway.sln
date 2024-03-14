@@ -1,19 +1,19 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 25.0.1706.9
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34009.444
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StartupGateway.BusinessEntities", "StartupGateway.BusinessEntities.csproj", "{C31A908B-D2D7-44BD-82A3-CD330B2F4CAE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StartupGateway.BusinessEntities", "StartupGateway.BusinessEntities.csproj", "{C31A908B-D2D7-44BD-82A3-CD330B2F4CAE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StartupGateway.BusinessLogic", "..\StartupGateway.BusinessLogic\StartupGateway.BusinessLogic.csproj", "{4E46CD4A-79D0-4895-98D0-65B96080873E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StartupGateway.BusinessLogic", "..\StartupGateway.BusinessLogic\StartupGateway.BusinessLogic.csproj", "{4E46CD4A-79D0-4895-98D0-65B96080873E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StartupGateway.DAL", "..\StartupGateway.DAL\StartupGateway.DAL.csproj", "{281124C8-EAD4-4559-8DDD-4FDA6BCEA0B0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StartupGateway.DAL", "..\StartupGateway.DAL\StartupGateway.DAL.csproj", "{281124C8-EAD4-4559-8DDD-4FDA6BCEA0B0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StartupGateway.Controller", "..\StartupGateway.Controller\StartupGateway.Controller.csproj", "{0013D774-AC18-4151-B3A1-848D08570F0F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StartupGateway.Controller", "..\StartupGateway.Controller\StartupGateway.Controller.csproj", "{0013D774-AC18-4151-B3A1-848D08570F0F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StartupGateway.Testing", "..\StartupGatewayTest\StartupGateway.Testing.csproj", "{D9EB0866-5FE8-44FE-A53F-6B170294A7E0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StartupGateway.Testing", "..\StartupGatewayTest\StartupGateway.Testing.csproj", "{D9EB0866-5FE8-44FE-A53F-6B170294A7E0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing2", "..\Testing2\Testing2.csproj", "{435EB918-8793-46F6-B883-43D052FCE9DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestingSwagger", "..\Testing2\TestingSwagger.csproj", "{435EB918-8793-46F6-B883-43D052FCE9DF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
