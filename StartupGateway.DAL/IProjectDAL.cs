@@ -9,6 +9,10 @@ namespace StartupGateway.DAL
 		public TEntity GetProjectById(int Projectid);
 		public TEntity GetProjectByName(Func<TEntity, bool> predicate);
 
+        public void CommitChanges();
+
+
+
     }
 
 

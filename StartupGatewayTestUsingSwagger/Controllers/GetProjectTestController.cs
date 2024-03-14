@@ -62,7 +62,7 @@ namespace StartupGatewayTestUsingSwagger.Controllers
             }
             catch (Exception ex)
             {
-                // Log the exception or handle it accordingly
+                
                 return StatusCode(500, "Project: Internal Server Error" + ex);
             }
         }
@@ -99,7 +99,7 @@ namespace StartupGatewayTestUsingSwagger.Controllers
             {
 
                 logicLayer.AddProject(project);
-                return Ok("project added successfull");
+                return Ok("project added successfully");
             }
             catch (Exception ex)
             {

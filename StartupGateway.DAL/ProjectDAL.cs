@@ -42,6 +42,15 @@ public class ProjectDAL<TEntity> : IProjectDAL<TEntity> where TEntity : class
     {
         return _context.Set<TEntity>().FirstOrDefault(predicate);
     }
+    public void Dispose()
+    {
+        _context.Dispose();
+    }
+
+    public void CommitChanges()
+    {
+        _context.SaveChanges();
+    }
 
 
 }

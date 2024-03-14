@@ -10,6 +10,13 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddLogging(builder =>
+{
+    // Configure logging providers as needed (e.g., Console, Debug, File)
+    builder.AddConsole();
+    builder.AddDebug();
+    // Add other logging providers if required
+});
 builder.Services.AddDbContext<DataContext>(options =>
 {
     options.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnection"));

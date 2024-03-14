@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection.Metadata.Ecma335;
+using Microsoft.Extensions.Logging;
 using StartupGateway.BusinessEntities;
 using StartupGateway.BusinessEntities.ReqModels;
 using StartupGateway.DAL;
@@ -14,15 +15,17 @@ using StartupGateway.Model;
 
 namespace StartupGateway.BusinessLogic
 {
-	public class ProjectBLL
-	{
+    public class ProjectBLL
+    {
+        private readonly IProjectDAL<Project> projectsDal;
+        private readonly ILogger<ProjectBLL> logger; // Declaring a logger object
 
-		private readonly IProjectDAL<Project> projectsDal;
-
-        public ProjectBLL(IProjectDAL<Project> ProjectsDal)
-		{
-			this.projectsDal = ProjectsDal; 
-		}
+        public ProjectBLL(IProjectDAL<Project> projectsDal, ILogger<ProjectBLL> logger)
+        {
+            this.projectsDal = projectsDal;
+            this.logger = logger; // Initializing the logger object in the constructor
+        }
+ 
         /// <inheritdoc />
         ///<summary>
         /// This method has used GetProjectById from ProjectDal for BL purposes 
@@ -42,7 +45,7 @@ namespace StartupGateway.BusinessLogic
 
             return projectsDal.GetProjectByName(x=> x.ProjectName == projectName);
         }
-        /// <inheritdoc />
+        /// <inheritdoc/>
         ///<summary>
         /// This method has used GetAllProjects from ProjectDal for BLL purposes and returns a list of projects in the database
         /// </summary>
@@ -53,15 +56,18 @@ namespace StartupGateway.BusinessLogic
             return (List<Project>)projectsDal.GetAllProjects();
         }
 
-        public void AddProject(CreateProjectModel project) {
-
+        public bool AddProject(CreateProjectModel project)
+        {
             projectsDal.AddEntity(new Project
             {
                 ProjectName = project.ProjectName,
                 ProjectTitle = project.ProjectTitle,
                 ProjectDesc = project.ProjectDescription,
             });
-        
+            projectsDal.CommitChanges();
+
+            logger.LogInformation("Project added successfully: {ProjectName}.", project.ProjectName);
+            return true;
         }
     }
 }
