@@ -22,26 +22,25 @@ namespace StartupGateway.BusinessEntities
 	{
         [Key]
 		public int Projectid {get; set;}
-        //[ForeignKey]
+        [ForeignKey("company")]
         public int? CompanyId { get; set; }
         public string? ProjectName {get; set;}
-        
         public string? ProjectTitle { get; set; }
-        public string? ProjectDesc { get; set; }
-        public int? ProjectValuation { get; set; }
+        public string? ProjectDescription { get; set; }
+        public double? ProjectValuation { get; set; }
+        public ProjectStatus Status { get; set; }
 
-        public enum Status
-        {
-            Active,
-            Inactive,
-            Pending
-        }
-
-        public string? ModifiedBy { get; set; }
+        public int? ModifiedBy { get; set; }
         public DateTime? ModifiedAt { get; set; }
-        
+
     }
 
+    public enum ProjectStatus
+    {
+        Active,
+        Inactive,
+        Pending
+    }
 }
 
 //byall

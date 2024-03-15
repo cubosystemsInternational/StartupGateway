@@ -1,95 +1,102 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection.Metadata.Ecma335;
 using Microsoft.Extensions.Logging;
 using StartupGateway.BusinessEntities;
-using StartupGateway.BusinessEntities.ReqModels;
 using StartupGateway.DAL;
-using StartupGateway.Model;
-/***
-* Created by: Zuhri and Zaid
-* Created on: 06/02/2024
-* Description: Projects methods creation. BLL
-* 
-**/
 
 namespace StartupGateway.BusinessLogic
 {
+    /// <summary>
+    /// Business logic layer for managing projects.
+    /// </summary>
     public class ProjectBLL
     {
         private readonly IProjectDAL<Project> projectsDal;
-        private readonly ILogger<ProjectBLL> logger; // Declaring a logger object
+        private readonly ILogger<ProjectBLL> logger; // Logger object for logging information
 
+        /// <summary>
+        /// Constructor to initialize ProjectBLL with necessary dependencies.
+        /// </summary>
+        /// <param name="projectsDal">Data access layer for projects.</param>
+        /// <param name="logger">Logger for logging information.</param>
         public ProjectBLL(IProjectDAL<Project> projectsDal, ILogger<ProjectBLL> logger)
         {
             this.projectsDal = projectsDal;
             this.logger = logger; // Initializing the logger object in the constructor
         }
- 
-        /// <inheritdoc />
-        ///<summary>
-        /// This method has used GetProjectById from ProjectDal for BL purposes 
-        /// </summary>
-        /// <returns></returns>
-        public Project GetProjectById(int projectId) {
 
-			return projectsDal.GetProjectById(projectId);
-		}
-        /// <inheritdoc />
-        ///<summary>
-        /// This method has used GetProjectByName from ProjectDal for BL purposes 
+        /// <summary>
+        /// Retrieve a project by its ID.
         /// </summary>
-        /// <returns></returns>
+        /// <param name="projectId">The ID of the project to retrieve.</param>
+        /// <returns>The project with the specified ID.</returns>
+        public Project GetProjectById(int projectId)
+        {
+            return projectsDal.GetProjectById(projectId);
+        }
+
+        /// <summary>
+        /// Retrieve a project by its name.
+        /// </summary>
+        /// <param name="projectName">The name of the project to retrieve.</param>
+        /// <returns>The project with the specified name.</returns>
         public Project GetProjectByName(string projectName)
         {
-
-            return projectsDal.GetProjectByName(x=> x.ProjectName == projectName);
+            return projectsDal.GetProjectByName(x => x.ProjectName == projectName);
         }
-        /// <inheritdoc/>
-        ///<summary>
-        /// This method has used GetAllProjects from ProjectDal for BLL purposes and returns a list of projects in the database
+
+        /// <summary>
+        /// Retrieve all projects.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A list of all projects in the database.</returns>
         public List<Project> GetAllProjects()
         {
-
             return (List<Project>)projectsDal.GetAllProjects();
         }
 
-        public bool AddProject(CreateProjectModel project)
+        /// <summary>
+        /// Add a new project.
+        /// </summary>
+        /// <param name="project">The project to add.</param>
+        /// <returns>True if the project was added successfully; otherwise, false.</returns>
+        public bool AddProject(Project project)
         {
-            projectsDal.AddEntity(new Project
-            {
-                ProjectName = project.ProjectName,
-                ProjectTitle = project.ProjectTitle,
-                ProjectDesc = project.ProjectDescription,
-            });
-            projectsDal.CommitChanges();
+            // Add the project to the database
 
+            projectsDal.AddEntity(project);
+            projectsDal.CommitChanges(); // Commit changes to the database
+
+            // Log information about the added project
             logger.LogInformation("Project added successfully: {ProjectName}.", project.ProjectName);
-            return true;
+            return true; // Return true indicating successful addition
         }
 
-        public Project UpdateProject( Project updatedProject)
+        /// <summary>
+        /// Update an existing project.
+        /// </summary>
+        /// <param name="updatedProject">The updated project information.</param>
+        /// <returns>The updated project if successful; otherwise, null.</returns>
+        public Project UpdateProject(Project updatedProject)
         {
+            // Get the existing project from the database
             var existingProject = projectsDal.GetProjectById(updatedProject.Projectid);
-            if (existingProject != null)
+            if (existingProject != null) // If the project exists
             {
+                // Update the project details
                 existingProject.ProjectName = updatedProject.ProjectName;
                 existingProject.ProjectTitle = updatedProject.ProjectTitle;
-                existingProject.ProjectDesc = updatedProject.ProjectDesc;
+                existingProject.ProjectDescription = updatedProject.ProjectDescription;
                 existingProject.ProjectValuation = updatedProject.ProjectValuation;
                 existingProject.ModifiedAt = updatedProject.ModifiedAt;
                 existingProject.ModifiedBy = updatedProject.ModifiedBy;
+
+                // Update the project in the database
                 projectsDal.UpdateProject(existingProject);
-                projectsDal.CommitChanges();
-                return existingProject;
+                projectsDal.CommitChanges(); // Commit changes to the database
+                return existingProject; // Return the updated project
             }
 
-
-            return null; // Project not found
+            return null; // Project not found, return null
         }
-
     }
 }
-
