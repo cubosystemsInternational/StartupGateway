@@ -17,5 +17,8 @@ namespace StartupGateway.DAL
         public DbSet<Project> Projects { get; set; }
         //protected override void OnModel Creating(ModelBuilder modelBuilder) { }
     }
+
+
+
 }
 

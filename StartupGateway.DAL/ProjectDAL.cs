@@ -1,4 +1,5 @@
-﻿using StartupGateway.Model;
+﻿using Microsoft.EntityFrameworkCore;
+using StartupGateway.Model;
 
 namespace StartupGateway.DAL;
 public class ProjectDAL<TEntity> : IProjectDAL<TEntity> where TEntity : class
@@ -41,6 +42,22 @@ public class ProjectDAL<TEntity> : IProjectDAL<TEntity> where TEntity : class
     public TEntity GetProjectByName(Func<TEntity, bool> predicate)
     {
         return _context.Set<TEntity>().FirstOrDefault(predicate);
+    }
+
+
+    public void UpdateEntity(TEntity entity)
+    {
+        // Attach the entity to the context if it's not already tracked
+        if (_context.Set<TEntity>().Local.Any(e => e == entity))
+        {
+            dbContext.Set<TEntity>().Attach(entity);
+        }
+
+        // Mark the entity as modified to ensure it's updated in the database
+        dbContext.Entry(entity).State = EntityState.Modified;
+
+        // Save changes to the database
+        dbContext.SaveChanges();
     }
     public void Dispose()
     {
