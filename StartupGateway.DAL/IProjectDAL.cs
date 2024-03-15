@@ -8,6 +8,7 @@ namespace StartupGateway.DAL
         IEnumerable<TEntity> GetAllProjects();
 		public TEntity GetProjectById(int Projectid);
 		public TEntity GetProjectByName(Func<TEntity, bool> predicate);
+		public void UpdateProject(TEntity entity);
 
         public void CommitChanges();
 

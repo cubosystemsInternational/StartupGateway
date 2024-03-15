@@ -28,8 +28,15 @@ namespace StartupGateway.BusinessEntities
         
         public string? ProjectTitle { get; set; }
         public string? ProjectDesc { get; set; }
+        public int? ProjectValuation { get; set; }
 
-        public enum Status {}
+        public enum Status
+        {
+            Active,
+            Inactive,
+            Pending
+        }
+
         public string? ModifiedBy { get; set; }
         public DateTime? ModifiedAt { get; set; }
         

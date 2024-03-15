@@ -69,6 +69,27 @@ namespace StartupGateway.BusinessLogic
             logger.LogInformation("Project added successfully: {ProjectName}.", project.ProjectName);
             return true;
         }
+
+        public Project UpdateProject( Project updatedProject)
+        {
+            var existingProject = projectsDal.GetProjectById(updatedProject.Projectid);
+            if (existingProject != null)
+            {
+                existingProject.ProjectName = updatedProject.ProjectName;
+                existingProject.ProjectTitle = updatedProject.ProjectTitle;
+                existingProject.ProjectDesc = updatedProject.ProjectDesc;
+                existingProject.ProjectValuation = updatedProject.ProjectValuation;
+                existingProject.ModifiedAt = updatedProject.ModifiedAt;
+                existingProject.ModifiedBy = updatedProject.ModifiedBy;
+                projectsDal.UpdateProject(existingProject);
+                projectsDal.CommitChanges();
+                return existingProject;
+            }
+
+
+            return null; // Project not found
+        }
+
     }
 }
 

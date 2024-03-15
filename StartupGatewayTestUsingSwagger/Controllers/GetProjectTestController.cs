@@ -106,8 +106,24 @@ namespace StartupGatewayTestUsingSwagger.Controllers
                 // Log the exception or handle it accordingly
                 return StatusCode(500, "Project: Internal Server Error" + ex);
             }
-        }
 
+        }
+        [HttpPost]
+        public IActionResult UpdateProject([FromQuery] Project project)
+
+        {
+            try
+            {
+
+                logicLayer.UpdateProject(project);
+                return Ok("project added successfully");
+            }
+            catch (Exception ex)
+            {
+                // Log the exception or handle it accordingly
+                return StatusCode(500, "Project: Internal Server Error" + ex);
+            }
+        }
 
     }
 

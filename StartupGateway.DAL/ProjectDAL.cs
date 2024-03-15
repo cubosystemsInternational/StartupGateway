@@ -45,19 +45,18 @@ public class ProjectDAL<TEntity> : IProjectDAL<TEntity> where TEntity : class
     }
 
 
-    public void UpdateEntity(TEntity entity)
+    public void UpdateProject(TEntity entity)
     {
         // Attach the entity to the context if it's not already tracked
         if (_context.Set<TEntity>().Local.Any(e => e == entity))
         {
-            dbContext.Set<TEntity>().Attach(entity);
+            _context.Set<TEntity>().Attach(entity);
         }
 
         // Mark the entity as modified to ensure it's updated in the database
-        dbContext.Entry(entity).State = EntityState.Modified;
+        _context.Entry(entity).State = EntityState.Modified;
 
-        // Save changes to the database
-        dbContext.SaveChanges();
+     
     }
     public void Dispose()
     {
