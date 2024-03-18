@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using StartupGateway.BusinessEntities;
 using StartupGateway.BusinessLogic;
 using StartupGateway.DAL;
+using StartupGateway.DAL.Implementation;
+using StartupGateway.DAL.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 

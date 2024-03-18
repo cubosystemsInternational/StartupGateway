@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using StartupGateway.DAL.Interfaces;
 using StartupGateway.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace StartupGateway.DAL
+namespace StartupGateway.DAL.Implementation
 {
     /// <summary>
     /// Data access layer for managing projects using Entity Framework Core.
@@ -47,10 +48,10 @@ namespace StartupGateway.DAL
         /// </summary>
         /// <param name="projectId">The ID of the project to retrieve.</param>
         /// <returns>The project with the specified ID.</returns>
-        public TEntity GetProjectById(int Projectid)
+        public TEntity GetProjectById(int ProjectId)
         {
             // Retrieve the entity by its primary key
-            return _context.Set<TEntity>().Find(Projectid);
+            return _context.Set<TEntity>().Find(ProjectId);
         }
 
         /// <summary>

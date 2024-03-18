@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using StartupGateway.BusinessEntities;
 using StartupGateway.BusinessLogic;
 
@@ -127,18 +128,32 @@ namespace StartupGatewayTestUsingSwagger.Controllers
         /// <param name="project">The updated project data.</param>
         /// <returns>A success message if the project is updated successfully.</returns>
         [HttpPost]
-        public IActionResult UpdateProject([FromQuery] Project project)
+        public IActionResult UpdateProject([FromQuery] Project updatedProject)
         {
             try
             {
-                logicLayer.UpdateProject(project);
-                return Ok("Project updated successfully");
+                var result = logicLayer.UpdateProject(updatedProject);
+                if (result is Project updatedResult)
+                {
+                    return Ok("Project updated successfully" + JsonConvert.SerializeObject(result));
+                }
+                else if (result is Exception ex)
+                {
+                    // Log the exception or handle it accordingly
+                    return StatusCode(500, "Unexpected response : " + ex.Message);
+                }
+                else
+                {
+                    // Handle unexpected result
+                    return StatusCode(500, " Unexpected result from UpdateProject");
+                }
             }
             catch (Exception ex)
             {
                 // Log the exception or handle it accordingly
-                return StatusCode(500, "Project: Internal Server Error" + ex);
+                return StatusCode(500, "Project: Internal Server Error" + ex.Message);
             }
         }
+
     }
 }

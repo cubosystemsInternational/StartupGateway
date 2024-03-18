@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StartupGateway.BusinessEnti
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StartupGateway.DAL", "StartupGateway.DAL\StartupGateway.DAL.csproj", "{D92CEF61-E2C8-4DAC-A5D6-90110A590C7D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StartupGateway.Controller", "StartupGateway.Controller\StartupGateway.Controller.csproj", "{4C029B06-23BD-4BFA-A32D-6A75587A9FAE}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StartupGateway.BusinessLogic", "StartupGateway.BusinessLogic\StartupGateway.BusinessLogic.csproj", "{F109B5E3-E6A0-4B55-8602-F060684546E6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StartupGatewayTestUsingSwagger", "StartupGatewayTestUsingSwagger\StartupGatewayTestUsingSwagger.csproj", "{14D72F01-033A-4C32-9EF9-2761A75E8771}"
@@ -27,10 +25,6 @@ Global
 		{D92CEF61-E2C8-4DAC-A5D6-90110A590C7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D92CEF61-E2C8-4DAC-A5D6-90110A590C7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D92CEF61-E2C8-4DAC-A5D6-90110A590C7D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4C029B06-23BD-4BFA-A32D-6A75587A9FAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4C029B06-23BD-4BFA-A32D-6A75587A9FAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4C029B06-23BD-4BFA-A32D-6A75587A9FAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4C029B06-23BD-4BFA-A32D-6A75587A9FAE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F109B5E3-E6A0-4B55-8602-F060684546E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F109B5E3-E6A0-4B55-8602-F060684546E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F109B5E3-E6A0-4B55-8602-F060684546E6}.Release|Any CPU.ActiveCfg = Release|Any CPU

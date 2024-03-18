@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using StartupGateway.BusinessEntities;
-using StartupGateway.DAL;
+using StartupGateway.DAL.Interfaces;
 
 namespace StartupGateway.BusinessLogic
 {
@@ -76,27 +76,40 @@ namespace StartupGateway.BusinessLogic
         /// </summary>
         /// <param name="updatedProject">The updated project information.</param>
         /// <returns>The updated project if successful; otherwise, null.</returns>
-        public Project UpdateProject(Project updatedProject)
+        
+        public object UpdateProject(Project updatedProject)
         {
-            // Get the existing project from the database
-            var existingProject = projectsDal.GetProjectById(updatedProject.Projectid);
-            if (existingProject != null) // If the project exists
+            try
             {
-                // Update the project details
-                existingProject.ProjectName = updatedProject.ProjectName;
-                existingProject.ProjectTitle = updatedProject.ProjectTitle;
-                existingProject.ProjectDescription = updatedProject.ProjectDescription;
-                existingProject.ProjectValuation = updatedProject.ProjectValuation;
-                existingProject.ModifiedAt = updatedProject.ModifiedAt;
-                existingProject.ModifiedBy = updatedProject.ModifiedBy;
+                // Get the existing project from the database
+                var existingProject = projectsDal.GetProjectById(updatedProject.ProjectId);
+                if (existingProject != null) // If the project exists
+                {
+                    // Update the project details if the updated values are not empty
+                    existingProject.ProjectName = !string.IsNullOrWhiteSpace(updatedProject.ProjectName) ? updatedProject.ProjectName : existingProject.ProjectName;
+                    existingProject.ProjectTitle = !string.IsNullOrWhiteSpace(updatedProject.ProjectTitle) ? updatedProject.ProjectTitle : existingProject.ProjectTitle;
+                    existingProject.ProjectDescription = !string.IsNullOrWhiteSpace(updatedProject.ProjectDescription) ? updatedProject.ProjectDescription : existingProject.ProjectDescription;
+                    existingProject.ProjectValuation = updatedProject.ProjectValuation ?? existingProject.ProjectValuation;
+                    existingProject.Status = updatedProject.Status;
+                    existingProject.ModifiedAt = updatedProject.ModifiedAt ?? existingProject.ModifiedAt;
+                    existingProject.ModifiedBy = updatedProject.ModifiedBy != null ? updatedProject.ModifiedBy : existingProject.ModifiedBy;
 
-                // Update the project in the database
-                projectsDal.UpdateProject(existingProject);
-                projectsDal.CommitChanges(); // Commit changes to the database
-                return existingProject; // Return the updated project
+                    // Update the project in the database
+                    projectsDal.UpdateProject(existingProject);
+                    projectsDal.CommitChanges(); // Commit changes to the database
+                    return existingProject; // Return the updated project
+                }
+
+                throw new Exception("Project not found"); // Throw an exception if project not found
             }
-
-            return null; // Project not found, return null
+            catch (Exception ex)
+            {
+                return ex;
+            }
         }
+
+
+
+
     }
 }

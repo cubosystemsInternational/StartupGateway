@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace StartupGateway.DAL
+namespace StartupGateway.DAL.Interfaces
 {
     /// <summary>
     /// Interface for project data access layer.
@@ -19,14 +19,14 @@ namespace StartupGateway.DAL
         /// Get all projects from the database.
         /// </summary>
         /// <returns>A collection of all projects.</returns>
-        IEnumerable<TEntity> GetAllProjects();
+        public IEnumerable<TEntity> GetAllProjects();
 
         /// <summary>
         /// Get a project by its ID.
         /// </summary>
         /// <param name="projectId">The ID of the project to retrieve.</param>
         /// <returns>The project with the specified ID.</returns>
-        public TEntity GetProjectById(int Projectid);
+        public TEntity GetProjectById(int ProjectId);
 
         /// <summary>
         /// Get a project by its name using a predicate.
