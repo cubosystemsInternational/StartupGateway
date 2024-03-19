@@ -30,6 +30,7 @@ namespace StartupGateway.BusinessEntities
         public double? ProjectValuation { get; set; }
         public ProjectStatus Status { get; set; }
 
+        // Need to Add CreatedOn and CreatedBy
         public int? ModifiedBy { get; set; }
         public DateTime? ModifiedAt { get; set; }
 

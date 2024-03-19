@@ -1,35 +1,38 @@
 ﻿/**
- * Created by : Zaid
- * Modified by: Ibrahim
+ * Created by: Ibrahim
  * Created on: 18/03/2024
- * Description: Company class Model
+ * Description: Role class Model
  * 
  * */
+
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace StartupGateway.BusinessEntities
 {
-    [Table("companies")]
-    public class Company
-	{
+    [Table("roles")]
+    public class Role
+    {
         [Key]
-        public int CompanyId { get; set; }
-        [ForeignKey("industry")]
-        public int IndustryId { get; set; }
-        public string? CompanyName { get; set;}
-        public string? Description { get; set;}
-        public CompanyStatus Status { get; set; }
+        public int RoleId { get; set; }
+        public string? RoleName { get; set; }
+        public string? Description { get; set; }
+        public RoleStatus Status { get; set; }
         public int? ModifiedBy { get; set; }
         public DateTime? ModifiedAt { get; set; }
+
     }
+
     // Used as a Temporary will need to change to a common share class
-    public enum CompanyStatus
+    public enum RoleStatus
     {
         Active,
         Inactive,
         Pending
     }
 }
-
