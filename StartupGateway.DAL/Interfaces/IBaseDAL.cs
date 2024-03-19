@@ -11,7 +11,9 @@ namespace StartupGateway.DAL.Interfaces
         IEnumerable<TEntity> GetAllRecords();
         TEntity GetEntityById(int id);
         void AddEntity(TEntity entity);
-        TEntity GetEntityByName(Func<TEntity, bool> predicate);
+        TEntity GetEntityByAttribute(Func<TEntity, bool> predicate);
+        List<TEntity> GetAllRecordsWithCondition(Func<TEntity,bool> predicate);
+
         void UpdateEntity(TEntity entity);
         void CommitChanges();
     }

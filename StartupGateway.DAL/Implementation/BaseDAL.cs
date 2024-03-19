@@ -49,7 +49,7 @@ namespace StartupGateway.DAL.Implementation
         /// <param name="predicate">The predicate to match the Record by name.</param>
         /// <returns>The Record that matches the predicate.</returns>
        
-        public TEntity GetEntityByName(Func<TEntity, bool> predicate)
+        public TEntity GetEntityByAttribute(Func<TEntity, bool> predicate)
         {
             return _context.Set<TEntity>().FirstOrDefault(predicate);
         }
@@ -85,5 +85,9 @@ namespace StartupGateway.DAL.Implementation
             _context.SaveChanges();
         }
 
+        public List<TEntity> GetAllRecordsWithCondition(Func<TEntity, bool> predicate)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
