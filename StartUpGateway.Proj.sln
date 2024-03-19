@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StartupGateway.BusinessLogi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StartupGatewayTestUsingSwagger", "StartupGatewayTestUsingSwagger\StartupGatewayTestUsingSwagger.csproj", "{14D72F01-033A-4C32-9EF9-2761A75E8771}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StartupGateway.Shared", "StartupGateway.Shared\StartupGateway.Shared.csproj", "{7EC151DB-75E7-47D4-AB64-72FE0274DE39}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{14D72F01-033A-4C32-9EF9-2761A75E8771}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{14D72F01-033A-4C32-9EF9-2761A75E8771}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{14D72F01-033A-4C32-9EF9-2761A75E8771}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7EC151DB-75E7-47D4-AB64-72FE0274DE39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7EC151DB-75E7-47D4-AB64-72FE0274DE39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7EC151DB-75E7-47D4-AB64-72FE0274DE39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7EC151DB-75E7-47D4-AB64-72FE0274DE39}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
