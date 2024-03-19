@@ -1,7 +1,7 @@
 ﻿/**
  * Created by: Shuaib
  * Created on: 19/03/2024
- * Description: Interface repository class UserDocumentsRepository created.
+ * Description: Interface repository class ChatDetailsRepository created.
  * 
  * */
 
@@ -15,9 +15,9 @@ using System.Threading.Tasks;
 
 namespace StartupGateway.DAL.Implementation
 {
-    public class UserDocumentsRepository : BaseDAL<UserDocuments>, IUserDocumentsRepository
+    public class ChatDetailsDAL : BaseDAL<ChatDetails>, IChatDetailsDAL
     {
-        public UserDocumentsRepository(DataContext context) : base(context)
+        public ChatDetailsDAL(DataContext context) : base(context)
         {
         }
     }

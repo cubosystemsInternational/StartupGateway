@@ -1,7 +1,7 @@
 ﻿/**
  * Created by: Shuaib
  * Created on: 19/03/2024
- * Description: Interface repository class DeviceTypeRepository created.
+ * Description: Interface repository class UserComsRepository created.
  * 
  * */
 
@@ -15,9 +15,9 @@ using System.Threading.Tasks;
 
 namespace StartupGateway.DAL.Implementation
 {
-    internal class DeviceTypeRepository : BaseDAL<DeviceType>, IDeviceTypeRepository
+    public class UserComsDAL : BaseDAL<UserComs>, IUserComsDAL
     {
-        public DeviceTypeRepository(DataContext context) : base(context)
+        public UserComsDAL(DataContext context) : base(context)
         {
         }
     }

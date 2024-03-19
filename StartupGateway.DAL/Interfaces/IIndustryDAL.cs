@@ -1,7 +1,7 @@
 ﻿/**
  * Created by: Shuaib
  * Created on: 19/03/2024
- * Description: Interface repository class IBidDocumentsRepository created.
+ * Description: Interface repository class IIndustryRepository created.
  * 
  * */
 
@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace StartupGateway.DAL.Interfaces
 {
-    public interface IBidDocumentsRepository: IBaseDAL<BidDocuments>
+    public interface IIndustryDAL: IBaseDAL<Industry>
     {
     }
 }

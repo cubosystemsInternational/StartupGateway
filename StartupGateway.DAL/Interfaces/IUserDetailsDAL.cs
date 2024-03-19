@@ -1,10 +1,9 @@
 ﻿/**
  * Created by: Shuaib
  * Created on: 19/03/2024
- * Description: Interface repository class IProjectTeamsRepository created.
+ * Description: Interface repository class IUserDetailsRepository created.
  * 
  * */
-
 
 using StartupGateway.BusinessEntities;
 using System;
@@ -15,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace StartupGateway.DAL.Interfaces
 {
-    public interface IProjectTeamsRepository: IBaseDAL<ProjectTeams>
+    public interface IUserDetailsDAL: IBaseDAL<UserDetails>
     {
     }
 }

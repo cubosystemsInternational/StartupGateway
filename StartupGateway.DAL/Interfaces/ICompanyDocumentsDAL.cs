@@ -1,7 +1,7 @@
 ﻿/**
  * Created by: Shuaib
  * Created on: 19/03/2024
- * Description: Interface repository class IUserComsRepository created.
+ * Description: Interface repository class ICompanyDocumentsRepository created.
  * 
  * */
 
@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace StartupGateway.DAL.Interfaces
 {
-    public interface IUserComsRepository: IBaseDAL <UserComs>
+    public interface ICompanyDocumentsDAL: IBaseDAL<CompanyDocuments>
     {
     }
 }

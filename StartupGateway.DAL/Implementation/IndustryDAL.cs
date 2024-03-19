@@ -1,7 +1,7 @@
 ﻿/**
  * Created by: Shuaib
  * Created on: 19/03/2024
- * Description: Interface repository class CompanyDocumentsRepository created.
+ * Description: Interface repository class IndustryRepository created.
  * 
  * */
 
@@ -15,9 +15,9 @@ using System.Threading.Tasks;
 
 namespace StartupGateway.DAL.Implementation
 {
-    public class CompanyDocumentsRepository : BaseDAL<CompanyDocuments>, ICompanyDocumentsRepository
+    public class IndustryDAL : BaseDAL<Industry>, IIndustryDAL
     {
-        public CompanyDocumentsRepository(DataContext context) : base(context)
+        public IndustryDAL(DataContext context) : base(context)
         {
         }
     }

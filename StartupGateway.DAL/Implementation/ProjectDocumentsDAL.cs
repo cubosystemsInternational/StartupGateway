@@ -1,7 +1,7 @@
 ﻿/**
  * Created by: Shuaib
  * Created on: 19/03/2024
- * Description: Interface repository class UserDetailsRepository created.
+ * Description: Interface repository class ProjectDocumentsRepository created.
  * 
  * */
 
@@ -15,9 +15,9 @@ using System.Threading.Tasks;
 
 namespace StartupGateway.DAL.Implementation
 {
-    public class UserDetailsRepository : BaseDAL<UserDetails>, IUserDetailsRepository
+    public class ProjectDocumentsDAL : BaseDAL<ProjectDocuments>, IProjectDocumentsDAL
     {
-        public UserDetailsRepository(DataContext context) : base(context)
+        public ProjectDocumentsDAL(DataContext context) : base(context)
         {
         }
     }

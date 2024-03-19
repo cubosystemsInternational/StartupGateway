@@ -15,9 +15,9 @@ using System.Threading.Tasks;
 
 namespace StartupGateway.DAL.Implementation
 {
-    public class UserDocsRepository : BaseDAL<UserDocs>, IUserDocsRepository
+    public class UserDocsDAL : BaseDAL<UserDocs>, IUserDocsDAL
     {
-        public UserDocsRepository(DataContext context) : base(context)
+        public UserDocsDAL(DataContext context) : base(context)
         {
         }
     }

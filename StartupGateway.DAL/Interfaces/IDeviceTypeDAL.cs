@@ -1,9 +1,10 @@
 ﻿/**
  * Created by: Shuaib
  * Created on: 19/03/2024
- * Description: Interface repository class IComsDocumentsRepository created.
+ * Description: Interface repository class IDeviceTypeRepository created.
  * 
  * */
+
 using StartupGateway.BusinessEntities;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace StartupGateway.DAL.Interfaces
 {
-    public interface IComsDocumentsRepository: IBaseDAL<ComsDocuments>
+    public interface IDeviceTypeDAL: IBaseDAL<DeviceType>
     {
     }
 }

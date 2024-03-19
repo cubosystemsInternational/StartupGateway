@@ -1,7 +1,7 @@
 ﻿/**
  * Created by: Shuaib
  * Created on: 19/03/2024
- * Description: Interface repository class ComsDocumentsRepository created.
+ * Description: Interface repository class DeviceTypeRepository created.
  * 
  * */
 
@@ -15,9 +15,9 @@ using System.Threading.Tasks;
 
 namespace StartupGateway.DAL.Implementation
 {
-    public class ComsDocumentsRepository : BaseDAL<ComsDocuments>, IComsDocumentsRepository
+    internal class DeviceTypeDAL : BaseDAL<DeviceType>, IDeviceTypeDAL
     {
-        public ComsDocumentsRepository(DataContext context) : base(context)
+        public DeviceTypeDAL(DataContext context) : base(context)
         {
         }
     }

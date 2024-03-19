@@ -1,10 +1,9 @@
 ﻿/**
  * Created by: Shuaib
  * Created on: 19/03/2024
- * Description: Interface repository class VisitorSessionRepository created.
+ * Description: Interface repository class ProjectTeamsRepository created.
  * 
  * */
-
 
 using StartupGateway.BusinessEntities;
 using StartupGateway.DAL.Interfaces;
@@ -16,9 +15,9 @@ using System.Threading.Tasks;
 
 namespace StartupGateway.DAL.Implementation
 {
-    public class VisitorSessionRepository : BaseDAL<VisitorSession>, IVisitorSessionRepository
+    public class ProjectTeamsDAL : BaseDAL<ProjectTeams>, IProjectTeamsDAL
     {
-        public VisitorSessionRepository(DataContext context) : base(context)
+        public ProjectTeamsDAL(DataContext context) : base(context)
         {
         }
     }

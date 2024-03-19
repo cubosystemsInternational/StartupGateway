@@ -16,9 +16,9 @@ using System.Threading.Tasks;
 
 namespace StartupGateway.DAL.Implementation
 {
-    public class BidDocumentsRepository : BaseDAL<BidDocuments>, IBidDocumentsRepository
+    public class BidDocumentsDAL : BaseDAL<BidDocuments>, IBidDocumentsDAL
     {
-        public BidDocumentsRepository(DataContext context) : base(context)
+        public BidDocumentsDAL(DataContext context) : base(context)
         {
         }
     }

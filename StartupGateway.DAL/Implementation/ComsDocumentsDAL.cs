@@ -1,7 +1,7 @@
 ﻿/**
  * Created by: Shuaib
  * Created on: 19/03/2024
- * Description: Interface repository class UserComsRepository created.
+ * Description: Interface repository class ComsDocumentsRepository created.
  * 
  * */
 
@@ -15,9 +15,9 @@ using System.Threading.Tasks;
 
 namespace StartupGateway.DAL.Implementation
 {
-    public class UserComsRepository : BaseDAL<UserComs>, IUserComsRepository
+    public class ComsDocumentsDAL : BaseDAL<ComsDocuments>, IComsDocumentsDAL
     {
-        public UserComsRepository(DataContext context) : base(context)
+        public ComsDocumentsDAL(DataContext context) : base(context)
         {
         }
     }
