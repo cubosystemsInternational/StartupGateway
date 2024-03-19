@@ -12,7 +12,7 @@ namespace StartupGateway.DAL.Interfaces
         TEntity GetEntityById(int id);
         void AddEntity(TEntity entity);
         TEntity GetEntityByAttribute(Func<TEntity, bool> predicate);
-        List<TEntity> GetAllRecordsWithCondition(Func<TEntity,bool> predicate);
+        List<TEntity> GetAllRecordsWithCondition(Func<TEntity,bool> predicate) ;
 
         void UpdateEntity(TEntity entity);
         void CommitChanges();

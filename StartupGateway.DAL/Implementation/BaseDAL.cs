@@ -44,7 +44,7 @@ namespace StartupGateway.DAL.Implementation
         }
 
         /// <summary>
-        /// Get a Record by name using a predicate.
+        /// Get a Record by Attribute using a predicate.
         /// </summary>
         /// <param name="predicate">The predicate to match the Record by name.</param>
         /// <returns>The Record that matches the predicate.</returns>
@@ -84,10 +84,18 @@ namespace StartupGateway.DAL.Implementation
         {
             _context.SaveChanges();
         }
-
-        public List<TEntity> GetAllRecordsWithCondition(Func<TEntity, bool> predicate)
+        /// <summary>
+        /// Retrieve all Records from the database with condition.
+        /// </summary>
+        /// <returns>A collection of all projects.</returns>
+        public List<TEntity> GetAllRecordsWithCondition(Func<TEntity, bool> predicate) 
         {
-            throw new NotImplementedException();
+            if (predicate == null)
+            {
+                throw new ArgumentNullException(nameof(predicate));
+            }
+
+            return _context.Set<TEntity>().AsNoTracking().Where(predicate).ToList();
         }
     }
 }
