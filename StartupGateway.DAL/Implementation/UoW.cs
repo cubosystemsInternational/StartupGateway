@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using StartupGateway.DAL;
+using StartupGateway.UoW.Interfaces;
 
 namespace StartupGateway.UoW
 {
