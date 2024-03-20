@@ -22,7 +22,7 @@ namespace StartupGateway.BusinessEntities
         public int ComId { get; set; }
 
         [ForeignKey("projects")]
-        public int ProjectID { get; set; }
+        public int ProjectId { get; set; }
         [ForeignKey("teams")]
         public int TeamId { get; set; }    
         public CollaborateStatus Status { get; set; }

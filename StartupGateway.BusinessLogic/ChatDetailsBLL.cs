@@ -88,13 +88,18 @@ namespace StartupGateway.BusinessLogic
         /// Adds an instance of ChatDetails to the DataBase. Returns True if operation was successfull.
         /// </summary>
         /// <param name="chatdetails"></param>
+        /// <param name="userId"></param>
         /// <returns>True or False</returns>
-        public bool AddChatDetails( ChatDetails chatdetails)
+        public bool AddChatDetails( ChatDetails chatdetails, int userId)
         {
             try 
             {
                 if (chatdetails != null)
                 {
+                    chatdetails.Status = AvailabilityStatus.Active;
+                    chatdetails.ModifiedBy = userId;
+                    chatdetails.ModifiedOn = DateTime.Now;
+
                     unitOfWork.GetRepository<ChatDetailsDAL>().AddEntity(chatdetails);
                     unitOfWork.Commit();
                     logger.LogInformation("Chat details successfully added at AddChatDetails.");
@@ -125,7 +130,7 @@ namespace StartupGateway.BusinessLogic
             {              
                 if (newChatDetails != null)
                 {
-                    ChatDetails existingChatDetails = unitOfWork.GetRepository<ChatDetailsDAL>().GetEntityById(newChatDetails.ChatId);
+                    ChatDetails existingChatDetails = unitOfWork.GetRepository<ChatDetailsDAL>().GetEntityById(newChatDetails.ChatDetailsId);
 
                     existingChatDetails.Status = newChatDetails.Status;
                     existingChatDetails.Attachment = newChatDetails.Attachment;

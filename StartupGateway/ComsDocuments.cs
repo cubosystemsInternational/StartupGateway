@@ -24,7 +24,7 @@ namespace StartupGateway.BusinessEntities
     public class ComsDocuments
     {
         [Key]
-        public int UserDocumentsId { get; set; }
+        public int ComsDocumentsId { get; set; }
         ///<inheritdoc />
         /// <summary>
         /// Foreign key table name is temporary.
@@ -38,7 +38,7 @@ namespace StartupGateway.BusinessEntities
         /// </summary>
         ///<returns></returns>
         [ForeignKey("Com")]
-        public int ComID { get; set; }
+        public int ComId { get; set; }
         ///<inheritdoc />
         /// <summary>
         /// Foreign key table name is temporary.
