@@ -20,7 +20,7 @@ namespace StartupGateway.Model
         public string? TeamName { get; set;}
         public TeamStatus Status { get; set; }
         public int? ModifiedBy { get; set; }
-        public DateTime? ModifiedAt { get; set; }
+        public DateTime? ModifiedOn { get; set; }
 
     }
 

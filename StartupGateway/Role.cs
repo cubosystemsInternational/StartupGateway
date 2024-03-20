@@ -24,7 +24,7 @@ namespace StartupGateway.BusinessEntities
         public string? Description { get; set; }
         public RoleStatus Status { get; set; }
         public int? ModifiedBy { get; set; }
-        public DateTime? ModifiedAt { get; set; }
+        public DateTime? ModifiedOn { get; set; }
 
     }
 

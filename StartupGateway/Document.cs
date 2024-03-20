@@ -22,7 +22,7 @@ namespace StartupGateway.Model
         public string? DocumentType { get; set; }
         public DocumentStatus Status { get; set; }
         public int? ModifiedBy { get; set; }
-        public DateTime? ModifiedAt { get; set; }
+        public DateTime? ModifiedOn { get; set; }
 
     }
     // Used as a Temporary will need to change to a common share class

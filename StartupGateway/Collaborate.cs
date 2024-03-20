@@ -27,7 +27,7 @@ namespace StartupGateway.BusinessEntities
         public int? TeamId { get; set; }    
         public CollaborateStatus Status { get; set; }
         public int? ModifiedBy { get; set; }
-        public DateTime? ModifiedAt { get; set; }
+        public DateTime? ModifiedOn { get; set; }
     }
     // Used as a Temporary will need to change to a common share class
     public enum CollaborateStatus

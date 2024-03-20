@@ -24,7 +24,7 @@ namespace StartupGateway.Model
 		public string? ScreenName { get; set; }
         public ScreenStatus Status { get; set; }
         public int? ModifiedBy { get; set; }
-        public DateTime? ModifiedAt { get; set; }
+        public DateTime? ModifiedOn { get; set; }
 
     }
 

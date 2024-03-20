@@ -20,7 +20,7 @@ namespace StartupGateway.Model
 		public double InvestmentValue { get; set; }
 		public bool Status { get; set; }
         public int? ModifiedBy { get; set; }
-        public DateTime? ModifiedAt { get; set; }
+        public DateTime? ModifiedOn { get; set; }
     }
 }
 

@@ -32,7 +32,7 @@ namespace StartupGateway.BusinessEntities
 
         // Need to Add CreatedOn and CreatedBy
         public int? ModifiedBy { get; set; }
-        public DateTime? ModifiedAt { get; set; }
+        public DateTime? ModifiedOn { get; set; }
 
     }
 

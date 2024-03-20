@@ -27,7 +27,7 @@ namespace StartupGateway.BusinessEntities
         public double? InvestmentBudget { get; set; }
         public BidStatus Status { get; set; }
         public int? ModifiedBy { get; set; }
-        public DateTime? ModifiedAt { get; set; }
+        public DateTime? ModifiedOn { get; set; }
 
     }
 

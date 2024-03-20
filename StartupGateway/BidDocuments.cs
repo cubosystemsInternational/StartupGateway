@@ -41,6 +41,6 @@ namespace StartupGateway.BusinessEntities
         public int DocumentId { get; set; }
         public AvailabilityStatus Status { get; set; }
         public int ModifiedBy { get; set; }
-        public DateTime ModifiedAt { get; set; }
+        public DateTime ModifiedOn { get; set; }
     }
 }

@@ -27,7 +27,7 @@ namespace StartupGateway.BusinessEntities
         public int UserId { get; set; }
         public UserRoleStatus Status { get; set; }
         public int? ModifiedBy { get; set; }
-        public DateTime? ModifiedAt { get; set; }
+        public DateTime? ModifiedOn { get; set; }
     }
 
     // Used as a Temporary will need to change to a common share class
