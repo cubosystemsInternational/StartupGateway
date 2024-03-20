@@ -1,4 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿/**
+ * Created by: Zaid
+ * Created on: 19/03/2024
+ * Description: BaseDAL (Implementation).
+ * */
+using Microsoft.EntityFrameworkCore;
 using StartupGateway.DAL.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -35,13 +40,16 @@ namespace StartupGateway.DAL.Implementation
 
         /// <summary>
         /// Get a Record by its ID.
+        /// values currently not nullable.
         /// </summary>
         /// <param name="projectId">The ID of the Record to retrieve.</param>
         /// <returns>The Record with the specified ID.</returns>
+
         public TEntity GetEntityById(int entityId)
         {
             return _context.Set<TEntity>().Find(entityId);
         }
+
 
         /// <summary>
         /// Get a Record by Attribute using a predicate.
