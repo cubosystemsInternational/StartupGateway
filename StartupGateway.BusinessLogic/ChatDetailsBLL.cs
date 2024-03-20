@@ -11,12 +11,15 @@ using Mysqlx.Crud;
 using StartupGateway.BusinessEntities;
 using StartupGateway.DAL.Implementation;
 using StartupGateway.DAL.Interfaces;
+using StartupGateway.Shared;
 using StartupGateway.UoW;
+using StartupGateway.UoW.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static StartupGateway.Shared.Share;
 
 namespace StartupGateway.BusinessLogic
 {
@@ -26,19 +29,21 @@ namespace StartupGateway.BusinessLogic
     public class ChatDetailsBLL
     {
         private readonly ILogger<ChatDetailsBLL> logger;
-        private readonly UnitOfWork unitOfWork;
+        private readonly IUnitOfWork unitOfWork;
 
         /// <summary>
         /// Constructor to intialize ChatDetailsBLL with necessary dependencies.
         /// </summary>
-        public ChatDetailsBLL(ILogger<ChatDetailsBLL> logger, UnitOfWork unitOfWork)
+        /// <param name="logger">Instance of Logger for logging information.</param>
+        /// <param name="unitOfWork">Instance of Unit of Work.</param>
+        public ChatDetailsBLL(ILogger<ChatDetailsBLL> logger, IUnitOfWork unitOfWork)
         {
             this.logger = logger;
             this.unitOfWork = unitOfWork;
         }
 
         /// <summary>
-        /// Retrieves the Chat Details information for the Id passed.
+        /// Retrieves the ChatDetails instance information for the id passed.
         /// </summary>
         /// <param name="chatDetailId"></param>
         /// <returns>ChatDetails?</returns>
@@ -46,7 +51,7 @@ namespace StartupGateway.BusinessLogic
         {
             try
             {
-                var chatDetails = unitOfWork.GetRepository<ChatDetailsDAL>().GetEntityById(chatDetailId);
+                var chatDetails = unitOfWork.GetDAL<IChatDetailsDAL>().GetEntityById(chatDetailId);
                 if (chatDetails!=null) 
                 {
                     logger.LogInformation("Chat details retrieved succesfully at GetChatDetailsById.");
@@ -66,14 +71,14 @@ namespace StartupGateway.BusinessLogic
         }
 
         /// <summary>
-        /// Retrieves all the chat details.
+        /// Retrieves all instances of ChatDetails.
         /// </summary>
         /// <returns>List of ChatDetails?</returns>
         public List<ChatDetails>? GetAllChatDetails()
         {
             try 
             {
-                var listOfChatDetails=unitOfWork.GetRepository<ChatDetailsDAL>().GetAllRecords().ToList();
+                var listOfChatDetails=unitOfWork.GetDAL<ChatDetailsDAL>().GetAllRecords().ToList();
                 logger.LogInformation("Chat details retrieved successfully at GetAllChatDetails.");
                 return listOfChatDetails;
             }
@@ -96,11 +101,11 @@ namespace StartupGateway.BusinessLogic
             {
                 if (chatdetails != null)
                 {
-                    chatdetails.Status = AvailabilityStatus.Active;
+                    chatdetails.Status = EntityStatus.Active;
                     chatdetails.ModifiedBy = userId;
                     chatdetails.ModifiedOn = DateTime.Now;
 
-                    unitOfWork.GetRepository<ChatDetailsDAL>().AddEntity(chatdetails);
+                    unitOfWork.GetDAL<ChatDetailsDAL>().AddEntity(chatdetails);
                     unitOfWork.Commit();
                     logger.LogInformation("Chat details successfully added at AddChatDetails.");
                     return true;
@@ -130,13 +135,14 @@ namespace StartupGateway.BusinessLogic
             {              
                 if (newChatDetails != null)
                 {
-                    ChatDetails existingChatDetails = unitOfWork.GetRepository<ChatDetailsDAL>().GetEntityById(newChatDetails.ChatDetailsId);
+                    ChatDetails existingChatDetails = unitOfWork.GetDAL<ChatDetailsDAL>().GetEntityById(newChatDetails.ChatDetailsId);
 
                     existingChatDetails.Status = newChatDetails.Status;
                     existingChatDetails.Attachment = newChatDetails.Attachment;
                     existingChatDetails.ModifiedOn = DateTime.Now;
                     existingChatDetails.ModifiedBy = newChatDetails.UserId;
 
+                    unitOfWork.GetDAL<ChatDetailsDAL>().UpdateEntity(existingChatDetails);
                     unitOfWork.Commit();
 
                     logger.LogInformation("Chat Details updated successfully at UpdateChatDetails.");

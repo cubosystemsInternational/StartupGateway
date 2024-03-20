@@ -6,6 +6,6 @@ namespace StartupGateway.UoW.Interfaces
     { 
         void Commit();
         void Rollback();
-        T GetRepository<T>() where T : class;
+        T GetDAL<T>() where T : class;
     }
 }

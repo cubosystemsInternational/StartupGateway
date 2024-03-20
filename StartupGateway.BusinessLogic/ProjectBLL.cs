@@ -75,9 +75,10 @@ namespace StartupGateway.BusinessLogic
         /// Update an existing project.
         /// </summary>
         /// <param name="updatedProject">The updated project information.</param>
+        /// <param name="userId">Id of user who made the change.</param>
         /// <returns>The updated project if successful; otherwise, null.</returns>
         
-        public object UpdateProject(Project updatedProject)
+        public object UpdateProject(Project updatedProject, int userId)
         {
             try
             {
@@ -89,10 +90,11 @@ namespace StartupGateway.BusinessLogic
                     existingProject.ProjectName = !string.IsNullOrWhiteSpace(updatedProject.ProjectName) ? updatedProject.ProjectName : existingProject.ProjectName;
                     existingProject.ProjectTitle = !string.IsNullOrWhiteSpace(updatedProject.ProjectTitle) ? updatedProject.ProjectTitle : existingProject.ProjectTitle;
                     existingProject.ProjectDescription = !string.IsNullOrWhiteSpace(updatedProject.ProjectDescription) ? updatedProject.ProjectDescription : existingProject.ProjectDescription;
-                    existingProject.ProjectValuation = updatedProject.ProjectValuation ?? existingProject.ProjectValuation;
+                    existingProject.ProjectValuation = updatedProject.ProjectValuation != 0? existingProject.ProjectValuation: 0;
+
                     existingProject.Status = updatedProject.Status;
-                    existingProject.ModifiedAt = updatedProject.ModifiedAt ?? existingProject.ModifiedAt;
-                    existingProject.ModifiedBy = updatedProject.ModifiedBy != null ? updatedProject.ModifiedBy : existingProject.ModifiedBy;
+                    existingProject.ModifiedOn = DateTime.Now;
+                    existingProject.ModifiedBy = userId;
 
                     // Update the project in the database
                     projectsDal.UpdateProject(existingProject);
