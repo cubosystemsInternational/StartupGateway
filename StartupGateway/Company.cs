@@ -8,6 +8,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using static StartupGateway.Shared.Share;
 
 namespace StartupGateway.BusinessEntities
 {
@@ -20,16 +21,10 @@ namespace StartupGateway.BusinessEntities
         public int IndustryId { get; set; }
         public required string CompanyName { get; set;}
         public string? Description { get; set;}
-        public CompanyStatus Status { get; set; }
+        public EntityStatus Status { get; set; }
         public int ModifiedBy { get; set; }
         public DateTime ModifiedOn { get; set; }
     }
-    // Used as a Temporary will need to change to a common share class
-    public enum CompanyStatus
-    {
-        Active,
-        Inactive,
-        Pending
-    }
+   
 }
 

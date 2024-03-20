@@ -12,6 +12,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static StartupGateway.Shared.Share;
 
 namespace StartupGateway.BusinessEntities
 {
@@ -22,17 +23,10 @@ namespace StartupGateway.BusinessEntities
         public int RoleId { get; set; }
         public required string RoleName { get; set; }
         public required string Description { get; set; }
-        public RoleStatus Status { get; set; }
+        public EntityStatus Status { get; set; }
         public int ModifiedBy { get; set; }
         public DateTime ModifiedOn { get; set; }
 
     }
 
-    // Used as a Temporary will need to change to a common share class
-    public enum RoleStatus
-    {
-        Active,
-        Inactive,
-        Pending
-    }
 }

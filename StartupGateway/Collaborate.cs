@@ -12,6 +12,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static StartupGateway.Shared.Share;
 
 namespace StartupGateway.BusinessEntities
 {
@@ -25,15 +26,9 @@ namespace StartupGateway.BusinessEntities
         public int ProjectId { get; set; }
         [ForeignKey("teams")]
         public int TeamId { get; set; }    
-        public CollaborateStatus Status { get; set; }
+        public EntityStatus Status { get; set; }
         public int ModifiedBy { get; set; }
         public DateTime ModifiedOn { get; set; }
     }
-    // Used as a Temporary will need to change to a common share class
-    public enum CollaborateStatus
-    {
-        Active,
-        Inactive,
-        Pending
-    }
+  
 }

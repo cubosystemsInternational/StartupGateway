@@ -12,6 +12,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static StartupGateway.Shared.Share;
 
 namespace StartupGateway.BusinessEntities
 {
@@ -39,20 +40,8 @@ namespace StartupGateway.BusinessEntities
         ///<returns></returns>
         [ForeignKey("User")]
         public int UserId { get; set; }
-        public AvailabilityStatus Status { get; set; }
+        public EntityStatus Status { get; set; }
         public int ModifiedBy { get; set; }
         public DateTime ModifiedOn { get; set; }
-    }
-
-    /// <inheritdoc />
-    ///<summary>
-    /// This is a temporary enum class, will remove once problem has been consolidated.
-    /// </summary>
-    /// <returns></returns>
-    public enum AvailabilityStatus 
-    {
-        Active,
-        Inactive,
-        Pending
     }
 }

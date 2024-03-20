@@ -12,6 +12,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static StartupGateway.Shared.Share;
 
 namespace StartupGateway.BusinessEntities
 {
@@ -37,7 +38,7 @@ namespace StartupGateway.BusinessEntities
         /// </summary>
         ///<returns></returns>
         public required string DeviceModel { get; set; }
-        public AvailabilityStatus Status { get; set; }
+        public EntityStatus Status { get; set; }
         public int ModifiedBy { get; set; }
         public DateTime ModifiedOn { get; set; }
     }

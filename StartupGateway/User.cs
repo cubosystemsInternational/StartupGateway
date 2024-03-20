@@ -11,6 +11,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static StartupGateway.Shared.Share;
 
 namespace StartupGateway.BusinessEntities
 {
@@ -23,17 +24,9 @@ namespace StartupGateway.BusinessEntities
         public required string Email { get; set; }
         public  int UserType { get; set; }
         public DateTime CreatedAt { get; set; }
-        public UserStatus Status { get; set; }
+        public EntityStatus Status { get; set; }
         public int ModifiedBy { get; set; }
         public DateTime ModifiedOn { get; set; }
 
-    }
-
-    // Used as a Temporary will need to change to a common share class
-    public enum UserStatus
-    {
-        Active,
-        Inactive,
-        Pending
     }
 }

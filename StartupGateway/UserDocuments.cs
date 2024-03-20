@@ -12,6 +12,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static StartupGateway.Shared.Share;
 
 namespace StartupGateway.BusinessEntities
 {
@@ -40,7 +41,7 @@ namespace StartupGateway.BusinessEntities
         [ForeignKey("User")]
         public int UserId { get; set; }
         public DateTime DateAdded { get; set; }
-        public AvailabilityStatus Status { get; set; }
+        public EntityStatus Status { get; set; }
         public int ModifiedBy { get; set; }
         public int ModifiedOn { get; set; }
 

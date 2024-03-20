@@ -14,6 +14,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using StartupGateway.BusinessEntities;
+using static StartupGateway.Shared.Share;
 
 namespace StartupGateway.BusinessEntities
 {
@@ -28,7 +29,7 @@ namespace StartupGateway.BusinessEntities
         public required string ProjectTitle { get; set; }
         public required string ProjectDescription { get; set; }
         public double ProjectValuation { get; set; }
-        public ProjectStatus Status { get; set; }
+        public EntityStatus Status { get; set; }
 
         // Need to Add CreatedOn and CreatedBy
         public int ModifiedBy { get; set; }
@@ -36,14 +37,4 @@ namespace StartupGateway.BusinessEntities
 
     }
 
-    public enum ProjectStatus
-    {
-        Active,
-        Inactive,
-        Pending
-    }
 }
-
-//byall
-//byid
-//byname

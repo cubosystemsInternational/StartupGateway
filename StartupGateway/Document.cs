@@ -8,6 +8,7 @@
 
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
+using static StartupGateway.Shared.Share;
 
 namespace StartupGateway.Model
 {
@@ -20,17 +21,11 @@ namespace StartupGateway.Model
         public required string? DocumentBody { get; set; }
         public required string DocumentContent { get; set; }
         public required string DocumentType { get; set; }
-        public DocumentStatus Status { get; set; }
+        public EntityStatus Status { get; set; }
         public int ModifiedBy { get; set; }
         public DateTime ModifiedOn { get; set; }
 
     }
-    // Used as a Temporary will need to change to a common share class
-    public enum DocumentStatus
-    {
-        Active,
-        Inactive,
-        Pending
-    }
+  
 }
 
