@@ -33,6 +33,6 @@ namespace StartupGateway.BusinessEntities
         public required string IndustryName { get; set; }
         public AvailabilityStatus Status { get; set; }
         public int ModifiedBy { get; set; }
-        public DateTime ModifiedAt { get; set; }
+        public DateTime ModifiedOn { get; set; }
     }
 }

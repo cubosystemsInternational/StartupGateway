@@ -42,7 +42,7 @@ namespace StartupGateway.BusinessEntities
         public DateTime DateAdded { get; set; }
         public AvailabilityStatus Status { get; set; }
         public int ModifiedBy { get; set; }
-        public int ModifiedAt { get; set; }
+        public int ModifiedOn { get; set; }
 
     }
 }

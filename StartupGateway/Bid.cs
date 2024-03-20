@@ -21,13 +21,13 @@ namespace StartupGateway.BusinessEntities
         [Key]
         public int BidId { get; set; }
         [ForeignKey("users")]
-        public int? UserId { get; set; }
+        public int UserId { get; set; }
         [ForeignKey("projects")]
-        public int? ProjectID { get; set; }
-        public double? InvestmentBudget { get; set; }
+        public int ProjectID { get; set; }
+        public double InvestmentBudget { get; set; }
         public BidStatus Status { get; set; }
-        public int? ModifiedBy { get; set; }
-        public DateTime? ModifiedAt { get; set; }
+        public int ModifiedBy { get; set; }
+        public DateTime ModifiedOn { get; set; }
 
     }
 

@@ -22,12 +22,12 @@ namespace StartupGateway.BusinessEntities
         public int ComId { get; set; }
 
         [ForeignKey("projects")]
-        public int? ProjectID { get; set; }
+        public int ProjectID { get; set; }
         [ForeignKey("teams")]
-        public int? TeamId { get; set; }    
+        public int TeamId { get; set; }    
         public CollaborateStatus Status { get; set; }
-        public int? ModifiedBy { get; set; }
-        public DateTime? ModifiedAt { get; set; }
+        public int ModifiedBy { get; set; }
+        public DateTime ModifiedOn { get; set; }
     }
     // Used as a Temporary will need to change to a common share class
     public enum CollaborateStatus

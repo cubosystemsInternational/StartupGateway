@@ -23,16 +23,16 @@ namespace StartupGateway.BusinessEntities
         [Key]
 		public int ProjectId {get; set;}
         [ForeignKey("company")]
-        public int? CompanyId { get; set; }
-        public string? ProjectName {get; set;}
-        public string? ProjectTitle { get; set; }
-        public string? ProjectDescription { get; set; }
-        public double? ProjectValuation { get; set; }
+        public int CompanyId { get; set; }
+        public string ProjectName {get; set;}
+        public string ProjectTitle { get; set; }
+        public string ProjectDescription { get; set; }
+        public double ProjectValuation { get; set; }
         public ProjectStatus Status { get; set; }
 
         // Need to Add CreatedOn and CreatedBy
-        public int? ModifiedBy { get; set; }
-        public DateTime? ModifiedAt { get; set; }
+        public int ModifiedBy { get; set; }
+        public DateTime ModifiedOn { get; set; }
 
     }
 

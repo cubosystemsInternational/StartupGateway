@@ -20,11 +20,11 @@ namespace StartupGateway.BusinessEntities
     {
         [Key]
         public int ChatId { get; set; }
-        public string? ChatTitle { get; set; }
-        public string? ChatBody { get; set; }
+        public string ChatTitle { get; set; }
+        public string ChatBody { get; set; }
         public ChatStatus Status { get; set; }
-        public int? ModifiedBy { get; set; }
-        public DateTime? ModifiedAt { get; set; }
+        public int ModifiedBy { get; set; }
+        public DateTime ModifiedOn { get; set; }
 
     }
 
