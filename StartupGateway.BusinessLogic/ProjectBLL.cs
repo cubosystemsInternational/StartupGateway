@@ -107,9 +107,5 @@ namespace StartupGateway.BusinessLogic
                 return ex;
             }
         }
-
-
-
-
     }
 }
