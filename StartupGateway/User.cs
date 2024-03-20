@@ -19,13 +19,13 @@ namespace StartupGateway.BusinessEntities
     {
         [Key]
         public int UserId { get; set; }
-        public string? UserName { get; set; }
-        public string? Email { get; set; }
-        public string? UserType { get; set; }
-        public DateTime? CreatedAt { get; set; }
+        public string UserName { get; set; }
+        public string Email { get; set; }
+        public string UserType { get; set; }
+        public DateTime CreatedAt { get; set; }
         public UserStatus Status { get; set; }
-        public int? ModifiedBy { get; set; }
-        public DateTime? ModifiedOn { get; set; }
+        public int ModifiedBy { get; set; }
+        public DateTime ModifiedOn { get; set; }
 
     }
 

@@ -20,11 +20,11 @@ namespace StartupGateway.BusinessEntities
     {
         [Key]
         public int RoleId { get; set; }
-        public string? RoleName { get; set; }
-        public string? Description { get; set; }
+        public string RoleName { get; set; }
+        public string Description { get; set; }
         public RoleStatus Status { get; set; }
-        public int? ModifiedBy { get; set; }
-        public DateTime? ModifiedOn { get; set; }
+        public int ModifiedBy { get; set; }
+        public DateTime ModifiedOn { get; set; }
 
     }
 
