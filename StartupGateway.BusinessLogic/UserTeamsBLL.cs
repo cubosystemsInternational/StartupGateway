@@ -35,7 +35,7 @@ namespace StartupGateway.BusinessLogic
         {
             try
             {
-                var userTeam = unitOfWork.GetRepository<IUserTeamDAL>().GetEntityById(userTeamId);
+                var userTeam = unitOfWork.GetDAL<IUserTeamDAL>().GetEntityById(userTeamId);
                 if (userTeam != null)
                 {
                     logger.LogInformation("UserTeam retrieved successfully at GetUserTeamById.");
@@ -62,7 +62,7 @@ namespace StartupGateway.BusinessLogic
         {
             try
             {
-                var listOfUserTeams = unitOfWork.GetRepository<IUserTeamDAL>().GetAllRecords().ToList();
+                var listOfUserTeams = unitOfWork.GetDAL<IUserTeamDAL>().GetAllRecords().ToList();
                 logger.LogInformation("UserTeams retrieved successfully at GetAllUserTeams.");
                 return listOfUserTeams;
             }
@@ -89,7 +89,7 @@ namespace StartupGateway.BusinessLogic
                     userTeam.ModifiedBy = userId;
                     userTeam.ModifiedOn = DateTime.Now;
 
-                    unitOfWork.GetRepository<IUserTeamDAL>().AddEntity(userTeam);
+                    unitOfWork.GetDAL<IUserTeamDAL>().AddEntity(userTeam);
                     unitOfWork.Commit();
                     logger.LogInformation("UserTeam successfully added at AddUserTeam.");
                     return true;
@@ -119,7 +119,7 @@ namespace StartupGateway.BusinessLogic
             {
                 if (newUserTeam != null)
                 {
-                    UserTeam existingUserTeam = unitOfWork.GetRepository<IUserTeamDAL>().GetEntityById(newUserTeam.UserTeamId);
+                    UserTeam existingUserTeam = unitOfWork.GetDAL<IUserTeamDAL>().GetEntityById(newUserTeam.UserTeamId);
 
                     // Update attributes if new values are not null or whitespace
                     existingUserTeam.Status = newUserTeam.Status != EntityStatus.Pending ? newUserTeam.Status : existingUserTeam.Status;

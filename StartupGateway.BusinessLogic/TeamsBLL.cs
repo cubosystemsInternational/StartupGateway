@@ -32,7 +32,7 @@ namespace StartupGateway.BusinessLogic
         {
             try
             {
-                var team = unitOfWork.GetRepository<ITeamDAL>().GetEntityById(teamId);
+                var team = unitOfWork.GetDAL<ITeamDAL>().GetEntityById(teamId);
                 if (team != null)
                 {
                     logger.LogInformation("Team retrieved successfully at GetTeamById.");
@@ -59,7 +59,7 @@ namespace StartupGateway.BusinessLogic
         {
             try
             {
-                var listOfTeams = unitOfWork.GetRepository<ITeamDAL>().GetAllRecords().ToList();
+                var listOfTeams = unitOfWork.GetDAL<ITeamDAL>().GetAllRecords().ToList();
                 logger.LogInformation("Teams retrieved successfully at GetAllTeams.");
                 return listOfTeams;
             }
@@ -86,7 +86,7 @@ namespace StartupGateway.BusinessLogic
                     team.ModifiedBy = userId;
                     team.ModifiedOn = DateTime.Now;
 
-                    unitOfWork.GetRepository<ITeamDAL>().AddEntity(team);
+                    unitOfWork.GetDAL<ITeamDAL>().AddEntity(team);
                     unitOfWork.Commit();
                     logger.LogInformation("Team successfully added at AddTeam.");
                     return true;
@@ -116,7 +116,7 @@ namespace StartupGateway.BusinessLogic
             {
                 if (newTeam != null)
                 {
-                    Team existingTeam = unitOfWork.GetRepository<ITeamDAL>().GetEntityById(newTeam.TeamId);
+                    Team existingTeam = unitOfWork.GetDAL<ITeamDAL>().GetEntityById(newTeam.TeamId);
                     // Update attributes if new values are not null or whitespace
                     existingTeam.TeamOwner = !string.IsNullOrWhiteSpace(newTeam.TeamOwner) ? newTeam.TeamOwner : existingTeam.TeamOwner;
                     existingTeam.TeamName = !string.IsNullOrWhiteSpace(newTeam.TeamName) ? newTeam.TeamName : existingTeam.TeamName;

@@ -35,7 +35,7 @@ namespace StartupGateway.BusinessLogic
         {
             try
             {
-                var collaborate = unitOfWork.GetRepository<ICollaborateDAL>().GetEntityById(comId);
+                var collaborate = unitOfWork.GetDAL<ICollaborateDAL>().GetEntityById(comId);
                 if (collaborate != null)
                 {
                     logger.LogInformation("Collaborate retrieved successfully at GetCollaborateById.");
@@ -62,7 +62,7 @@ namespace StartupGateway.BusinessLogic
         {
             try
             {
-                var listOfCollaborates = unitOfWork.GetRepository<ICollaborateDAL>().GetAllRecords().ToList();
+                var listOfCollaborates = unitOfWork.GetDAL<ICollaborateDAL>().GetAllRecords().ToList();
                 logger.LogInformation("Collaborates retrieved successfully at GetAllCollaborates.");
                 return listOfCollaborates;
             }
@@ -89,7 +89,7 @@ namespace StartupGateway.BusinessLogic
                     collaborate.ModifiedBy = userId;
                     collaborate.ModifiedOn = DateTime.Now;
 
-                    unitOfWork.GetRepository<ICollaborateDAL>().AddEntity(collaborate);
+                    unitOfWork.GetDAL<ICollaborateDAL>().AddEntity(collaborate);
                     unitOfWork.Commit();
                     logger.LogInformation("Collaborate successfully added at AddCollaborate.");
                     return true;
@@ -119,7 +119,7 @@ namespace StartupGateway.BusinessLogic
             {
                 if (newCollaborate != null)
                 {
-                    Collaborate existingCollaborate = unitOfWork.GetRepository<ICollaborateDAL>().GetEntityById(newCollaborate.ComId);
+                    Collaborate existingCollaborate = unitOfWork.GetDAL<ICollaborateDAL>().GetEntityById(newCollaborate.ComId);
 
                     // Update attributes if new values are not null or whitespace
                     existingCollaborate.Status = newCollaborate.Status != EntityStatus.Pending ? newCollaborate.Status : existingCollaborate.Status;

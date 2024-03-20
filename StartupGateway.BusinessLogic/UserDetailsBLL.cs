@@ -38,7 +38,7 @@ namespace StartupGateway.BusinessLogic
         {
             try
             {
-                var userDetails = unitOfWork.GetRepository<IUserDetailsDAL>().GetEntityById(userDetailsId);
+                var userDetails = unitOfWork.GetDAL<IUserDetailsDAL>().GetEntityById(userDetailsId);
                 if (userDetails != null)
                 {
                     logger.LogInformation("UserDetails retrieved successfully at GetUserDetailsById.");
@@ -65,7 +65,7 @@ namespace StartupGateway.BusinessLogic
         {
             try
             {
-                var listOfUserDetails = unitOfWork.GetRepository<IUserDetailsDAL>().GetAllRecords().ToList();
+                var listOfUserDetails = unitOfWork.GetDAL<IUserDetailsDAL>().GetAllRecords().ToList();
                 logger.LogInformation("UserDetails retrieved successfully at GetAllUserDetails.");
                 return listOfUserDetails;
             }
@@ -92,7 +92,7 @@ namespace StartupGateway.BusinessLogic
                     userDetails.ModifiedBy = userId;
                     userDetails.ModifiedOn = DateTime.Now;
 
-                    unitOfWork.GetRepository<IUserDetailsDAL>().AddEntity(userDetails);
+                    unitOfWork.GetDAL<IUserDetailsDAL>().AddEntity(userDetails);
                     unitOfWork.Commit();
                     logger.LogInformation("UserDetails successfully added at AddUserDetails.");
                     return true;
@@ -122,7 +122,7 @@ namespace StartupGateway.BusinessLogic
             {
                 if (newUserDetails != null)
                 {
-                    UserDetails existingUserDetails = unitOfWork.GetRepository<IUserDetailsDAL>().GetEntityById(newUserDetails.UserDetailsId);
+                    UserDetails existingUserDetails = unitOfWork.GetDAL<IUserDetailsDAL>().GetEntityById(newUserDetails.UserDetailsId);
 
                     // Update attributes if new values are not null or whitespace
                     existingUserDetails.FirstName = !string.IsNullOrWhiteSpace(newUserDetails.FirstName) ? newUserDetails.FirstName : existingUserDetails.FirstName;

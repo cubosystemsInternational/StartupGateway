@@ -35,7 +35,7 @@ namespace StartupGateway.BusinessLogic
         {
             try
             {
-                var company = unitOfWork.GetRepository<ICompanyDAL>().GetEntityById(companyId);
+                var company = unitOfWork.GetDAL<ICompanyDAL>().GetEntityById(companyId);
                 if (company != null)
                 {
                     logger.LogInformation("Company retrieved successfully at GetCompanyById.");
@@ -62,7 +62,7 @@ namespace StartupGateway.BusinessLogic
         {
             try
             {
-                var listOfCompanies = unitOfWork.GetRepository<ICompanyDAL>().GetAllRecords().ToList();
+                var listOfCompanies = unitOfWork.GetDAL<ICompanyDAL>().GetAllRecords().ToList();
                 logger.LogInformation("Companies retrieved successfully at GetAllCompanies.");
                 return listOfCompanies;
             }
@@ -89,7 +89,7 @@ namespace StartupGateway.BusinessLogic
                     company.ModifiedBy = userId;
                     company.ModifiedOn = DateTime.Now;
 
-                    unitOfWork.GetRepository<ICompanyDAL>().AddEntity(company);
+                    unitOfWork.GetDAL<ICompanyDAL>().AddEntity(company);
                     unitOfWork.Commit();
                     logger.LogInformation("Company successfully added at AddCompany.");
                     return true;
@@ -119,7 +119,7 @@ namespace StartupGateway.BusinessLogic
             {
                 if (newCompany != null)
                 {
-                    Company existingCompany = unitOfWork.GetRepository<ICompanyDAL>().GetEntityById(newCompany.CompanyId);
+                    Company existingCompany = unitOfWork.GetDAL<ICompanyDAL>().GetEntityById(newCompany.CompanyId);
 
                     // Update attributes if new values are not null or whitespace
                     existingCompany.CompanyName = !string.IsNullOrWhiteSpace(newCompany.CompanyName) ? newCompany.CompanyName : existingCompany.CompanyName;

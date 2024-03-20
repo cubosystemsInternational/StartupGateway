@@ -38,7 +38,7 @@ namespace StartupGateway.BusinessLogic
         {
             try
             {
-                var userDocs = unitOfWork.GetRepository<IUserDocsDAL>().GetEntityById(userDocsId);
+                var userDocs = unitOfWork.GetDAL<IUserDocsDAL>().GetEntityById(userDocsId);
                 if (userDocs != null)
                 {
                     logger.LogInformation("UserDocs retrieved successfully at GetUserDocsById.");
@@ -65,7 +65,7 @@ namespace StartupGateway.BusinessLogic
         {
             try
             {
-                var listOfUserDocs = unitOfWork.GetRepository<IUserDocsDAL>().GetAllRecords().ToList();
+                var listOfUserDocs = unitOfWork.GetDAL<IUserDocsDAL>().GetAllRecords().ToList();
                 logger.LogInformation("UserDocs retrieved successfully at GetAllUserDocs.");
                 return listOfUserDocs;
             }
@@ -92,7 +92,7 @@ namespace StartupGateway.BusinessLogic
                     userDocs.ModifiedBy = userId;
                     userDocs.ModifiedOn = DateTime.Now;
 
-                    unitOfWork.GetRepository<IUserDocsDAL>().AddEntity(userDocs);
+                    unitOfWork.GetDAL<IUserDocsDAL>().AddEntity(userDocs);
                     unitOfWork.Commit();
                     logger.LogInformation("UserDocs successfully added at AddUserDocs.");
                     return true;
@@ -122,7 +122,7 @@ namespace StartupGateway.BusinessLogic
             {
                 if (newUserDocs != null)
                 {
-                    UserDocs existingUserDocs = unitOfWork.GetRepository<IUserDocsDAL>().GetEntityById(newUserDocs.UserDocsId);
+                    UserDocs existingUserDocs = unitOfWork.GetDAL<IUserDocsDAL>().GetEntityById(newUserDocs.UserDocsId);
 
                     // Update attributes if new values are not null or whitespace
                     existingUserDocs.Status = newUserDocs.Status != EntityStatus.Pending ? newUserDocs.Status : existingUserDocs.Status;

@@ -35,7 +35,7 @@ namespace StartupGateway.BusinessLogic
         {
             try
             {
-                var chat = unitOfWork.GetRepository<IChatDAL>().GetEntityById(chatId);
+                var chat = unitOfWork.GetDAL<IChatDAL>().GetEntityById(chatId);
                 if (chat != null)
                 {
                     logger.LogInformation("Chat retrieved successfully at GetChatById.");
@@ -62,7 +62,7 @@ namespace StartupGateway.BusinessLogic
         {
             try
             {
-                var listOfChats = unitOfWork.GetRepository<IChatDAL>().GetAllRecords().ToList();
+                var listOfChats = unitOfWork.GetDAL<IChatDAL>().GetAllRecords().ToList();
                 logger.LogInformation("Chats retrieved successfully at GetAllChats.");
                 return listOfChats;
             }
@@ -89,7 +89,7 @@ namespace StartupGateway.BusinessLogic
                     chat.ModifiedBy = userId;
                     chat.ModifiedOn = DateTime.Now;
 
-                    unitOfWork.GetRepository<IChatDAL>().AddEntity(chat);
+                    unitOfWork.GetDAL<IChatDAL>().AddEntity(chat);
                     unitOfWork.Commit();
                     logger.LogInformation("Chat successfully added at AddChat.");
                     return true;
@@ -119,7 +119,7 @@ namespace StartupGateway.BusinessLogic
             {
                 if (newChat != null)
                 {
-                    Chat existingChat = unitOfWork.GetRepository<IChatDAL>().GetEntityById(newChat.ChatId);
+                    Chat existingChat = unitOfWork.GetDAL<IChatDAL>().GetEntityById(newChat.ChatId);
 
                     // Update attributes if new values are not null or whitespace
                     existingChat.ChatTitle = !string.IsNullOrWhiteSpace(newChat.ChatTitle) ? newChat.ChatTitle : existingChat.ChatTitle;

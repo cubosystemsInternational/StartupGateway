@@ -35,7 +35,7 @@ namespace StartupGateway.BusinessLogic
         {
             try
             {
-                var userRole = unitOfWork.GetRepository<IUserRoleDAL>().GetEntityById(userRoleId);
+                var userRole = unitOfWork.GetDAL<IUserRoleDAL>().GetEntityById(userRoleId);
                 if (userRole != null)
                 {
                     logger.LogInformation("UserRole retrieved successfully at GetUserRoleById.");
@@ -62,7 +62,7 @@ namespace StartupGateway.BusinessLogic
         {
             try
             {
-                var listOfUserRoles = unitOfWork.GetRepository<IUserRoleDAL>().GetAllRecords().ToList();
+                var listOfUserRoles = unitOfWork.GetDAL<IUserRoleDAL>().GetAllRecords().ToList();
                 logger.LogInformation("UserRoles retrieved successfully at GetAllUserRoles.");
                 return listOfUserRoles;
             }
@@ -89,7 +89,7 @@ namespace StartupGateway.BusinessLogic
                     userRole.ModifiedBy = userId;
                     userRole.ModifiedOn = DateTime.Now;
 
-                    unitOfWork.GetRepository<IUserRoleDAL>().AddEntity(userRole);
+                    unitOfWork.GetDAL<IUserRoleDAL>().AddEntity(userRole);
                     unitOfWork.Commit();
                     logger.LogInformation("UserRole successfully added at AddUserRole.");
                     return true;
@@ -119,7 +119,7 @@ namespace StartupGateway.BusinessLogic
             {
                 if (newUserRole != null)
                 {
-                    UserRole existingUserRole = unitOfWork.GetRepository<IUserRoleDAL>().GetEntityById(newUserRole.UserRoleId);
+                    UserRole existingUserRole = unitOfWork.GetDAL<IUserRoleDAL>().GetEntityById(newUserRole.UserRoleId);
 
                     // Update attributes if new values are not null or whitespace
                     existingUserRole.Status = newUserRole.Status != EntityStatus.Pending ? newUserRole.Status : existingUserRole.Status;

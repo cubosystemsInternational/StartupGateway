@@ -34,7 +34,7 @@ namespace StartupGateway.BusinessLogic
         {
             try
             {
-                var screen = unitOfWork.GetRepository<IScreenDAL>().GetEntityById(screenId);
+                var screen = unitOfWork.GetDAL<IScreenDAL>().GetEntityById(screenId);
                 if (screen != null)
                 {
                     logger.LogInformation("Screen retrieved successfully at GetScreenById.");
@@ -61,7 +61,7 @@ namespace StartupGateway.BusinessLogic
         {
             try
             {
-                var listOfScreens = unitOfWork.GetRepository<IScreenDAL>().GetAllRecords().ToList();
+                var listOfScreens = unitOfWork.GetDAL<IScreenDAL>().GetAllRecords().ToList();
                 logger.LogInformation("Screens retrieved successfully at GetAllScreens.");
                 return listOfScreens;
             }
@@ -88,7 +88,7 @@ namespace StartupGateway.BusinessLogic
                     screen.ModifiedBy = userId;
                     screen.ModifiedOn = DateTime.Now;
 
-                    unitOfWork.GetRepository<IScreenDAL>().AddEntity(screen);
+                    unitOfWork.GetDAL<IScreenDAL>().AddEntity(screen);
                     unitOfWork.Commit();
                     logger.LogInformation("Screen successfully added at AddScreen.");
                     return true;
@@ -118,7 +118,7 @@ namespace StartupGateway.BusinessLogic
             {
                 if (newScreen != null)
                 {
-                    Screen existingScreen = unitOfWork.GetRepository<IScreenDAL>().GetEntityById(newScreen.ScreenId);
+                    Screen existingScreen = unitOfWork.GetDAL<IScreenDAL>().GetEntityById(newScreen.ScreenId);
 
                     // Update attributes if new values are not null or whitespace
                     existingScreen.ScreenName = !string.IsNullOrWhiteSpace(newScreen.ScreenName) ? newScreen.ScreenName : existingScreen.ScreenName;
