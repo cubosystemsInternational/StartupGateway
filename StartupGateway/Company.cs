@@ -18,7 +18,7 @@ namespace StartupGateway.BusinessEntities
         public int CompanyId { get; set; }
         [ForeignKey("industry")]
         public int IndustryId { get; set; }
-        public string CompanyName { get; set;}
+        public required string CompanyName { get; set;}
         public string? Description { get; set;}
         public CompanyStatus Status { get; set; }
         public int ModifiedBy { get; set; }

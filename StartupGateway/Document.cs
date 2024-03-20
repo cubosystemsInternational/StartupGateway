@@ -16,10 +16,10 @@ namespace StartupGateway.Model
     public class Document
     {
         public int DocumentId { get; set; }
-        public string DocumentTitle { get; set; }
-        public string? DocumentBody { get; set; }
-        public string DocumentContent { get; set; }
-        public string DocumentType { get; set; }
+        public required string DocumentTitle { get; set; }
+        public required string? DocumentBody { get; set; }
+        public required string DocumentContent { get; set; }
+        public required string DocumentType { get; set; }
         public DocumentStatus Status { get; set; }
         public int ModifiedBy { get; set; }
         public DateTime ModifiedOn { get; set; }

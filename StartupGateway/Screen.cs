@@ -21,7 +21,7 @@ namespace StartupGateway.Model
         public int ProjectId { get; set; }
         [ForeignKey("teams")]
         public int TeamId { get; set; }
-		public string ScreenName { get; set; }
+		public required string ScreenName { get; set; }
         public ScreenStatus Status { get; set; }
         public int ModifiedBy { get; set; }
         public DateTime ModifiedOn { get; set; }

@@ -37,13 +37,13 @@ namespace StartupGateway.BusinessEntities
         /// Not Confirmed whether value is nullable.
         /// </summary>
         ///<returns></returns>
-        public string FirstName { get; set; }
+        public required string FirstName { get; set; }
         ///<inheritdoc />
         /// <summary>
         /// Not Confirmed whether value is nullable.
         /// </summary>
         ///<returns></returns>
-        public string LastName { get; set; }
+        public required string LastName { get; set; }
         public AvailabilityStatus Status { get; set; }
         public int ModifiedBy { get; set; }
         public DateTime ModifiedOn { get; set;}
