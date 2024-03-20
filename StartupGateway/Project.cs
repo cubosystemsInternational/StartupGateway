@@ -24,9 +24,9 @@ namespace StartupGateway.BusinessEntities
 		public int ProjectId {get; set;}
         [ForeignKey("company")]
         public int CompanyId { get; set; }
-        public string ProjectName {get; set;}
-        public string ProjectTitle { get; set; }
-        public string ProjectDescription { get; set; }
+        public required string ProjectName {get; set;}
+        public required string ProjectTitle { get; set; }
+        public required string ProjectDescription { get; set; }
         public double ProjectValuation { get; set; }
         public ProjectStatus Status { get; set; }
 

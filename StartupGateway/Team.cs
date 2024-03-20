@@ -16,8 +16,8 @@ namespace StartupGateway.Model
 	{
         [Key]
         public int TeamId { get; set; }
-		public string TeamOwner { get; set; }
-        public string TeamName { get; set;}
+		public required string TeamOwner { get; set; }
+        public required string TeamName { get; set;}
         public TeamStatus Status { get; set; }
         public int ModifiedBy { get; set; }
         public DateTime ModifiedOn { get; set; }
