@@ -27,7 +27,7 @@ namespace StartupGateway.UoW
             // Rollback changes if needed
         }
 
-        public T GetRepository<T>() where T : class
+        public T GetDAL<T>() where T : class
         {
             if (_repositories.ContainsKey(typeof(T)))
             {

@@ -12,6 +12,9 @@ using static StartupGateway.Shared.Share;
 
 namespace StartupGateway.BusinessLogic
 {
+    /// <summary>
+    /// Business logic layer for managing operations related to model UserDetailsBLL.
+    /// </summary>
     public class UserDetailsBLL
     {
         private readonly ILogger<UserDetailsBLL> logger;
