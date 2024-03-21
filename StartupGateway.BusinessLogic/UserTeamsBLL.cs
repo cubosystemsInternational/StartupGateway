@@ -1,4 +1,11 @@
-﻿using System;
+﻿/**
+ * Modified by: Zaid
+ * Created on: 03/21/2024
+ * Description: Business logic class UserTeamsBLL Modified.
+ * 
+ * */
+
+using System;
 using Microsoft.Extensions.Logging;
 using StartupGateway.DAL.Implementation;
 using StartupGateway.DAL.Interfaces;
@@ -31,28 +38,32 @@ namespace StartupGateway.BusinessLogic
         /// </summary>
         /// <param name="userTeamId"></param>
         /// <returns>UserTeam?</returns>
-        public UserTeam? GetUserTeamById(int userTeamId)
+        public UserTeam GetUserTeamById(int userTeamId)
         {
             try
             {
                 var userTeam = unitOfWork.GetDAL<IUserTeamDAL>().GetEntityById(userTeamId);
                 if (userTeam != null)
                 {
-                    logger.LogInformation("UserTeam retrieved successfully at GetUserTeamById.");
+                    logger.LogInformation($"UserTeam with ID {userTeamId} retrieved successfully.");
                     return userTeam;
                 }
                 else
                 {
-                    logger.LogInformation("UserTeam retrieved at GetUserTeamById is null.");
-                    return null;
+                    // Log the absence of the UserTeam and throw a KeyNotFoundException
+                    var message = $"UserTeam with ID {userTeamId} not found.";
+                    logger.LogError(message);
+                    throw new KeyNotFoundException(message);
                 }
             }
             catch (Exception exception)
             {
-                logger.LogInformation("Exception caught at GetUserTeamById: " + exception + ".");
-                return null;
+                // Log and rethrow any other exceptions that occur during execution
+                logger.LogError($"Exception caught at GetUserTeamById: {exception}.");
+                throw;
             }
         }
+
 
         /// <summary>
         /// Retrieves all the user teams.
@@ -69,7 +80,7 @@ namespace StartupGateway.BusinessLogic
             catch (Exception exception)
             {
                 logger.LogInformation("Exception caught at GetAllUserTeams: " + exception + ".");
-                return null;
+               throw;
             }
         }
 

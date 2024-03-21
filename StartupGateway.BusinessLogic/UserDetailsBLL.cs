@@ -1,4 +1,11 @@
-﻿using System;
+﻿/**
+ * Modified by: Zaid
+ * Created on: 03/21/2024
+ * Description: Business logic class UserDetailsBLL Modified.
+ * 
+ * */
+
+using System;
 using Microsoft.Extensions.Logging;
 using StartupGateway.DAL.Implementation;
 using StartupGateway.DAL.Interfaces;
@@ -34,7 +41,7 @@ namespace StartupGateway.BusinessLogic
         /// </summary>
         /// <param name="userDetailsId"></param>
         /// <returns>UserDetails?</returns>
-        public UserDetails? GetUserDetailsById(int userDetailsId)
+        public UserDetails GetUserDetailsById(int userDetailsId)
         {
             try
             {
@@ -46,16 +53,20 @@ namespace StartupGateway.BusinessLogic
                 }
                 else
                 {
-                    logger.LogInformation("UserDetails retrieved at GetUserDetailsById is null.");
-                    return null;
+                    // If userDetails is null, log the event and throw a KeyNotFoundException
+                    var message = $"UserDetails with ID {userDetailsId} not found.";
+                    logger.LogError(message);
+                    throw new KeyNotFoundException(message);
                 }
             }
             catch (Exception exception)
             {
-                logger.LogInformation("Exception caught at GetUserDetailsById: " + exception + ".");
-                return null;
+                // Log and rethrow any other exceptions that occur during execution
+                logger.LogError($"Exception caught at GetUserDetailsById: {exception}.");
+                throw;
             }
         }
+
 
         /// <summary>
         /// Retrieves all the user details.
@@ -72,7 +83,7 @@ namespace StartupGateway.BusinessLogic
             catch (Exception exception)
             {
                 logger.LogInformation("Exception caught at GetAllUserDetails: " + exception + ".");
-                return null;
+                throw;
             }
         }
 

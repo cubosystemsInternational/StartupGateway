@@ -1,4 +1,11 @@
-﻿using System;
+﻿/**
+ * Modified by: Zaid
+ * Created on: 03/21/2024
+ * Description: Business logic class CompaniesBLL Modified.
+ * 
+ * */
+
+using System;
 using Microsoft.Extensions.Logging;
 using StartupGateway.DAL.Implementation;
 using StartupGateway.DAL.Interfaces;
@@ -38,21 +45,25 @@ namespace StartupGateway.BusinessLogic
                 var company = unitOfWork.GetDAL<ICompanyDAL>().GetEntityById(companyId);
                 if (company != null)
                 {
-                    logger.LogInformation("Company retrieved successfully at GetCompanyById.");
+                    logger.LogInformation($"Company with ID {companyId} retrieved successfully.");
                     return company;
                 }
                 else
                 {
-                    logger.LogInformation("Company retrieved at GetCompanyById is null.");
-                    return null;
+                    // Log the absence of the company and throw a KeyNotFoundException
+                    var message = $"Company with ID {companyId} not found.";
+                    logger.LogError(message);
+                    throw new KeyNotFoundException(message);
                 }
             }
             catch (Exception exception)
             {
-                logger.LogInformation("Exception caught at GetCompanyById: " + exception + ".");
-                return null;
+                // Log and rethrow any other exceptions that occur during execution
+                logger.LogError($"Exception caught at GetCompanyById: {exception}.");
+                throw;
             }
         }
+
 
         /// <summary>
         /// Retrieves all the companies.
@@ -69,7 +80,7 @@ namespace StartupGateway.BusinessLogic
             catch (Exception exception)
             {
                 logger.LogInformation("Exception caught at GetAllCompanies: " + exception + ".");
-                return null;
+                throw;
             }
         }
 

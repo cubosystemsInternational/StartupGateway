@@ -1,4 +1,10 @@
-﻿using System;
+﻿/**
+ * Modified by: Zaid
+ * Created on: 03/21/2024
+ * Description: Business logic class VisitorSessionBLL Modified.
+ * 
+ * */
+using System;
 using Microsoft.Extensions.Logging;
 using StartupGateway.DAL.Implementation;
 using StartupGateway.DAL.Interfaces;
@@ -8,6 +14,7 @@ using StartupGateway.UoW.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using StartupGateway.BusinessEntities;
+using static StartupGateway.Shared.Share;
 
 namespace StartupGateway.BusinessLogic
 {
@@ -30,28 +37,32 @@ namespace StartupGateway.BusinessLogic
         /// </summary>
         /// <param name="visitorSessionId"></param>
         /// <returns>VisitorSession?</returns>
-        public VisitorSession? GetVisitorSessionById(int visitorSessionId)
+        public VisitorSession GetVisitorSessionById(int visitorSessionId)
         {
             try
             {
                 var visitorSession = unitOfWork.GetDAL<IVisitorSessionDAL>().GetEntityById(visitorSessionId);
                 if (visitorSession != null)
                 {
-                    logger.LogInformation("VisitorSession retrieved successfully at GetVisitorSessionById.");
+                    logger.LogInformation($"VisitorSession with ID {visitorSessionId} retrieved successfully.");
                     return visitorSession;
                 }
                 else
                 {
-                    logger.LogInformation("VisitorSession retrieved at GetVisitorSessionById is null.");
-                    return null;
+                    // Log the absence of the VisitorSession and throw a KeyNotFoundException
+                    var message = $"VisitorSession with ID {visitorSessionId} not found.";
+                    logger.LogError(message);
+                    throw new KeyNotFoundException(message);
                 }
             }
             catch (Exception exception)
             {
-                logger.LogInformation("Exception caught at GetVisitorSessionById: " + exception + ".");
-                return null;
+                // Log and rethrow any other exceptions that occur during execution
+                logger.LogError($"Exception caught at GetVisitorSessionById: {exception}.");
+                throw;
             }
         }
+
 
         /// <summary>
         /// Retrieves all the visitor sessions.
@@ -68,7 +79,7 @@ namespace StartupGateway.BusinessLogic
             catch (Exception exception)
             {
                 logger.LogInformation("Exception caught at GetAllVisitorSessions: " + exception + ".");
-                return null;
+                throw;
             }
         }
 

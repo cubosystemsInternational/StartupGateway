@@ -1,4 +1,10 @@
-﻿using System;
+﻿/**
+ * Modified by: Zaid
+ * Created on: 03/21/2024
+ * Description: Business logic class UserRolesBLL Modified.
+ * 
+ * */
+using System;
 using Microsoft.Extensions.Logging;
 using StartupGateway.DAL.Implementation;
 using StartupGateway.DAL.Interfaces;
@@ -31,28 +37,32 @@ namespace StartupGateway.BusinessLogic
         /// </summary>
         /// <param name="userRoleId"></param>
         /// <returns>UserRole?</returns>
-        public UserRole? GetUserRoleById(int userRoleId)
+        public UserRole GetUserRoleById(int userRoleId)
         {
             try
             {
                 var userRole = unitOfWork.GetDAL<IUserRoleDAL>().GetEntityById(userRoleId);
                 if (userRole != null)
                 {
-                    logger.LogInformation("UserRole retrieved successfully at GetUserRoleById.");
+                    logger.LogInformation($"UserRole with ID {userRoleId} retrieved successfully.");
                     return userRole;
                 }
                 else
                 {
-                    logger.LogInformation("UserRole retrieved at GetUserRoleById is null.");
-                    return null;
+                    // Log the absence of the UserRole and throw a KeyNotFoundException
+                    var message = $"UserRole with ID {userRoleId} not found.";
+                    logger.LogError(message);
+                    throw new KeyNotFoundException(message);
                 }
             }
             catch (Exception exception)
             {
-                logger.LogInformation("Exception caught at GetUserRoleById: " + exception + ".");
-                return null;
+                // Log and rethrow any other exceptions that occur during execution
+                logger.LogError($"Exception caught at GetUserRoleById: {exception}.");
+                throw;
             }
         }
+
 
         /// <summary>
         /// Retrieves all the user roles.
@@ -69,7 +79,7 @@ namespace StartupGateway.BusinessLogic
             catch (Exception exception)
             {
                 logger.LogInformation("Exception caught at GetAllUserRoles: " + exception + ".");
-                return null;
+                throw;
             }
         }
 
