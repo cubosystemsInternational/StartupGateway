@@ -1,4 +1,11 @@
-﻿using System;
+﻿/**
+ * Modified by: Zaid
+ * Created on: 03/21/2024
+ * Description: Business logic class ChatsBLL Modified.
+ * 
+ * */
+
+using System;
 using Microsoft.Extensions.Logging;
 using StartupGateway.DAL.Implementation;
 using StartupGateway.DAL.Interfaces;
@@ -38,21 +45,25 @@ namespace StartupGateway.BusinessLogic
                 var chat = unitOfWork.GetDAL<IChatDAL>().GetEntityById(chatId);
                 if (chat != null)
                 {
-                    logger.LogInformation("Chat retrieved successfully at GetChatById.");
+                    logger.LogInformation($"Chat with ID {chatId} retrieved successfully.");
                     return chat;
                 }
                 else
                 {
-                    logger.LogInformation("Chat retrieved at GetChatById is null.");
-                    return null;
+                    // Log the absence of the Chat entity and throw a KeyNotFoundException
+                    var message = $"Chat with ID {chatId} not found.";
+                    logger.LogError(message);
+                    throw new KeyNotFoundException(message);
                 }
             }
             catch (Exception exception)
             {
-                logger.LogInformation("Exception caught at GetChatById: " + exception + ".");
-                return null;
+                // Log and rethrow any other exceptions that occur during execution
+                logger.LogError($"Exception caught at GetChatById: {exception}.");
+                throw;
             }
         }
+
 
         /// <summary>
         /// Retrieves all the chats.
@@ -69,7 +80,7 @@ namespace StartupGateway.BusinessLogic
             catch (Exception exception)
             {
                 logger.LogInformation("Exception caught at GetAllChats: " + exception + ".");
-                return null;
+                throw;
             }
         }
 

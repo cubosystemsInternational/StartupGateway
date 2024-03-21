@@ -37,28 +37,32 @@ namespace StartupGateway.BusinessLogic
         /// </summary>
         /// <param name="screenId"></param>
         /// <returns>Screen?</returns>
-        public Screen? GetScreenById(int screenId)
+        public Screen GetScreenById(int screenId)
         {
             try
             {
                 var screen = unitOfWork.GetDAL<IScreenDAL>().GetEntityById(screenId);
                 if (screen != null)
                 {
-                    logger.LogInformation("Screen retrieved successfully at GetScreenById.");
+                    logger.LogInformation($"Screen with ID {screenId} retrieved successfully.");
                     return screen;
                 }
                 else
                 {
-                    logger.LogInformation("Screen retrieved at GetScreenById is null.");
-                    return null;
+                    // Log the absence of the Screen entity and throw a KeyNotFoundException
+                    var message = $"Screen with ID {screenId} not found.";
+                    logger.LogError(message);
+                    throw new KeyNotFoundException(message);
                 }
             }
             catch (Exception exception)
             {
-                logger.LogInformation("Exception caught at GetScreenById: " + exception + ".");
-                return null;
+                // Log and rethrow any other exceptions that occur during execution
+                logger.LogError($"Exception caught at GetScreenById: {exception}.");
+                throw;
             }
         }
+
 
         /// <summary>
         /// Retrieves all the screens.
@@ -75,7 +79,7 @@ namespace StartupGateway.BusinessLogic
             catch (Exception exception)
             {
                 logger.LogInformation("Exception caught at GetAllScreens: " + exception + ".");
-                return null;
+                throw;
             }
         }
 
