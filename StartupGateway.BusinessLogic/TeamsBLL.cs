@@ -1,4 +1,10 @@
-﻿using System;
+﻿/**
+ * Modified by: Zaid
+ * Created on: 03/21/2024
+ * Description: Business logic class TeamsBLL is Modified.
+ * 
+ * */
+using System;
 using Microsoft.Extensions.Logging;
 using StartupGateway.DAL.Implementation;
 using StartupGateway.DAL.Interfaces;
@@ -28,7 +34,7 @@ namespace StartupGateway.BusinessLogic
         /// </summary>
         /// <param name="teamId"></param>
         /// <returns>Team?</returns>
-        public Team? GetTeamById(int teamId)
+        public Team GetTeamById(int teamId)
         {
             try
             {
@@ -40,35 +46,49 @@ namespace StartupGateway.BusinessLogic
                 }
                 else
                 {
-                    logger.LogInformation("Team retrieved at GetTeamById is null.");
-                    return null;
+                    // Since the team is not found, log the information and throw an exception.
+                    var errorMessage = $"Team with ID {teamId} not found.";
+                    logger.LogInformation(errorMessage);
+                    throw new KeyNotFoundException(errorMessage);
                 }
             }
             catch (Exception exception)
             {
-                logger.LogInformation("Exception caught at GetTeamById: " + exception + ".");
-                return null;
+                // Log and rethrow the exception to be handled or logged by the calling code.
+                logger.LogError($"Exception caught at GetTeamById: {exception}.");
+                throw;
             }
         }
+
 
         /// <summary>
         /// Retrieves all the teams.
         /// </summary>
         /// <returns>List of Team?</returns>
-        public List<Team>? GetAllTeams()
+        public List<Team> GetAllTeams()
         {
             try
             {
                 var listOfTeams = unitOfWork.GetDAL<ITeamDAL>().GetAllRecords().ToList();
+
+                if (listOfTeams == null || !listOfTeams.Any())
+                {
+                    // Log the absence of teams and throw an exception
+                    logger.LogError("No teams found.");
+                    throw new KeyNotFoundException("No teams found.");
+                }
+
                 logger.LogInformation("Teams retrieved successfully at GetAllTeams.");
                 return listOfTeams;
             }
             catch (Exception exception)
             {
-                logger.LogInformation("Exception caught at GetAllTeams: " + exception + ".");
-                return null;
+                // Log the exception and rethrow it
+                logger.LogError($"Exception caught at GetAllTeams: {exception}.");
+                throw;
             }
         }
+
 
         /// <summary>
         /// Adds an instance of Team to the database. Returns True if the operation was successful.

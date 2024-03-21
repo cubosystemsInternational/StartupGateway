@@ -41,19 +41,21 @@ namespace StartupGateway.BusinessLogic
                 var userDocs = unitOfWork.GetDAL<IUserDocsDAL>().GetEntityById(userDocsId);
                 if (userDocs != null)
                 {
-                    logger.LogInformation("UserDocs retrieved successfully at GetUserDocsById.");
+                    logger.LogInformation($"UserDocs with ID {userDocsId} retrieved successfully.");
                     return userDocs;
                 }
                 else
                 {
-                    logger.LogInformation("UserDocs retrieved at GetUserDocsById is null.");
-                    return null;
+                    // Log the absence of the UserDocs and throw a KeyNotFoundException
+                    var message = $"UserDocs with ID {userDocsId} not found.";
+                    logger.LogError(message);
+                    throw new KeyNotFoundException(message);
                 }
             }
             catch (Exception exception)
             {
                 logger.LogInformation("Exception caught at GetUserDocsById: " + exception + ".");
-                return null;
+                throw;
             }
         }
 
@@ -72,7 +74,7 @@ namespace StartupGateway.BusinessLogic
             catch (Exception exception)
             {
                 logger.LogInformation("Exception caught at GetAllUserDocs: " + exception + ".");
-                return null;
+                throw;
             }
         }
 
