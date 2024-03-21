@@ -1,112 +1,152 @@
-﻿using System;
-using System.Collections.Generic;
+﻿/**
+ * Created by: Zuhri
+ * Created on: 19/03/2024
+ * Description: Business logic class ProjectBLL created.
+ * 
+ * */
+
 using Microsoft.Extensions.Logging;
+using Mysqlx;
+using Mysqlx.Crud;
 using StartupGateway.BusinessEntities;
+using StartupGateway.DAL.Implementation;
 using StartupGateway.DAL.Interfaces;
+using StartupGateway.UoW;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace StartupGateway.BusinessLogic
 {
     /// <summary>
-    /// Business logic layer for managing projects.
+    /// Business logic layer for managing operations related to model ProjectBLL.
     /// </summary>
     public class ProjectBLL
     {
-        private readonly IProjectDAL<Project> projectsDal;
-        private readonly ILogger<ProjectBLL> logger; // Logger object for logging information
+        private readonly ILogger<ProjectBLL> logger;
+        private readonly UnitOfWork unitOfWork;
 
         /// <summary>
-        /// Constructor to initialize ProjectBLL with necessary dependencies.
+        /// Constructor to intialize ProjectBLL with necessary dependencies.
         /// </summary>
-        /// <param name="projectsDal">Data access layer for projects.</param>
-        /// <param name="logger">Logger for logging information.</param>
-        public ProjectBLL(IProjectDAL<Project> projectsDal, ILogger<ProjectBLL> logger)
+        public ProjectBLL(ILogger<ProjectBLL> logger, UnitOfWork unitOfWork)
         {
-            this.projectsDal = projectsDal;
-            this.logger = logger; // Initializing the logger object in the constructor
+            this.logger = logger;
+            this.unitOfWork = unitOfWork;
         }
 
         /// <summary>
-        /// Retrieve a project by its ID.
+        /// Retrieves the Project information for the Id passed.
         /// </summary>
-        /// <param name="projectId">The ID of the project to retrieve.</param>
-        /// <returns>The project with the specified ID.</returns>
-        public Project GetProjectById(int projectId)
-        {
-            return projectsDal.GetProjectById(projectId);
-        }
-
-        /// <summary>
-        /// Retrieve a project by its name.
-        /// </summary>
-        /// <param name="projectName">The name of the project to retrieve.</param>
-        /// <returns>The project with the specified name.</returns>
-        public Project GetProjectByName(string projectName)
-        {
-            return projectsDal.GetProjectByName(x => x.ProjectName == projectName);
-        }
-
-        /// <summary>
-        /// Retrieve all projects.
-        /// </summary>
-        /// <returns>A list of all projects in the database.</returns>
-        public List<Project> GetAllProjects()
-        {
-            return (List<Project>)projectsDal.GetAllProjects();
-        }
-
-        /// <summary>
-        /// Add a new project.
-        /// </summary>
-        /// <param name="project">The project to add.</param>
-        /// <returns>True if the project was added successfully; otherwise, false.</returns>
-        public bool AddProject(Project project)
-        {
-            // Add the project to the database
-
-            projectsDal.AddEntity(project);
-            projectsDal.CommitChanges(); // Commit changes to the database
-
-            // Log information about the added project
-            logger.LogInformation("Project added successfully: {ProjectName}.", project.ProjectName);
-            return true; // Return true indicating successful addition
-        }
-
-        /// <summary>
-        /// Update an existing project.
-        /// </summary>
-        /// <param name="updatedProject">The updated project information.</param>
-        /// <param name="userId">Id of user who made the change.</param>
-        /// <returns>The updated project if successful; otherwise, null.</returns>
-        
-        public object UpdateProject(Project updatedProject, int userId)
+        /// <param name="chatDetailId"></param>
+        /// <returns>Project?</returns>
+        public Project? GetProjectById(int chatDetailId)
         {
             try
             {
-                // Get the existing project from the database
-                var existingProject = projectsDal.GetProjectById(updatedProject.ProjectId);
-                if (existingProject != null) // If the project exists
+                var Project = unitOfWork.GetDAL<ProjectDAL>().GetEntityById(chatDetailId);
+                if (Project != null)
                 {
-                    // Update the project details if the updated values are not empty
-                    existingProject.ProjectName = !string.IsNullOrWhiteSpace(updatedProject.ProjectName) ? updatedProject.ProjectName : existingProject.ProjectName;
-                    existingProject.ProjectTitle = !string.IsNullOrWhiteSpace(updatedProject.ProjectTitle) ? updatedProject.ProjectTitle : existingProject.ProjectTitle;
-                    existingProject.ProjectDescription = !string.IsNullOrWhiteSpace(updatedProject.ProjectDescription) ? updatedProject.ProjectDescription : existingProject.ProjectDescription;
-                    existingProject.ProjectValuation = updatedProject.ProjectValuation != 0? existingProject.ProjectValuation: 0;
+                    logger.LogInformation("Project retrieved succesfully at GetProjectById.");
+                    return Project;
+                }
+                else
+                {
+                    logger.LogInformation("Project retrieved at GetProjectById is null.");
+                    return null;
+                }
+            }
+            catch (Exception exception)
+            {
+                logger.LogInformation("Exception Caught at GetProjectById: " + exception + ".");
+                return null;
+            }
+        }
 
-                    existingProject.Status = updatedProject.Status;
+        /// <summary>
+        /// Retrieves all the Project.
+        /// </summary>
+        /// <returns>List of Project?</returns>
+        public List<Project>? GetAllProject()
+        {
+            try
+            {
+                var listOfProject = unitOfWork.GetDAL<ProjectDAL>().GetAllRecords().ToList();
+                logger.LogInformation("Project retrieved successfully at GetAllProject.");
+                return listOfProject;
+            }
+            catch (Exception exception)
+            {
+                logger.LogInformation("Exception Caught at GetAllProject: " + exception + ".");
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Adds an instance of Project to the DataBase. Returns True if operation was successfull.
+        /// </summary>
+        /// <param name="Project"></param>
+        /// <returns>True or False</returns>
+        public bool AddProject(Project Project) 
+        {
+            try
+            {
+                if (Project != null)
+                {
+                    unitOfWork.GetDAL<ProjectDAL>().AddEntity(Project);
+                    unitOfWork.Commit();
+                    logger.LogInformation("Project successfully added at AddProject.");
+                    return true;
+                }
+                else
+                {
+                    logger.LogInformation("Project is null at AddProject");
+                    return false;
+                }
+
+            }
+            catch (Exception exception)
+            {
+                logger.LogInformation("Exception Caught at AddProject: " + exception + ".");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Updates an existing instance of Project. Returns True, if the update operation was successfull.
+        /// </summary>
+        /// <param name="newProject"></param>
+        /// <returns>True or False</returns>
+        public bool UpdateProject(Project newProject, int userId)
+        {
+            try
+            {
+                if (newProject != null)
+                {
+                    Project existingProject = unitOfWork.GetDAL<ProjectDAL>().GetEntityById(newProject.ProjectId);
+                    existingProject.ProjectId = newProject.ProjectId;
+                    existingProject.ProjectName = newProject.ProjectName;
+                    existingProject.Status = newProject.Status;
                     existingProject.ModifiedOn = DateTime.Now;
                     existingProject.ModifiedBy = userId;
 
-                    // Update the project in the database
-                    projectsDal.UpdateProject(existingProject);
-                    projectsDal.CommitChanges(); // Commit changes to the database
-                    return existingProject; // Return the updated project
-                }
+                    unitOfWork.Commit();
 
-                throw new Exception("Project not found"); // Throw an exception if project not found
+                    logger.LogInformation("Project updated successfully at UpdateProject.");
+                    return true;
+                }
+                else
+                {
+                    logger.LogInformation("Project passed at UpdateProject are null.");
+                    return false;
+                }
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                return ex;
+                logger.LogInformation("Exception Caught at UpdateProject: " + exception + ".");
+                return false;
             }
         }
     }
