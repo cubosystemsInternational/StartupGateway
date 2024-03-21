@@ -47,26 +47,26 @@ namespace StartupGateway.BusinessLogic
         /// </summary>
         /// <param name="chatDetailId"></param>
         /// <returns>ChatDetails?</returns>
-        public ChatDetails? GetChatDetailsById(int chatDetailId)
+        public ChatDetails GetChatDetailsById(int chatDetailId)
         {
             try
             {
                 var chatDetails = unitOfWork.GetDAL<IChatDetailsDAL>().GetEntityById(chatDetailId);
                 if (chatDetails!=null) 
                 {
-                    logger.LogInformation("Chat details retrieved succesfully at GetChatDetailsById.");
+                    logger.LogInformation("ChatDetails instance retrieved succesfully at GetChatDetailsById.");
                     return chatDetails;
                 }
                 else
                 {
-                    logger.LogInformation("Chat details retrieved at GetChatDetailsById is null.");
-                    return null;
+                    logger.LogInformation("ChatDetails instance retrieved at GetChatDetailsById is null.");
+                    throw new CustomException("ChatDetails instance retrieved at GetChatDetailsById is null.");
                 }
             }
             catch (Exception exception)
             {
                 logger.LogInformation("Exception Caught at GetChatDeatilsById: "+exception+".");
-                return null;
+                throw new CustomException("Exception Caught at GetChatDeatilsById: " + exception + ".");
             }
         }
 
@@ -74,18 +74,26 @@ namespace StartupGateway.BusinessLogic
         /// Retrieves all instances of ChatDetails.
         /// </summary>
         /// <returns>List of ChatDetails?</returns>
-        public List<ChatDetails>? GetAllChatDetails()
+        public List<ChatDetails> GetAllChatDetails()
         {
             try 
             {
                 var listOfChatDetails=unitOfWork.GetDAL<ChatDetailsDAL>().GetAllRecords().ToList();
-                logger.LogInformation("Chat details retrieved successfully at GetAllChatDetails.");
-                return listOfChatDetails;
+                if (listOfChatDetails != null)
+                {
+                    logger.LogInformation("ChatDetails instances retrieved successfully at GetAllChatDetails.");
+                    return listOfChatDetails;
+                }
+                else 
+                {
+                    logger.LogInformation("Instances of ChatDetails retrieved is null at GetAllChatDetails.");
+                    throw new CustomException("Instances of ChatDetails retrieved is null at GetAllChatDetails.");
+                }
             }
             catch(Exception exception) 
             {
                 logger.LogInformation("Exception Caught at GetAllChatDetails: " + exception + ".");
-                return null;
+                throw new CustomException("Exception Caught at GetAllChatDetails: " + exception + ".");
             }
         }
 
@@ -107,20 +115,20 @@ namespace StartupGateway.BusinessLogic
 
                     unitOfWork.GetDAL<ChatDetailsDAL>().AddEntity(chatdetails);
                     unitOfWork.Commit();
-                    logger.LogInformation("Chat details successfully added at AddChatDetails.");
+                    logger.LogInformation("ChatDetails instance successfully added at AddChatDetails.");
                     return true;
                 }
                 else 
                 {
-                    logger.LogInformation("Chat details is null at AddChatDetails");
-                    return false;
+                    logger.LogInformation("ChatDetails instance is null at AddChatDetails.");
+                    throw new CustomException("Chat details is null at AddChatDetails.");
                 }
                 
             }
             catch (Exception exception) 
             {
                 logger.LogInformation("Exception Caught at AddChatDetails: " + exception + ".");
-                return false;
+                throw new CustomException("Exception Caught at AddChatDetails: " + exception + ".");
             }
         }
 
@@ -145,19 +153,19 @@ namespace StartupGateway.BusinessLogic
                     unitOfWork.GetDAL<ChatDetailsDAL>().UpdateEntity(existingChatDetails);
                     unitOfWork.Commit();
 
-                    logger.LogInformation("Chat Details updated successfully at UpdateChatDetails.");
+                    logger.LogInformation("ChatDetails instance updated successfully at UpdateChatDetails.");
                     return true;
                 }
                 else
                 {
-                    logger.LogInformation("Chat details passed at UpdateChatDetails are null.");
-                    return false;
+                    logger.LogInformation("ChatDetails instance passed at UpdateChatDetails are null.");
+                    throw new CustomException("ChatDetails instance passed at UpdateChatDetails are null.");
                 }
             }
             catch (Exception exception) 
             {
                 logger.LogInformation("Exception Caught at UpdateChatDetails: " + exception + ".");
-                return false;
+                throw new CustomException("Exception Caught at UpdateChatDetails: " + exception + ".");   
             }
         }
     }

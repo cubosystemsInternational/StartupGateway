@@ -7,15 +7,9 @@
 
 using Microsoft.Extensions.Logging;
 using StartupGateway.BusinessEntities;
-using StartupGateway.DAL.Implementation;
 using StartupGateway.DAL.Interfaces;
-using StartupGateway.UoW;
+using StartupGateway.Shared;
 using StartupGateway.UoW.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static StartupGateway.Shared.Share;
 
 namespace StartupGateway.BusinessLogic
@@ -44,7 +38,7 @@ namespace StartupGateway.BusinessLogic
         /// </summary>
         /// <param name="userComsId"></param>
         /// <returns>UserComs?</returns>
-        public UserComs? GetUserComsById(int userComsId)
+        public UserComs GetUserComsById(int userComsId)
         {
             try
             {
@@ -57,13 +51,13 @@ namespace StartupGateway.BusinessLogic
                 else
                 {
                     logger.LogInformation("UserComs instance retrieved at GetUserComsById is null.");
-                    return null;
+                    throw new CustomException("UserComs instance retrieved at GetUserComsById is null.");
                 }
             }
             catch (Exception exception)
             {
                 logger.LogInformation("Exception Caught at GetUserComsById: " + exception + ".");
-                return null;
+                throw new CustomException("Exception Caught at GetUserComsById: " + exception + ".");
             }
         }
 
@@ -71,18 +65,27 @@ namespace StartupGateway.BusinessLogic
         /// Retrieves all instances of UserComs.
         /// </summary>
         /// <returns>List of UserComs?</returns>
-        public List<UserComs>? GetAllUserComs()
+        public List<UserComs> GetAllUserComs()
         {
             try
             {
                 var listOfUserComs = unitOfWork.GetDAL<IUserComsDAL>().GetAllRecords().ToList();
-                logger.LogInformation("UserComs instances retrieved successfully at GetAllUserComs.");
-                return listOfUserComs;
+
+                if (listOfUserComs != null)
+                {
+                    logger.LogInformation("UserComs instances retrieved successfully at GetAllUserComs.");
+                    return listOfUserComs;
+                }
+                else
+                {
+                    logger.LogInformation("Instance of UserComs retrieved is null at GetAllUserComs.");
+                    throw new CustomException("Instance of UserComs retrieved is null at GetAllUserComs.");
+                }
             }
             catch (Exception exception)
             {
                 logger.LogInformation("Exception Caught at GetAllUserComs: " + exception + ".");
-                return null;
+                throw new CustomException("Exception Caught at GetAllUserComs: " + exception + ".");
             }
         }
 
@@ -109,14 +112,14 @@ namespace StartupGateway.BusinessLogic
                 else
                 {
                     logger.LogInformation("UserComs instance is null at AddUserComs.");
-                    return false;
+                    throw new CustomException("UserComs instance is null at AddUserComs.");
                 }
 
             }
             catch (Exception exception)
             {
-                logger.LogInformation("Exception Caught at AddCompanyDocuments: " + exception + ".");
-                return false;
+                logger.LogInformation("Exception Caught at AddUserComs: " + exception + ".");
+                throw new CustomException("Exception Caught at AddUserComs: " + exception + ".");
             }
         }
 
@@ -133,7 +136,7 @@ namespace StartupGateway.BusinessLogic
                 {
                     UserComs existingUserCom = unitOfWork.GetDAL<IUserComsDAL>().GetEntityById(newUserComs.UserComId);
 
-                    
+
                     existingUserCom.Status = newUserComs.Status;
                     existingUserCom.ModifiedOn = DateTime.Now;
                     existingUserCom.ModifiedBy = newUserComs.UserId;
@@ -147,13 +150,13 @@ namespace StartupGateway.BusinessLogic
                 else
                 {
                     logger.LogInformation("UserComs instance passed at UpdateUserComs are null.");
-                    return false;
+                    throw new CustomException("UserComs instance passed at UpdateUserComs are null.");
                 }
             }
             catch (Exception exception)
             {
                 logger.LogInformation("Exception Caught at UpdateUserComs: " + exception + ".");
-                return false;
+                throw new CustomException("Exception Caught at UpdateUserComs: " + exception + ".");
             }
         }
     }

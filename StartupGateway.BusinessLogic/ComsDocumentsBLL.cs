@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using StartupGateway.BusinessEntities;
 using StartupGateway.DAL.Implementation;
 using StartupGateway.DAL.Interfaces;
+using StartupGateway.Shared;
 using StartupGateway.UoW;
 using StartupGateway.UoW.Interfaces;
 using System;
@@ -44,7 +45,7 @@ namespace StartupGateway.BusinessLogic
         /// </summary>
         /// <param name="comsDocumentId"></param>
         /// <returns>ComsDocuments?</returns>
-        public ComsDocuments? GetComsDocumentsById(int comsDocumentId)
+        public ComsDocuments GetComsDocumentsById(int comsDocumentId)
         {
             try
             {
@@ -57,13 +58,13 @@ namespace StartupGateway.BusinessLogic
                 else
                 {
                     logger.LogInformation("ComsDocuments instance retrieved at GetComsDocumentsById is null.");
-                    return null;
+                    throw new CustomException("ComsDocuments instance retrieved at GetComsDocumentsById is null.");
                 }
             }
             catch (Exception exception)
             {
                 logger.LogInformation("Exception Caught at GetComsDocumentsById: " + exception + ".");
-                return null;
+                throw new CustomException("Exception Caught at GetComsDocumentsById: " + exception + ".");
             }
         }
 
@@ -71,18 +72,26 @@ namespace StartupGateway.BusinessLogic
         /// Retrieve all instances of ComsDocuments.
         /// </summary>
         /// <returns>List of ComsDocuments?</returns>
-        public List<ComsDocuments>? GetAllComsDocuments()
+        public List<ComsDocuments> GetAllComsDocuments()
         {
             try
             {
                 var listOfComsDocuments = unitOfWork.GetDAL<IComsDocumentsDAL>().GetAllRecords().ToList();
-                logger.LogInformation("ComsDocuments instances retrieved successfully at GetAllComsDocuments.");
-                return listOfComsDocuments;
+                if (listOfComsDocuments != null)
+                {
+                    logger.LogInformation("ComsDocuments instances retrieved successfully at GetAllComsDocuments.");
+                    return listOfComsDocuments;
+                }
+                else 
+                {
+                    logger.LogInformation("Instances of ComsDocuments retrieved is null at GetAllComsDocuments.");
+                    throw new CustomException("Instances of ComsDocuments retrieved is null at GetAllComsDocuments.");
+                }
             }
             catch (Exception exception)
             {
                 logger.LogInformation("Exception Caught at GetAllComsDocuments: " + exception + ".");
-                return null;
+                throw new CustomException("Exception Caught at GetAllComsDocuments: " + exception + ".");
             }
         }
 
@@ -108,15 +117,15 @@ namespace StartupGateway.BusinessLogic
                 }
                 else
                 {
-                    logger.LogInformation("ComsDocuments instance is null at AddComsDocuments");
-                    return false;
+                    logger.LogInformation("ComsDocuments instance is null at AddComsDocuments.");
+                    throw new CustomException("ComsDocuments instance is null at AddComsDocuments.");
                 }
 
             }
             catch (Exception exception)
             {
                 logger.LogInformation("Exception Caught at AddComsDocuments: " + exception + ".");
-                return false;
+                throw new CustomException("Exception Caught at AddComsDocuments: " + exception + ".");
             }
         }
 
@@ -146,13 +155,13 @@ namespace StartupGateway.BusinessLogic
                 else
                 {
                     logger.LogInformation("ComsDocuments instance passed at UpdateComsDocuments are null.");
-                    return false;
+                    throw new CustomException("ComsDocuments instance passed at UpdateComsDocuments are null.");
                 }
             }
             catch (Exception exception)
             {
                 logger.LogInformation("Exception Caught at UpdateComsDocuments: " + exception + ".");
-                return false;
+                throw new CustomException("Exception Caught at UpdateComsDocuments: " + exception + ".");
             }
         }
 

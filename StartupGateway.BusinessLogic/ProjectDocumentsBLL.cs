@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using StartupGateway.BusinessEntities;
 using StartupGateway.DAL.Implementation;
 using StartupGateway.DAL.Interfaces;
+using StartupGateway.Shared;
 using StartupGateway.UoW;
 using StartupGateway.UoW.Interfaces;
 using System;
@@ -44,7 +45,7 @@ namespace StartupGateway.BusinessLogic
         /// </summary>
         /// <param name="projectDocumentId"></param>
         /// <returns>ProjectDocuments?</returns>
-        public ProjectDocuments? GetProjectDocumentsById(int projectDocumentId)
+        public ProjectDocuments GetProjectDocumentsById(int projectDocumentId)
         {
             try
             {
@@ -57,13 +58,13 @@ namespace StartupGateway.BusinessLogic
                 else
                 {
                     logger.LogInformation("ProjectDocuments instance retrieved at GetProjectDocumentsById is null.");
-                    return null;
+                    throw new CustomException("ProjectDocuments instance retrieved at GetProjectDocumentsById is null.");
                 }
             }
             catch (Exception exception)
             {
                 logger.LogInformation("Exception Caught at GetProjectDocumentsById: " + exception + ".");
-                return null;
+                throw new CustomException("Exception Caught at GetProjectDocumentsById: " + exception + ".");
             }
         }
 
@@ -71,18 +72,27 @@ namespace StartupGateway.BusinessLogic
         /// Retrieves all instances of ProjectDocuments.
         /// </summary>
         /// <returns>List of ProjectDocuments?</returns>
-        public List<ProjectDocuments>? GetAllProjectDocuments()
+        public List<ProjectDocuments> GetAllProjectDocuments()
         {
             try
             {
                 var listOfProjectDocuments = unitOfWork.GetDAL<IProjectDocumentsDAL>().GetAllRecords().ToList();
-                logger.LogInformation("ProjectDocuments instances retrieved successfully at GetAllProjectDocuments.");
-                return listOfProjectDocuments;
+                if (listOfProjectDocuments != null)
+                {
+                    logger.LogInformation("ProjectDocuments instances retrieved successfully at GetAllProjectDocuments.");
+                    return listOfProjectDocuments;
+
+                }
+                else 
+                {
+                    logger.LogInformation("Instances of ProjectDocuments retrieved is null at GetAllProjectDocuments.");
+                    throw new CustomException("Instances of ProjectDocuments retrieved is null at GetAllProjectDocuments.");
+                }
             }
             catch (Exception exception)
             {
                 logger.LogInformation("Exception Caught at GetAllProjectDocuments: " + exception + ".");
-                return null;
+                throw new CustomException("Exception Caught at GetAllProjectDocuments: " + exception + ".") ;
             }
         }
 
@@ -110,14 +120,14 @@ namespace StartupGateway.BusinessLogic
                 else
                 {
                     logger.LogInformation("ProjectDocuments instance is null at AddProjectDocument");
-                    return false;
+                    throw new CustomException("ProjectDocuments instance is null at AddProjectDocument");
                 }
 
             }
             catch (Exception exception)
             {
                 logger.LogInformation("Exception Caught at AddProjectDocument: " + exception + ".");
-                return false;
+                throw new CustomException("Exception Caught at AddProjectDocument: " + exception + ".");
             }
         }
 
@@ -152,13 +162,13 @@ namespace StartupGateway.BusinessLogic
                 else
                 {
                     logger.LogInformation("ProjectDocuments instance passed at UpdateProjectDocument are null.");
-                    return false;
+                    throw new CustomException("ProjectDocuments instance passed at UpdateProjectDocument are null.");
                 }
             }
             catch (Exception exception)
             {
                 logger.LogInformation("Exception Caught at UpdateProjectDocument: " + exception + ".");
-                return false;
+                throw new Exception("Exception Caught at UpdateProjectDocument: " + exception + ".");
             }
         }
     }

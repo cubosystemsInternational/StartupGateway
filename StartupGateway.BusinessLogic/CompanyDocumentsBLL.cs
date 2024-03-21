@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using StartupGateway.BusinessEntities;
 using StartupGateway.DAL.Implementation;
 using StartupGateway.DAL.Interfaces;
+using StartupGateway.Shared;
 using StartupGateway.UoW;
 using StartupGateway.UoW.Interfaces;
 using System;
@@ -44,7 +45,7 @@ namespace StartupGateway.BusinessLogic
         /// </summary>
         /// <param name="companyDocumentId"></param>
         /// <returns>CompanyDocuments?</returns>
-        public CompanyDocuments? GetCompanyDocumentsById(int companyDocumentId) 
+        public CompanyDocuments GetCompanyDocumentsById(int companyDocumentId) 
         {
             try
             {
@@ -57,13 +58,13 @@ namespace StartupGateway.BusinessLogic
                 else
                 {
                     logger.LogInformation("CompanyDetails instance retrieved at GetCompanyDocumentsById is null.");
-                    return null;
+                    throw new CustomException("CompanyDetails instance retrieved at GetCompanyDocumentsById is null.");
                 }
             }
             catch (Exception exception)
             {
                 logger.LogInformation("Exception Caught at GetCompanyDocumentsById: " + exception + ".");
-                return null;
+                throw new CustomException("Exception Caught at GetCompanyDocumentsById: " + exception + ".");
             }
         }
 
@@ -71,18 +72,27 @@ namespace StartupGateway.BusinessLogic
         /// Retrieves all instances of CompanyDocuments.
         /// </summary>
         /// <returns>List of CompanyDetails</returns>
-        public List<CompanyDocuments>? GetAllCompanyDocuments() 
+        public List<CompanyDocuments> GetAllCompanyDocuments() 
         {
             try
             {
                 var listOfCompanyDocuments = unitOfWork.GetDAL<ICompanyDocumentsDAL>().GetAllRecords().ToList();
-                logger.LogInformation("CompanyDetails instances retrieved successfully at GetCompanyDocuments.");
-                return listOfCompanyDocuments;
+                
+                if (listOfCompanyDocuments != null)
+                {
+                    logger.LogInformation("CompanyDetails instances retrieved successfully at GetAllCompanyDocuments.");
+                    return listOfCompanyDocuments;
+                }
+                else 
+                {
+                    logger.LogInformation("Instance of CompanyDetails retrieved is null at GetAllCompanyDocuments.");
+                    throw new CustomException("Instance of CompanyDetails retrieved is null at GetAllCompanyDocuments.");
+                }
             }
             catch (Exception exception)
             {
-                logger.LogInformation("Exception Caught at GetCompanyDocuments: " + exception + ".");
-                return null;
+                logger.LogInformation("Exception Caught at GetAllCompanyDocuments: " + exception + ".");
+                throw new CustomException("Exception Caught at GetAllCompanyDocuments: " + exception + ".");
             }
         }
 
@@ -109,15 +119,15 @@ namespace StartupGateway.BusinessLogic
                 }
                 else
                 {
-                    logger.LogInformation("CompanyDetails instance is null at AddCompanyDocuments");
-                    return false;
+                    logger.LogInformation("CompanyDetails instance is null at AddCompanyDocuments.");
+                    throw new CustomException("CompanyDetails instance is null at AddCompanyDocuments.");
                 }
 
             }
             catch (Exception exception)
             {
                 logger.LogInformation("Exception Caught at AddCompanyDocuments: " + exception + ".");
-                return false;
+                throw new CustomException("Exception Caught at AddCompanyDocuments: " + exception + ".");
             }
         }
 
@@ -149,13 +159,13 @@ namespace StartupGateway.BusinessLogic
                 else
                 {
                     logger.LogInformation("CompanyDetails instance passed at UpdateCompanyDocuments are null.");
-                    return false;
+                    throw new CustomException("CompanyDetails instance passed at UpdateCompanyDocuments are null.");
                 }
             }
             catch (Exception exception)
             {
                 logger.LogInformation("Exception Caught at UpdateCompanyDocuments: " + exception + ".");
-                return false;
+                throw new CustomException("Exception Caught at UpdateCompanyDocuments: " + exception + ".");
             }
         }
     
