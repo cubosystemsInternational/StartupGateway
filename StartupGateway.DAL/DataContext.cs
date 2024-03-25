@@ -1,4 +1,10 @@
-﻿using System;
+﻿/**
+ * Created by: Zaid And Zuhri
+ * Created on: 19/03/2024
+ * Description: Data context layer
+ * */
+
+using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
 using StartupGateway.BusinessEntities;
@@ -15,6 +21,7 @@ namespace StartupGateway.DAL
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
         public DbSet<Project> Projects { get; set; }
+
     }
 
 

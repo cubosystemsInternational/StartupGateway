@@ -14,6 +14,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using StartupGateway.BusinessEntities;
+using static StartupGateway.Shared.Share;
 
 namespace StartupGateway.BusinessEntities
 {
@@ -23,26 +24,17 @@ namespace StartupGateway.BusinessEntities
         [Key]
 		public int ProjectId {get; set;}
         [ForeignKey("company")]
-        public int? CompanyId { get; set; }
-        public string? ProjectName {get; set;}
-        public string? ProjectTitle { get; set; }
-        public string? ProjectDescription { get; set; }
-        public double? ProjectValuation { get; set; }
-        public ProjectStatus Status { get; set; }
+        public int CompanyId { get; set; }
+        public required string ProjectName {get; set;}
+        public required string ProjectTitle { get; set; }
+        public required string ProjectDescription { get; set; }
+        public double ProjectValuation { get; set; }
+        public EntityStatus Status { get; set; }
 
-        public int? ModifiedBy { get; set; }
-        public DateTime? ModifiedAt { get; set; }
+        // Need to Add CreatedOn and CreatedBy
+        public int ModifiedBy { get; set; }
+        public DateTime ModifiedOn { get; set; }
 
     }
 
-    public enum ProjectStatus
-    {
-        Active,
-        Inactive,
-        Pending
-    }
 }
-
-//byall
-//byid
-//byname

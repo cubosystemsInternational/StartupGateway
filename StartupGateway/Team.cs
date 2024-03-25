@@ -1,18 +1,27 @@
-﻿using System;
+﻿/**
+ * Modified by: Ibrahim
+ * Created on: 19/03/2024
+ * Description: Team class Model
+ * 
+ * */
+
+using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using static StartupGateway.Shared.Share;
 
 namespace StartupGateway.Model
 {
-    [Table("screens")]
-    public class Teams
+    [Table("teams")]
+    public class Team
 	{
-
-		public int TeamId { get; set; }
-		public string? TeamOwner { get; set; }
-        public string? TeamName { get; set;}
-        public int Status { get; set; }
-        public int? ModifiedBy { get; set; }
-        public DateTime? ModifiedAt { get; set; }
+        [Key]
+        public int TeamId { get; set; }
+		public required string TeamOwner { get; set; }
+        public required string TeamName { get; set;}
+        public EntityStatus Status { get; set; }
+        public int ModifiedBy { get; set; }
+        public DateTime ModifiedOn { get; set; }
 
     }
 }
