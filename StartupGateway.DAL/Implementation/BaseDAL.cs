@@ -29,10 +29,11 @@ namespace StartupGateway.DAL.Implementation
         {
             _context.Add(entity);
         }
+
         /// <summary>
         /// Retrieve all Records from the database.
         /// </summary>
-        /// <returns>A collection of all projects.</returns>
+        /// <returns>IEnumerable of TEntity</returns>
         public IEnumerable<TEntity> GetAllRecords()
         {
             return _context.Set<TEntity>().ToList();
@@ -42,10 +43,9 @@ namespace StartupGateway.DAL.Implementation
         /// Get a Record by its ID.
         /// values currently not nullable.
         /// </summary>
-        /// <param name="projectId">The ID of the Record to retrieve.</param>
-        /// <returns>The Record with the specified ID.</returns>
-
-        public TEntity GetEntityById(int entityId)
+        /// <param name="entityId">The ID of the Record to retrieve.</param>
+        /// <returns>Instance of TEntity?</returns>
+        public TEntity? GetEntityById(int entityId)
         {
             return _context.Set<TEntity>().Find(entityId);
         }
@@ -55,9 +55,9 @@ namespace StartupGateway.DAL.Implementation
         /// Get a Record by Attribute using a predicate.
         /// </summary>
         /// <param name="predicate">The predicate to match the Record by name.</param>
-        /// <returns>The Record that matches the predicate.</returns>
+        /// <returns>Instance of TEntity?</returns>
        
-        public TEntity GetEntityByAttribute(Func<TEntity, bool> predicate)
+        public TEntity? GetEntityByAttribute(Func<TEntity, bool> predicate)
         {
             return _context.Set<TEntity>().FirstOrDefault(predicate);
         }
@@ -96,14 +96,26 @@ namespace StartupGateway.DAL.Implementation
         /// Retrieve all Records from the database with condition.
         /// </summary>
         /// <returns>A collection of all projects.</returns>
-        public List<TEntity> GetAllRecordsWithCondition(Func<TEntity, bool> predicate) 
+        public IEnumerable<TEntity> GetAllRecordsWithCondition(Func<TEntity, bool> predicate) 
         {
             if (predicate == null)
             {
                 throw new ArgumentNullException(nameof(predicate));
             }
 
-            return _context.Set<TEntity>().AsNoTracking().Where(predicate).ToList();
+            return _context.Set<TEntity>().Where(predicate);
+        }
+
+        /// <summary>
+        /// Finds a collection of values based on the condition passed.
+        /// This performance function does not keep track of changes.
+        /// Utilize only for retrieving information and not updating.
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <returns>IEnumerable of <c>TEntity</c></returns>
+        public IEnumerable<TEntity> FindByConditionPerformance(Func<TEntity, bool> predicate)
+        {
+            return _context.Set<TEntity>().AsNoTracking().Where(predicate);
         }
     }
 }

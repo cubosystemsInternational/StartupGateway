@@ -37,11 +37,11 @@ namespace StartupGateway.BusinessLogic
         /// </summary>
         /// <param name="userRoleId"></param>
         /// <returns>UserRole?</returns>
-        public UserRole GetUserRoleById(int userRoleId)
+        public UserRoles GetUserRoleById(int userRoleId)
         {
             try
             {
-                var userRole = unitOfWork.GetDAL<IUserRoleDAL>().GetEntityById(userRoleId);
+                var userRole = unitOfWork.GetDAL<IUserRolesDAL>().GetEntityById(userRoleId);
                 if (userRole != null)
                 {
                     logger.LogInformation($"UserRole with ID {userRoleId} retrieved successfully.");
@@ -68,11 +68,11 @@ namespace StartupGateway.BusinessLogic
         /// Retrieves all the user roles.
         /// </summary>
         /// <returns>List of UserRole?</returns>
-        public List<UserRole>? GetAllUserRoles()
+        public List<UserRoles>? GetAllUserRoles()
         {
             try
             {
-                var listOfUserRoles = unitOfWork.GetDAL<IUserRoleDAL>().GetAllRecords().ToList();
+                var listOfUserRoles = unitOfWork.GetDAL<IUserRolesDAL>().GetAllRecords().ToList();
                 logger.LogInformation("UserRoles retrieved successfully at GetAllUserRoles.");
                 return listOfUserRoles;
             }
@@ -89,7 +89,7 @@ namespace StartupGateway.BusinessLogic
         /// <param name="userRole"></param>
         /// <param name="userId"></param>
         /// <returns>True or False</returns>
-        public bool AddUserRole(UserRole userRole, int userId)
+        public bool AddUserRole(UserRoles userRole, int userId)
         {
             try
             {
@@ -99,7 +99,7 @@ namespace StartupGateway.BusinessLogic
                     userRole.ModifiedBy = userId;
                     userRole.ModifiedOn = DateTime.Now;
 
-                    unitOfWork.GetDAL<IUserRoleDAL>().AddEntity(userRole);
+                    unitOfWork.GetDAL<IUserRolesDAL>().AddEntity(userRole);
                     unitOfWork.Commit();
                     logger.LogInformation("UserRole successfully added at AddUserRole.");
                     return true;
@@ -123,13 +123,13 @@ namespace StartupGateway.BusinessLogic
         /// </summary>
         /// <param name="newUserRole"></param>
         /// <returns>True or False</returns>
-        public bool UpdateUserRole(UserRole newUserRole)
+        public bool UpdateUserRole(UserRoles newUserRole)
         {
             try
             {
                 if (newUserRole != null)
                 {
-                    UserRole existingUserRole = unitOfWork.GetDAL<IUserRoleDAL>().GetEntityById(newUserRole.UserRoleId);
+                    UserRoles existingUserRole = unitOfWork.GetDAL<IUserRolesDAL>().GetEntityById(newUserRole.Id);
 
                     // Update attributes if new values are not null or whitespace
                     existingUserRole.Status = newUserRole.Status != EntityStatus.Pending ? newUserRole.Status : existingUserRole.Status;

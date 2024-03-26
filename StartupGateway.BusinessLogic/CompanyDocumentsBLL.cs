@@ -143,7 +143,7 @@ namespace StartupGateway.BusinessLogic
             {
                 if (newCompanyDocument != null)
                 {
-                    CompanyDocuments existingCompanyDocuments = unitOfWork.GetDAL<ICompanyDocumentsDAL>().GetEntityById(newCompanyDocument.CompanyDocumentId);
+                    CompanyDocuments existingCompanyDocuments = unitOfWork.GetDAL<ICompanyDocumentsDAL>().GetEntityById(newCompanyDocument.Id);
 
                     existingCompanyDocuments.DocumentType= newCompanyDocument.DocumentType;
                     existingCompanyDocuments.Status = newCompanyDocument.Status;

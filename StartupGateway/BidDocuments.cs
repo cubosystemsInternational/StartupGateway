@@ -16,29 +16,25 @@ using static StartupGateway.Shared.Share;
 
 namespace StartupGateway.BusinessEntities
 {
-    /// <inheritdoc />
     ///<summary>
-    /// Temporary table name, will confirm and update later.
-    /// </summary>
-    /// <returns></returns>
-    [Table("BidDocuments")]
+    ///Refer to documentation regarding model structure, naming conventions and table names.
+    ///<see href="https://docs.google.com/spreadsheets/d/10V5CjHCM5KkOb9o3CiNe-QjgNh8gp8ny8zf802KcUoE/edit?usp=sharing"> Documentation.</see>
+    ///</summary>
+    [Table("bid_documents")]
     public class BidDocuments
     {
         [Key]
-        public int BidDocumentId {  get; set; }
-        ///<inheritdoc />
+        public int Id {  get; set; }
         /// <summary>
-        /// Foreign key table name is temporary.
+        /// Foreign key.
         /// </summary>
-        ///<returns></returns>
-        [ForeignKey("Bid")]
+        [ForeignKey("bids")]
         public int BidId { get; set; }
-        ///<inheritdoc />
+        
         /// <summary>
-        /// Foreign key table name is temporary.
+        /// Foreign key.
         /// </summary>
-        ///<returns></returns>
-        [ForeignKey("Document")]
+        [ForeignKey("documents")]
         public int DocumentId { get; set; }
         public EntityStatus Status { get; set; }
         public int ModifiedBy { get; set; }

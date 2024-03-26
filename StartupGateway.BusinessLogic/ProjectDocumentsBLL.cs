@@ -143,7 +143,7 @@ namespace StartupGateway.BusinessLogic
             {
                 if (newProjectDocument != null)
                 {
-                    ProjectDocuments existingProjectDocument = unitOfWork.GetDAL<IProjectDocumentsDAL>().GetEntityById(newProjectDocument.ProjectDocumentId);
+                    ProjectDocuments existingProjectDocument = unitOfWork.GetDAL<IProjectDocumentsDAL>().GetEntityById(newProjectDocument.Id);
 
 
                     existingProjectDocument.AccessRights = newProjectDocument.AccessRights;

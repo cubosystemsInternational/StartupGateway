@@ -31,11 +31,11 @@ namespace StartupGateway.BusinessLogic
         /// </summary>
         /// <param name="chatId"></param>
         /// <returns>Chat?</returns>
-        public Chat GetChatById(int chatId)
+        public Chats GetChatById(int chatId)
         {
             try
             {
-                var chat = unitOfWork.GetDAL<IChatDAL>().GetEntityById(chatId);
+                var chat = unitOfWork.GetDAL<IChatsDAL>().GetEntityById(chatId);
                 if (chat != null)
                 {
                     logger.LogInformation("Chat retrieved successfully at GetChatById.");
@@ -58,11 +58,11 @@ namespace StartupGateway.BusinessLogic
         /// Retrieves all the chats.
         /// </summary>
         /// <returns>List of Chat?</returns>
-        public List<Chat> GetAllChats()
+        public List<Chats> GetAllChats()
         {
             try
             {
-                var listOfChats = unitOfWork.GetDAL<IChatDAL>().GetAllRecords().ToList();
+                var listOfChats = unitOfWork.GetDAL<IChatsDAL>().GetAllRecords().ToList();
                 logger.LogInformation("Chats retrieved successfully at GetAllChats.");
                 return listOfChats;
             }
@@ -79,7 +79,7 @@ namespace StartupGateway.BusinessLogic
         /// <param name="chat"></param>
         /// <param name="userId"></param>
         /// <returns>True or False</returns>
-        public bool AddChat(Chat chat, int userId)
+        public bool AddChat(Chats chat, int userId)
         {
             try
             {
@@ -89,7 +89,7 @@ namespace StartupGateway.BusinessLogic
                     chat.ModifiedBy = userId;
                     chat.ModifiedOn = DateTime.Now;
 
-                    unitOfWork.GetDAL<IChatDAL>().AddEntity(chat);
+                    unitOfWork.GetDAL<IChatsDAL>().AddEntity(chat);
                     unitOfWork.Commit();
                     logger.LogInformation("Chat successfully added at AddChat.");
                     return true;
@@ -113,13 +113,13 @@ namespace StartupGateway.BusinessLogic
         /// </summary>
         /// <param name="newChat"></param>
         /// <returns>True or False</returns>
-        public bool UpdateChat(Chat newChat)
+        public bool UpdateChat(Chats newChat)
         {
             try
             {
                 if (newChat != null)
                 {
-                    Chat existingChat = unitOfWork.GetDAL<IChatDAL>().GetEntityById(newChat.ChatId);
+                    Chats existingChat = unitOfWork.GetDAL<IChatsDAL>().GetEntityById(newChat.Id);
 
                     // Update attributes if new values are not null or whitespace
                     existingChat.ChatTitle = !string.IsNullOrWhiteSpace(newChat.ChatTitle) ? newChat.ChatTitle : existingChat.ChatTitle;

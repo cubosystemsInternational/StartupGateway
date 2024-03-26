@@ -1,7 +1,7 @@
 ﻿/**
  * Created by: Shuaib
  * Created on: 19/03/2024
- * Description: Interface repository class ProjectTeamsRepository created.
+ * Description: Data access class ProjectTeamsDAL created.
  * 
  * */
 

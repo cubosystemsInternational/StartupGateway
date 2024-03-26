@@ -125,8 +125,8 @@ namespace StartupGateway.BusinessLogic
             {
                 if (newIndustry != null)
                 {
-                    Industry existingIndustry = unitOfWork.GetDAL<IndustryDAL>().GetEntityById(newIndustry.IndustryId);
-                    existingIndustry.IndustryId = newIndustry.IndustryId;
+                    Industry existingIndustry = unitOfWork.GetDAL<IIndustryDAL>().GetEntityById(newIndustry.Id);
+                    existingIndustry.Id = newIndustry.Id;
                     existingIndustry.IndustryName = newIndustry.IndustryName;
                     existingIndustry.Status = newIndustry.Status;
                     existingIndustry.ModifiedOn = DateTime.Now;

@@ -38,11 +38,11 @@ namespace StartupGateway.BusinessLogic
         /// </summary>
         /// <param name="companyId"></param>
         /// <returns>Company?</returns>
-        public Company GetCompanyById(int companyId)
+        public Companies GetCompanyById(int companyId)
         {
             try
             {
-                var company = unitOfWork.GetDAL<ICompanyDAL>().GetEntityById(companyId);
+                var company = unitOfWork.GetDAL<ICompaniesDAL>().GetEntityById(companyId);
                 if (company != null)
                 {
                     logger.LogInformation($"Company with ID {companyId} retrieved successfully.");
@@ -69,11 +69,11 @@ namespace StartupGateway.BusinessLogic
         /// Retrieves all the companies.
         /// </summary>
         /// <returns>List of Company?</returns>
-        public List<Company> GetAllCompanies()
+        public List<Companies> GetAllCompanies()
         {
             try
             {
-                var listOfCompanies = unitOfWork.GetDAL<ICompanyDAL>().GetAllRecords().ToList();
+                var listOfCompanies = unitOfWork.GetDAL<ICompaniesDAL>().GetAllRecords().ToList();
                 logger.LogInformation("Companies retrieved successfully at GetAllCompanies.");
                 return listOfCompanies;
             }
@@ -90,7 +90,7 @@ namespace StartupGateway.BusinessLogic
         /// <param name="company"></param>
         /// <param name="userId"></param>
         /// <returns>True or False</returns>
-        public bool AddCompany(Company company, int userId)
+        public bool AddCompany(Companies company, int userId)
         {
             try
             {
@@ -100,7 +100,7 @@ namespace StartupGateway.BusinessLogic
                     company.ModifiedBy = userId;
                     company.ModifiedOn = DateTime.Now;
 
-                    unitOfWork.GetDAL<ICompanyDAL>().AddEntity(company);
+                    unitOfWork.GetDAL<ICompaniesDAL>().AddEntity(company);
                     unitOfWork.Commit();
                     logger.LogInformation("Company successfully added at AddCompany.");
                     return true;
@@ -124,13 +124,13 @@ namespace StartupGateway.BusinessLogic
         /// </summary>
         /// <param name="newCompany"></param>
         /// <returns>True or False</returns>
-        public bool UpdateCompany(Company newCompany)
+        public bool UpdateCompany(Companies newCompany)
         {
             try
             {
                 if (newCompany != null)
                 {
-                    Company existingCompany = unitOfWork.GetDAL<ICompanyDAL>().GetEntityById(newCompany.CompanyId);
+                    Companies existingCompany = unitOfWork.GetDAL<ICompaniesDAL>().GetEntityById(newCompany.Id);
 
                     // Update attributes if new values are not null or whitespace
                     existingCompany.CompanyName = !string.IsNullOrWhiteSpace(newCompany.CompanyName) ? newCompany.CompanyName : existingCompany.CompanyName;

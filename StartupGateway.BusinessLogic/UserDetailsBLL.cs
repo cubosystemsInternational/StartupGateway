@@ -133,7 +133,7 @@ namespace StartupGateway.BusinessLogic
             {
                 if (newUserDetails != null)
                 {
-                    UserDetails existingUserDetails = unitOfWork.GetDAL<IUserDetailsDAL>().GetEntityById(newUserDetails.UserDetailsId);
+                    UserDetails existingUserDetails = unitOfWork.GetDAL<IUserDetailsDAL>().GetEntityById(newUserDetails.Id);
 
                     // Update attributes if new values are not null or whitespace
                     existingUserDetails.FirstName = !string.IsNullOrWhiteSpace(newUserDetails.FirstName) ? newUserDetails.FirstName : existingUserDetails.FirstName;

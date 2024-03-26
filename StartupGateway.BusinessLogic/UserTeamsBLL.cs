@@ -38,11 +38,11 @@ namespace StartupGateway.BusinessLogic
         /// </summary>
         /// <param name="userTeamId"></param>
         /// <returns>UserTeam?</returns>
-        public UserTeam GetUserTeamById(int userTeamId)
+        public UserTeams GetUserTeamById(int userTeamId)
         {
             try
             {
-                var userTeam = unitOfWork.GetDAL<IUserTeamDAL>().GetEntityById(userTeamId);
+                var userTeam = unitOfWork.GetDAL<IUserTeamsDAL>().GetEntityById(userTeamId);
                 if (userTeam != null)
                 {
                     logger.LogInformation($"UserTeam with ID {userTeamId} retrieved successfully.");
@@ -69,11 +69,11 @@ namespace StartupGateway.BusinessLogic
         /// Retrieves all the user teams.
         /// </summary>
         /// <returns>List of UserTeam?</returns>
-        public List<UserTeam>? GetAllUserTeams()
+        public List<UserTeams>? GetAllUserTeams()
         {
             try
             {
-                var listOfUserTeams = unitOfWork.GetDAL<IUserTeamDAL>().GetAllRecords().ToList();
+                var listOfUserTeams = unitOfWork.GetDAL<IUserTeamsDAL>().GetAllRecords().ToList();
                 logger.LogInformation("UserTeams retrieved successfully at GetAllUserTeams.");
                 return listOfUserTeams;
             }
@@ -90,7 +90,7 @@ namespace StartupGateway.BusinessLogic
         /// <param name="userTeam"></param>
         /// <param name="userId"></param>
         /// <returns>True or False</returns>
-        public bool AddUserTeam(UserTeam userTeam, int userId)
+        public bool AddUserTeam(UserTeams userTeam, int userId)
         {
             try
             {
@@ -100,7 +100,7 @@ namespace StartupGateway.BusinessLogic
                     userTeam.ModifiedBy = userId;
                     userTeam.ModifiedOn = DateTime.Now;
 
-                    unitOfWork.GetDAL<IUserTeamDAL>().AddEntity(userTeam);
+                    unitOfWork.GetDAL<IUserTeamsDAL>().AddEntity(userTeam);
                     unitOfWork.Commit();
                     logger.LogInformation("UserTeam successfully added at AddUserTeam.");
                     return true;
@@ -124,13 +124,13 @@ namespace StartupGateway.BusinessLogic
         /// </summary>
         /// <param name="newUserTeam"></param>
         /// <returns>True or False</returns>
-        public bool UpdateUserTeam(UserTeam newUserTeam)
+        public bool UpdateUserTeam(UserTeams newUserTeam)
         {
             try
             {
                 if (newUserTeam != null)
                 {
-                    UserTeam existingUserTeam = unitOfWork.GetDAL<IUserTeamDAL>().GetEntityById(newUserTeam.UserTeamId);
+                    UserTeams existingUserTeam = unitOfWork.GetDAL<IUserTeamsDAL>().GetEntityById(newUserTeam.Id);
 
                     // Update attributes if new values are not null or whitespace
                     existingUserTeam.Status = newUserTeam.Status != EntityStatus.Pending ? newUserTeam.Status : existingUserTeam.Status;

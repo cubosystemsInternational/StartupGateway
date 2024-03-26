@@ -24,76 +24,87 @@ using static StartupGateway.Shared.Share;
 namespace StartupGateway.BusinessLogic
 {
     /// <summary>
-    /// Business logic layer for managing operations related to model ChatDetailsBLL.
+    /// Business logic layer for managing operations related to model <see cref="ChatDetails"/>.
     /// </summary>
     public class ChatDetailsBLL
     {
-        private readonly ILogger<ChatDetailsBLL> logger;
-        private readonly IUnitOfWork unitOfWork;
+        private readonly ILogger<ChatDetailsBLL> _logger;
+        private readonly IUnitOfWork _unitOfWork;
 
         /// <summary>
-        /// Constructor to intialize ChatDetailsBLL with necessary dependencies.
+        /// Constructor to intialize <c>ChatDetailsBLL</c> with necessary dependencies.
         /// </summary>
         /// <param name="logger">Instance of Logger for logging information.</param>
         /// <param name="unitOfWork">Instance of Unit of Work.</param>
         public ChatDetailsBLL(ILogger<ChatDetailsBLL> logger, IUnitOfWork unitOfWork)
         {
-            this.logger = logger;
-            this.unitOfWork = unitOfWork;
+            this._logger = logger;
+            this._unitOfWork = unitOfWork;
         }
 
         /// <summary>
         /// Retrieves the ChatDetails instance information for the id passed.
         /// </summary>
-        /// <param name="chatDetailId"></param>
-        /// <returns>ChatDetails?</returns>
-        public ChatDetails GetChatDetailsById(int chatDetailId)
+        /// <param name="chatDetailsId"></param>
+        /// <returns>Instance of <see cref="ChatDetails"/></returns>
+        public ChatDetails GetChatDetailsById(int chatDetailsId)
         {
             try
             {
-                var chatDetails = unitOfWork.GetDAL<IChatDetailsDAL>().GetEntityById(chatDetailId);
+                // Garbage Collection
+                ChatDetails? chatDetails;
+                using (IChatDetailsDAL chatDetailsDAL = _unitOfWork.GetDAL<IChatDetailsDAL>()) 
+                {
+                    chatDetails= chatDetailsDAL.GetEntityById(chatDetailsId);
+                }
+
                 if (chatDetails!=null) 
                 {
-                    logger.LogInformation("ChatDetails instance retrieved succesfully at GetChatDetailsById.");
+                    _logger.LogInformation("ChatDetails instance retrieved succesfully for chat detail ID: {chatDetailsId}, at GetChatDetailsById.", chatDetailsId);
                     return chatDetails;
                 }
                 else
                 {
-                    logger.LogInformation("ChatDetails instance retrieved at GetChatDetailsById is null.");
+                    _logger.LogWarning("No ChatDetails instance found for chat details ID: {chatDetailsId}, at GetChatDetailsById", chatDetailsId);
                     throw new CustomException("ChatDetails instance retrieved at GetChatDetailsById is null.");
                 }
             }
             catch (Exception exception)
             {
-                logger.LogInformation("Exception Caught at GetChatDeatilsById: "+exception+".");
-                throw new CustomException("Exception Caught at GetChatDeatilsById: " + exception + ".");
+                _logger.LogError(exception, "Error retrieving ChatDetails instance for chat details ID: {chatDetailsId}, at GetChatDetailsById: {errorMessage}", chatDetailsId, exception);
+                throw new CustomException("Exception Caught at GetChatDetailsById: " + exception + ".", exception);
             }
         }
 
         /// <summary>
         /// Retrieves all instances of ChatDetails.
         /// </summary>
-        /// <returns>List of ChatDetails?</returns>
-        public List<ChatDetails> GetAllChatDetails()
+        /// <returns>List of <see cref="ChatDetails"/> Instances</returns>
+        public List<ChatDetails>? GetAllChatDetails()
         {
             try 
             {
-                var listOfChatDetails=unitOfWork.GetDAL<ChatDetailsDAL>().GetAllRecords().ToList();
+                // Garbage Collection
+                List<ChatDetails> listOfChatDetails;
+                using (IChatDetailsDAL chatDetailsDAL = _unitOfWork.GetDAL<IChatDetailsDAL>()) 
+                {
+                    listOfChatDetails=chatDetailsDAL.GetAllRecords().ToList();
+                }
+
                 if (listOfChatDetails != null)
                 {
-                    logger.LogInformation("ChatDetails instances retrieved successfully at GetAllChatDetails.");
-                    return listOfChatDetails;
+                    _logger.LogInformation("All ChatDetails instances retrieved successfully at GetAllChatDetails.");
                 }
                 else 
                 {
-                    logger.LogInformation("Instances of ChatDetails retrieved is null at GetAllChatDetails.");
-                    throw new CustomException("Instances of ChatDetails retrieved is null at GetAllChatDetails.");
+                    _logger.LogInformation("No ChatDetails instances found at GetAllChatDetails.");
                 }
+                return listOfChatDetails;
             }
             catch(Exception exception) 
             {
-                logger.LogInformation("Exception Caught at GetAllChatDetails: " + exception + ".");
-                throw new CustomException("Exception Caught at GetAllChatDetails: " + exception + ".");
+                _logger.LogError(exception, "Error retrieving ChatDetails instances at GetAllChatDetails: {errorMessage}", exception);
+                throw new CustomException("Exception Caught at GetAllChatDetails: " + exception + ".",exception);
             }
         }
 
@@ -102,7 +113,7 @@ namespace StartupGateway.BusinessLogic
         /// </summary>
         /// <param name="chatdetails"></param>
         /// <param name="userId"></param>
-        /// <returns>True or False</returns>
+        /// <returns>True if new instance of ChatDetails added successfully.</returns>
         public bool AddChatDetails( ChatDetails chatdetails, int userId)
         {
             try 
@@ -113,22 +124,26 @@ namespace StartupGateway.BusinessLogic
                     chatdetails.ModifiedBy = userId;
                     chatdetails.ModifiedOn = DateTime.Now;
 
-                    unitOfWork.GetDAL<ChatDetailsDAL>().AddEntity(chatdetails);
-                    unitOfWork.Commit();
-                    logger.LogInformation("ChatDetails instance successfully added at AddChatDetails.");
+                    // Garbage Collection
+                    using (IChatDetailsDAL chatDetailsDAL = _unitOfWork.GetDAL<IChatDetailsDAL>()) 
+                    {
+                        chatDetailsDAL.AddEntity(chatdetails);
+                    }
+                    _unitOfWork.Commit();
+                    _logger.LogInformation("New ChatDetails instance successfully added at AddChatDetails.");
                     return true;
                 }
                 else 
                 {
-                    logger.LogInformation("ChatDetails instance is null at AddChatDetails.");
-                    throw new CustomException("Chat details is null at AddChatDetails.");
+                    _logger.LogWarning("New ChatDetails instance is null. Failed to add new ChatDetails instance at AddChatDetails.");
+                    throw new CustomException("New ChatDetails instance is null. Failed to add new ChatDetails instance at AddChatDetails.");
                 }
                 
             }
             catch (Exception exception) 
             {
-                logger.LogInformation("Exception Caught at AddChatDetails: " + exception + ".");
-                throw new CustomException("Exception Caught at AddChatDetails: " + exception + ".");
+                _logger.LogError(exception, "Error adding new ChatDetails instance at AddChatDetails: {errorMessage}", exception);
+                throw new CustomException("Exception Caught at AddChatDetails: " + exception + ".",exception);
             }
         }
 
@@ -136,35 +151,51 @@ namespace StartupGateway.BusinessLogic
         /// Updates an existing instance of ChatDetails. Returns True, if the update operation was successfull.
         /// </summary>
         /// <param name="newChatDetails"></param>
-        /// <returns>True or False</returns>
-        public bool UpdateChatDetails(ChatDetails newChatDetails) 
+        /// <returns>True if the update operation was successfull, False otherwise.</returns>
+        public bool UpdateChatDetails(ChatDetails updatedChatDetails, int userId) 
         {
             try 
             {              
-                if (newChatDetails != null)
+                if (updatedChatDetails != null)
                 {
-                    ChatDetails existingChatDetails = unitOfWork.GetDAL<ChatDetailsDAL>().GetEntityById(newChatDetails.ChatDetailsId);
 
-                    existingChatDetails.Status = newChatDetails.Status;
-                    existingChatDetails.Attachment = newChatDetails.Attachment;
-                    existingChatDetails.ModifiedOn = DateTime.Now;
-                    existingChatDetails.ModifiedBy = newChatDetails.UserId;
+                    // Garbage Collection
+                    ChatDetails? existingChatDetails;
+                    using (IChatDetailsDAL chatDetailsDAL = _unitOfWork.GetDAL<IChatDetailsDAL>()) 
+                    {
+                        existingChatDetails = chatDetailsDAL.GetEntityById(updatedChatDetails.Id);
+                    }
 
-                    unitOfWork.GetDAL<ChatDetailsDAL>().UpdateEntity(existingChatDetails);
-                    unitOfWork.Commit();
+                    if (existingChatDetails != null)
+                    {
+                        existingChatDetails.Status = existingChatDetails.Status;
+                        existingChatDetails.ModifiedBy = existingChatDetails.UserId;
+                        existingChatDetails.ModifiedOn = DateTime.Now;
 
-                    logger.LogInformation("ChatDetails instance updated successfully at UpdateChatDetails.");
-                    return true;
+                        _unitOfWork.Commit();
+
+                        _logger.LogInformation("ChatDetails instance with ID: {chatDetailsId} updated successfully at UpdateChatDetails.", existingChatDetails.Id);
+                        return true;
+                    }
+                    else 
+                    {
+                        _logger.LogError("No BidDocuments instance found for bid document ID: {bidDocumentId}, at UpdateBidDocuments", updatedChatDetails.Id);
+                        throw new CustomException($"Existing BidDocuments instance retrieved for bid document ID: {updatedChatDetails.Id} is null at updatedBidDocuments is null.");
+
+                    }
+
                 }
                 else
                 {
-                    logger.LogInformation("ChatDetails instance passed at UpdateChatDetails are null.");
-                    throw new CustomException("ChatDetails instance passed at UpdateChatDetails are null.");
+                    _logger.LogWarning("Updated ChatDetails instance passed is null. Failed to update ChatDetails instance at UpdateChatDetails.");
+                    // We return False instead of an exception as it is very common to run update operations, without making any changes.
+                    // Thus, this must not be treated as an exception.
+                    return false;
                 }
             }
             catch (Exception exception) 
             {
-                logger.LogInformation("Exception Caught at UpdateChatDetails: " + exception + ".");
+                _logger.LogInformation(exception, "Error updating ChatDetails instance at UpdateChatDetails: {errorMessage}", exception);
                 throw new CustomException("Exception Caught at UpdateChatDetails: " + exception + ".");   
             }
         }

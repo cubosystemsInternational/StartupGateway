@@ -1,7 +1,7 @@
 ﻿/**
  * Created by: Shuaib
  * Created on: 19/03/2024
- * Description: Interface repository class IUserDetailsRepository created.
+ * Description: Interface data acces class IUserDetailsDAL created.
  * 
  * */
 

@@ -12,9 +12,9 @@ namespace StartupGatewayTestUsingSwagger.Controllers
     [Route("api/[controller]/[action]")]
     public class ProjectController : ControllerBase
     {
-        private readonly ProjectBLL logicLayer;
+        private readonly ProjectsBLL logicLayer;
 
-        public ProjectController(ProjectBLL logicLayer)
+        public ProjectController(ProjectsBLL logicLayer)
         {
             this.logicLayer = logicLayer;
         }
@@ -29,7 +29,7 @@ namespace StartupGatewayTestUsingSwagger.Controllers
         {
             try
             {
-                Project project = logicLayer.GetProjectById(projectId);
+                Projects project = logicLayer.GetProjectById(projectId);
 
                 if (project != null)
                 {
@@ -57,7 +57,7 @@ namespace StartupGatewayTestUsingSwagger.Controllers
         {
             try
             {
-                Project project = logicLayer.GetProjectByName(projectName);
+                Projects project = logicLayer.GetProjectByName(projectName);
 
                 if (project != null)
                 {
@@ -84,7 +84,7 @@ namespace StartupGatewayTestUsingSwagger.Controllers
         {
             try
             {
-                List<Project> project = logicLayer.GetAllProjects();
+                List<Projects> project = logicLayer.GetAllProjects();
 
                 if (project != null)
                 {
@@ -108,7 +108,7 @@ namespace StartupGatewayTestUsingSwagger.Controllers
         /// <param name="project">The project data to add.</param>
         /// <returns>A success message if the project is added successfully.</returns>
         [HttpPost]
-        public IActionResult AddaProject([FromQuery] Project project)
+        public IActionResult AddaProject([FromQuery] Projects project)
         {
             try
             {
@@ -128,12 +128,12 @@ namespace StartupGatewayTestUsingSwagger.Controllers
         /// <param name="project">The updated project data.</param>
         /// <returns>A success message if the project is updated successfully.</returns>
         [HttpPost]
-        public IActionResult UpdateProject([FromQuery] Project updatedProject)
+        public IActionResult UpdateProject([FromQuery] Projects updatedProject)
         {
             try
             {
                 var result = logicLayer.UpdateProject(updatedProject);
-                if (result is Project updatedResult)
+                if (result is Projects updatedResult)
                 {
                     return Ok("Project updated successfully" + JsonConvert.SerializeObject(result));
                 }

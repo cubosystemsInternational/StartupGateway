@@ -15,36 +15,35 @@ using static StartupGateway.Shared.Share;
 
 namespace StartupGateway.BusinessEntities
 {
-    /// <inheritdoc />
     ///<summary>
-    /// Temporary table name, will confirm and update later.
-    /// </summary>
-    /// <returns></returns>
-    [Table("ProjectTeams")]
+    ///Refer to documentation regarding model structure, naming conventions and table names.
+    ///<see href="https://docs.google.com/spreadsheets/d/10V5CjHCM5KkOb9o3CiNe-QjgNh8gp8ny8zf802KcUoE/edit?usp=sharing"> Documentation.</see>
+    ///</summary>
+    [Table("project_teams")]
     public class ProjectTeams
     {
         [Key]
-        public int ProjectTeamsId { get; set; }
+        public int Id { get; set; }
         ///<inheritdoc />
         /// <summary>
         /// Foreign key table name is temporary.
         /// </summary>
         ///<returns></returns>
-        [ForeignKey("UserTeam")]
+        [ForeignKey("user_teams")]
         public int UserTeamId { get; set; }
         ///<inheritdoc />
         /// <summary>
         /// Foreign key table name is temporary.
         /// </summary>
         ///<returns></returns>
-        [ForeignKey("Project")]
+        [ForeignKey("projects")]
         public int ProjectId { get; set; }
         ///<inheritdoc />
         /// <summary>
         /// Foreign key table name is temporary.
         /// </summary>
         ///<returns></returns>
-        [ForeignKey("ScreenId")]
+        [ForeignKey("screens")]
         public int ScreenId { get; set; }
         public EntityStatus Status { get; set; }
         public int ModifiedBy { get; set; }

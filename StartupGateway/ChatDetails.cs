@@ -16,29 +16,28 @@ using static StartupGateway.Shared.Share;
 
 namespace StartupGateway.BusinessEntities
 {
-    /// <inheritdoc />
     ///<summary>
-    /// Temporary table name, will confirm and update later.
-    /// </summary>
-    /// <returns></returns>
-    [Table("ChatDetails")]
+    ///Refer to documentation regarding model structure, naming conventions and table names.
+    ///<see href="https://docs.google.com/spreadsheets/d/10V5CjHCM5KkOb9o3CiNe-QjgNh8gp8ny8zf802KcUoE/edit?usp=sharing"> Documentation.</see>
+    ///</summary>
+    [Table("chat_details")]
     public class ChatDetails
     {
         [Key]
-        public int ChatDetailsId { get; set; }
+        public int Id { get; set; }
         ///<inheritdoc />
         /// <summary>
         /// Foreign key table name is temporary.
         /// </summary>
         ///<returns></returns>
-        [ForeignKey("chat")]
+        [ForeignKey("chats")]
         public int ChatId { get; set; }
         ///<inheritdoc />
         /// <summary>
         /// Foreign key table name is temporary.
         /// </summary>
         ///<returns></returns>
-        [ForeignKey("user")]
+        [ForeignKey("users")]
         public int UserId { get; set; }
         public bool Attachment { get; set; }
         public EntityStatus Status { get; set; }

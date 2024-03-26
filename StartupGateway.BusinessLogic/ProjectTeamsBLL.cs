@@ -134,7 +134,7 @@ namespace StartupGateway.BusinessLogic
             {
                 if (newProjectTeams != null)
                 {
-                    ProjectTeams existingProjectTeam = unitOfWork.GetDAL<IProjectTeamsDAL>().GetEntityById(newProjectTeams.ProjectTeamsId);
+                    ProjectTeams existingProjectTeam = unitOfWork.GetDAL<IProjectTeamsDAL>().GetEntityById(newProjectTeams.Id);
 
                     existingProjectTeam.Status = newProjectTeams.Status;
                     existingProjectTeam.ModifiedOn = DateTime.Now;

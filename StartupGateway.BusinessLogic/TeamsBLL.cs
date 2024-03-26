@@ -34,11 +34,11 @@ namespace StartupGateway.BusinessLogic
         /// </summary>
         /// <param name="teamId"></param>
         /// <returns>Team?</returns>
-        public Team GetTeamById(int teamId)
+        public Teams GetTeamById(int teamId)
         {
             try
             {
-                var team = unitOfWork.GetDAL<ITeamDAL>().GetEntityById(teamId);
+                var team = unitOfWork.GetDAL<ITeamsDAL>().GetEntityById(teamId);
                 if (team != null)
                 {
                     logger.LogInformation("Team retrieved successfully at GetTeamById.");
@@ -65,11 +65,11 @@ namespace StartupGateway.BusinessLogic
         /// Retrieves all the teams.
         /// </summary>
         /// <returns>List of Team?</returns>
-        public List<Team> GetAllTeams()
+        public List<Teams> GetAllTeams()
         {
             try
             {
-                var listOfTeams = unitOfWork.GetDAL<ITeamDAL>().GetAllRecords().ToList();
+                var listOfTeams = unitOfWork.GetDAL<ITeamsDAL>().GetAllRecords().ToList();
 
                 if (listOfTeams == null || !listOfTeams.Any())
                 {
@@ -96,7 +96,7 @@ namespace StartupGateway.BusinessLogic
         /// <param name="team"></param>
         /// <param name="userId"></param>
         /// <returns>True or False</returns>
-        public bool AddTeam(Team team, int userId)
+        public bool AddTeam(Teams team, int userId)
         {
             try
             {
@@ -106,7 +106,7 @@ namespace StartupGateway.BusinessLogic
                     team.ModifiedBy = userId;
                     team.ModifiedOn = DateTime.Now;
 
-                    unitOfWork.GetDAL<ITeamDAL>().AddEntity(team);
+                    unitOfWork.GetDAL<ITeamsDAL>().AddEntity(team);
                     unitOfWork.Commit();
                     logger.LogInformation("Team successfully added at AddTeam.");
                     return true;
@@ -130,13 +130,13 @@ namespace StartupGateway.BusinessLogic
         /// </summary>
         /// <param name="newTeam"></param>
         /// <returns>True or False</returns>
-        public bool UpdateTeam(Team newTeam)
+        public bool UpdateTeam(Teams newTeam)
         {
             try
             {
                 if (newTeam != null)
                 {
-                    Team existingTeam = unitOfWork.GetDAL<ITeamDAL>().GetEntityById(newTeam.TeamId);
+                    Teams existingTeam = unitOfWork.GetDAL<ITeamsDAL>().GetEntityById(newTeam.Id);
                     // Update attributes if new values are not null or whitespace
                     existingTeam.TeamOwner = !string.IsNullOrWhiteSpace(newTeam.TeamOwner) ? newTeam.TeamOwner : existingTeam.TeamOwner;
                     existingTeam.TeamName = !string.IsNullOrWhiteSpace(newTeam.TeamName) ? newTeam.TeamName : existingTeam.TeamName;

@@ -37,11 +37,11 @@ namespace StartupGateway.BusinessLogic
         /// </summary>
         /// <param name="screenId"></param>
         /// <returns>Screen?</returns>
-        public Screen? GetScreenById(int screenId)
+        public Screens? GetScreenById(int screenId)
         {
             try
             {
-                var screen = unitOfWork.GetDAL<IScreenDAL>().GetEntityById(screenId);
+                var screen = unitOfWork.GetDAL<IScreensDAL>().GetEntityById(screenId);
                 if (screen != null)
                 {
                     logger.LogInformation("Screen retrieved successfully at GetScreenById.");
@@ -64,11 +64,11 @@ namespace StartupGateway.BusinessLogic
         /// Retrieves all the screens.
         /// </summary>
         /// <returns>List of Screen?</returns>
-        public List<Screen>? GetAllScreens()
+        public List<Screens>? GetAllScreens()
         {
             try
             {
-                var listOfScreens = unitOfWork.GetDAL<IScreenDAL>().GetAllRecords().ToList();
+                var listOfScreens = unitOfWork.GetDAL<IScreensDAL>().GetAllRecords().ToList();
                 logger.LogInformation("Screens retrieved successfully at GetAllScreens.");
                 return listOfScreens;
             }
@@ -85,7 +85,7 @@ namespace StartupGateway.BusinessLogic
         /// <param name="screen"></param>
         /// <param name="userId"></param>
         /// <returns>True or False</returns>
-        public bool AddScreen(Screen screen, int userId)
+        public bool AddScreen(Screens screen, int userId)
         {
             try
             {
@@ -95,7 +95,7 @@ namespace StartupGateway.BusinessLogic
                     screen.ModifiedBy = userId;
                     screen.ModifiedOn = DateTime.Now;
 
-                    unitOfWork.GetDAL<IScreenDAL>().AddEntity(screen);
+                    unitOfWork.GetDAL<IScreensDAL>().AddEntity(screen);
                     unitOfWork.Commit();
                     logger.LogInformation("Screen successfully added at AddScreen.");
                     return true;
@@ -119,13 +119,13 @@ namespace StartupGateway.BusinessLogic
         /// </summary>
         /// <param name="newScreen"></param>
         /// <returns>True or False</returns>
-        public bool UpdateScreen(Screen newScreen)
+        public bool UpdateScreen(Screens newScreen)
         {
             try
             {
                 if (newScreen != null)
                 {
-                    Screen existingScreen = unitOfWork.GetDAL<IScreenDAL>().GetEntityById(newScreen.ScreenId);
+                    Screens existingScreen = unitOfWork.GetDAL<IScreensDAL>().GetEntityById(newScreen.Id);
 
                     // Update attributes if new values are not null or whitespace
                     existingScreen.ScreenName = !string.IsNullOrWhiteSpace(newScreen.ScreenName) ? newScreen.ScreenName : existingScreen.ScreenName;
