@@ -1,4 +1,11 @@
-﻿using System;
+﻿/**
+ * Modified by: Zaid
+ * Created on: 03/21/2024
+ * Description: Business logic class CollabarateBLL Modified.
+ * 
+ * */
+
+using System;
 using Microsoft.Extensions.Logging;
 using StartupGateway.DAL.Implementation;
 using StartupGateway.DAL.Interfaces;
@@ -31,28 +38,32 @@ namespace StartupGateway.BusinessLogic
         /// </summary>
         /// <param name="comId"></param>
         /// <returns>Collaborate?</returns>
-        public Collaborate? GetCollaborateById(int comId)
+        public Collaborate GetCollaborateById(int comId)
         {
             try
             {
                 var collaborate = unitOfWork.GetDAL<ICollaborateDAL>().GetEntityById(comId);
                 if (collaborate != null)
                 {
-                    logger.LogInformation("Collaborate retrieved successfully at GetCollaborateById.");
+                    logger.LogInformation($"Collaborate with ID {comId} retrieved successfully.");
                     return collaborate;
                 }
                 else
                 {
-                    logger.LogInformation("Collaborate retrieved at GetCollaborateById is null.");
-                    return null;
+                    // Log the absence of the Collaborate entity and throw a KeyNotFoundException
+                    var message = $"Collaborate with ID {comId} not found.";
+                    logger.LogError(message);
+                    throw new KeyNotFoundException(message);
                 }
             }
             catch (Exception exception)
             {
-                logger.LogInformation("Exception caught at GetCollaborateById: " + exception + ".");
-                return null;
+                // Log and rethrow any other exceptions that occur during execution
+                logger.LogError($"Exception caught at GetCollaborateById: {exception}.");
+                throw;
             }
         }
+
 
         /// <summary>
         /// Retrieves all the collaborates.
@@ -69,7 +80,7 @@ namespace StartupGateway.BusinessLogic
             catch (Exception exception)
             {
                 logger.LogInformation("Exception caught at GetAllCollaborates: " + exception + ".");
-                return null;
+                throw;
             }
         }
 
