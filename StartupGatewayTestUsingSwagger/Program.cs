@@ -26,7 +26,7 @@ builder.Services.AddDbContext<DataContext>(options =>
     options.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<IProjectDAL<Project>, ProjectDAL<Project>>();
+builder.Services.AddScoped<IProjectDAL, ProjectDAL>();
 builder.Services.AddScoped<ProjectBLL>();
 
 var app = builder.Build();
