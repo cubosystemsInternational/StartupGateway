@@ -49,6 +49,7 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IUserDAL, UserDAL>();
 builder.Services.AddScoped<UserBLL>();
 
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
