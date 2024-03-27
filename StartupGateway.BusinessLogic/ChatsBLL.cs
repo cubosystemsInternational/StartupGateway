@@ -9,76 +9,101 @@ using System.Collections.Generic;
 using System.Linq;
 using StartupGateway.BusinessEntities;
 using static StartupGateway.Shared.Share;
+using StartupGateway.Shared;
 
 namespace StartupGateway.BusinessLogic
 {
+    /// <summary>
+    /// Business logic layer for managing operations related to model <see cref="Chats"/>.
+    /// </summary>
     public class ChatsBLL
     {
-        private readonly ILogger<ChatsBLL> logger;
-        private readonly IUnitOfWork unitOfWork;
+        private readonly ILogger<ChatsBLL> _logger;
+        private readonly IUnitOfWork _unitOfWork;
 
         /// <summary>
         /// Constructor to initialize ChatsBLL with necessary dependencies.
         /// </summary>
+        /// <param name="logger">Instance of Logger for logging information.</param>
+        /// <param name="unitOfWork">Instance of Unit of Work.</param>
         public ChatsBLL(ILogger<ChatsBLL> logger, IUnitOfWork unitOfWork)
         {
-            this.logger = logger;
-            this.unitOfWork = unitOfWork;
+            this._logger = logger;
+            this._unitOfWork = unitOfWork;
         }
 
         /// <summary>
-        /// Retrieves the Chat information for the Id passed.
+        /// Retrieves the <c>Chats</c> instance information for the Id passed.
         /// </summary>
         /// <param name="chatId"></param>
-        /// <returns>Chat?</returns>
+        /// <returns>Instance of <see cref="Chats"/></returns>
         public Chats GetChatById(int chatId)
         {
             try
             {
-                var chat = unitOfWork.GetDAL<IChatsDAL>().GetEntityById(chatId);
-                if (chat != null)
+                // Garbage Collection
+                Chats? chats;
+                using (IChatsDAL chatsDAL = _unitOfWork.GetDAL<IChatsDAL>()) 
                 {
-                    logger.LogInformation("Chat retrieved successfully at GetChatById.");
-                    return chat;
+                    chats=chatsDAL.GetEntityById(chatId);
+                }
+                    
+                if (chats != null)
+                {
+                    _logger.LogInformation("Chats instance retrieved succesfully for chat ID: {chatId}, at GetChatById.", chatId);
+                    return chats;
                 }
                 else
                 {
-                    logger.LogInformation("Chat retrieved at GetChatById is null.");
-                    return null;
+                    _logger.LogWarning("No Chats instance found for chat ID: {chatId}, at GetChatById", chatId);
+                    throw new CustomException("Chats instance retrieved at GetChatById is null.");
                 }
             }
             catch (Exception exception)
             {
-                logger.LogInformation("Exception caught at GetChatById: " + exception + ".");
-                return null;
+                _logger.LogError(exception, "Error retrieving Chats instance for chat ID: {bidDocumentId}, at GetChatById: {errorMessage}", chatId, exception);
+                throw new CustomException("Exception Caught at GetChatById: " + exception + ".", exception);
             }
         }
 
         /// <summary>
         /// Retrieves all the chats.
         /// </summary>
-        /// <returns>List of Chat?</returns>
-        public List<Chats> GetAllChats()
+        /// <returns>List of <see cref="Chats"/>? Instances</returns>
+        public List<Chats>? GetAllChats()
         {
             try
             {
-                var listOfChats = unitOfWork.GetDAL<IChatsDAL>().GetAllRecords().ToList();
-                logger.LogInformation("Chats retrieved successfully at GetAllChats.");
+                // Garbage Collection
+                List<Chats> listOfChats;
+                using (IChatsDAL chatsDAL = _unitOfWork.GetDAL<IChatsDAL>()) 
+                {
+                    listOfChats=chatsDAL.GetAllRecords().ToList();
+                }
+
+                if (listOfChats != null)
+                {
+                    _logger.LogInformation("All Chats instances retrieved successfully at GetAllChats.");
+                }
+                else
+                {
+                    _logger.LogInformation("No Chats instances found at GetAllChats.");
+                }
                 return listOfChats;
             }
             catch (Exception exception)
             {
-                logger.LogInformation("Exception caught at GetAllChats: " + exception + ".");
-                return null;
+                _logger.LogError(exception, "Error retrieving Chats instances at GetAllChats: {errorMessage}", exception);
+                throw new CustomException("Exception Caught at GetAllChats: " + exception + ".", exception);
             }
         }
 
         /// <summary>
-        /// Adds an instance of Chat to the database. Returns True if the operation was successful.
+        /// Adds an instance of <c>Chats</c> to the database.
         /// </summary>
         /// <param name="chat"></param>
         /// <param name="userId"></param>
-        /// <returns>True or False</returns>
+        /// <returns>True if new instance of <see cref="Chats"/> added successfully.</returns>
         public bool AddChat(Chats chat, int userId)
         {
             try
@@ -89,60 +114,80 @@ namespace StartupGateway.BusinessLogic
                     chat.ModifiedBy = userId;
                     chat.ModifiedOn = DateTime.Now;
 
-                    unitOfWork.GetDAL<IChatsDAL>().AddEntity(chat);
-                    unitOfWork.Commit();
-                    logger.LogInformation("Chat successfully added at AddChat.");
+                    // GarbageCollection
+                    using (IChatsDAL chatsDAL = _unitOfWork.GetDAL<IChatsDAL>())
+                    {
+                        chatsDAL.AddEntity(chat);
+                    }                   
+                    _unitOfWork.Commit();
+                    _logger.LogInformation("New Chats instance successfully added at AddChat.");
                     return true;
                 }
                 else
                 {
-                    logger.LogInformation("Chat is null at AddChat");
-                    return false;
+                    _logger.LogWarning("New Chats instance is null. Failed to add new Chats instance at AddChat.");
+                    throw new CustomException("New BidDocuments instance is null. Failed to add new Chats instance at AddChat.");
                 }
 
             }
             catch (Exception exception)
             {
-                logger.LogInformation("Exception caught at AddChat: " + exception + ".");
-                return false;
+                _logger.LogError(exception, "Error adding new Chats instance at AddChat: {errorMessage}", exception);
+                throw new CustomException("Exception Caught at AddChat: " + exception + ".", exception);
             }
         }
 
         /// <summary>
-        /// Updates an existing instance of Chat. Returns True, if the update operation was successful.
+        /// Updates an existing instance of <c>Chats</c>.
         /// </summary>
-        /// <param name="newChat"></param>
-        /// <returns>True or False</returns>
-        public bool UpdateChat(Chats newChat)
+        /// <param name="updatedChats"></param>
+        /// <param name="userId"></param>
+        /// <returns>True if the update operation was successfull, False otherwise.</returns>
+        public bool UpdateChat(Chats updatedChats, int userId)
         {
             try
             {
-                if (newChat != null)
+                if (updatedChats != null)
                 {
-                    Chats existingChat = unitOfWork.GetDAL<IChatsDAL>().GetEntityById(newChat.Id);
+                    // Garbage Collection
+                    Chats? existingChats;
+                    using IChatsDAL chatsDAL = _unitOfWork.GetDAL<IChatsDAL>();
+                    existingChats = chatsDAL.GetEntityById(updatedChats.Id);
 
-                    // Update attributes if new values are not null or whitespace
-                    existingChat.ChatTitle = !string.IsNullOrWhiteSpace(newChat.ChatTitle) ? newChat.ChatTitle : existingChat.ChatTitle;
-                    existingChat.ChatBody = !string.IsNullOrWhiteSpace(newChat.ChatBody) ? newChat.ChatBody : existingChat.ChatBody;
-                    existingChat.Status = newChat.Status != EntityStatus.Pending ? newChat.Status : existingChat.Status;
-                    existingChat.ModifiedOn = DateTime.Now;
-                    existingChat.ModifiedBy = newChat.ModifiedBy != 0 ? newChat.ModifiedBy : existingChat.ModifiedBy;
 
-                    unitOfWork.Commit();
+                    if (existingChats != null)
+                    {
+                        existingChats.ChatTitle= !string.IsNullOrWhiteSpace(updatedChats.ChatTitle) ? updatedChats.ChatTitle : existingChats.ChatTitle;
+                        existingChats.ChatBody = !string.IsNullOrWhiteSpace(updatedChats.ChatBody)? updatedChats.ChatBody : existingChats.ChatBody;
 
-                    logger.LogInformation("Chat updated successfully at UpdateChat.");
-                    return true;
+                        existingChats.Status = updatedChats.Status;
+                        existingChats.ModifiedBy = userId;
+                        existingChats.ModifiedOn = DateTime.Now;
+
+                        chatsDAL.UpdateEntity(existingChats);
+                        _unitOfWork.Commit();
+
+                        _logger.LogInformation("Chats instance with ID: {chatId} updated successfully at UpdateChat.", existingChats.Id);
+                        return true;
+                    }
+                    else
+                    {
+                        _logger.LogError("No Chats instance found for chat ID: {chatId}, at UpdateChat", updatedChats.Id);
+                        throw new CustomException($"Existing Chats instance retrieved for bid document ID: {updatedChats.Id} is null at UpdateChat.");
+                    }
                 }
                 else
                 {
-                    logger.LogInformation("Chat passed at UpdateChat is null.");
+                    _logger.LogWarning("Updated Chats instance passed is null. Failed to update BidDocuments instance at UpdateChat.");
+                    // We return False instead of an exception as it is very common to run update operations, without making any changes.
+                    // Thus, this must not be treated as an exception.
                     return false;
                 }
             }
             catch (Exception exception)
             {
-                logger.LogInformation("Exception caught at UpdateChat: " + exception + ".");
-                return false;
+                _logger.LogError(exception, "Error updating Chats instance at UpdateChat: {errorMessage}", exception);
+                throw new CustomException("Exception caught at UpdateChat: " + exception + ".", exception);
             }
         }
     }

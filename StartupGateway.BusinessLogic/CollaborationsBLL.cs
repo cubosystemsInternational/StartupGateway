@@ -9,138 +9,184 @@ using System.Collections.Generic;
 using System.Linq;
 using StartupGateway.BusinessEntities;
 using static StartupGateway.Shared.Share;
+using StartupGateway.Shared;
 
 namespace StartupGateway.BusinessLogic
 {
+    /// <summary>
+    /// Business logic layer for managing operations related to model <see cref="Collaborations"/>.
+    /// </summary>
     public class CollaborationsBLL
     {
-        private readonly ILogger<CollaborationsBLL> logger;
-        private readonly IUnitOfWork unitOfWork;
+        private readonly ILogger<CollaborationsBLL> _logger;
+        private readonly IUnitOfWork _unitOfWork;
 
         /// <summary>
         /// Constructor to initialize CollaborateBLL with necessary dependencies.
         /// </summary>
+        /// /// <param name="logger">Instance of Logger for logging information.</param>
+        /// <param name="unitOfWork">Instance of Unit of Work.</param>
         public CollaborationsBLL(ILogger<CollaborationsBLL> logger, IUnitOfWork unitOfWork)
         {
-            this.logger = logger;
-            this.unitOfWork = unitOfWork;
+            this._logger = logger;
+            this._unitOfWork = unitOfWork;
         }
 
         /// <summary>
-        /// Retrieves the Collaborate information for the Id passed.
+        /// Retrieves the <c>Collaborations</c> instance information for the Id passed.
         /// </summary>
-        /// <param name="comId"></param>
-        /// <returns>Collaborate?</returns>
-        public Collaborations? GetCollaborateById(int comId)
+        /// <param name="collaborationsId"></param>
+        /// <returns>Instance of <see cref="Collaborations"/></returns>
+        public Collaborations GetCollaborationById(int collaborationsId)
         {
             try
             {
-                var collaborate = unitOfWork.GetDAL<ICollaborationsDAL>().GetEntityById(comId);
-                if (collaborate != null)
+                // Garbage Collection
+                Collaborations? collaborations;
+                using (ICollaborationsDAL collaborationsDAL= _unitOfWork.GetDAL<ICollaborationsDAL>()) 
                 {
-                    logger.LogInformation("Collaborate retrieved successfully at GetCollaborateById.");
-                    return collaborate;
+                    collaborations=collaborationsDAL.GetEntityById(collaborationsId);
+                }
+
+                    
+                if (collaborations != null)
+                {
+                    _logger.LogInformation("Collaborations instance retrieved succesfully for collaborations ID: {collaborationsId}, at GetCollaborationById.", collaborationsId);
+                    return collaborations;
                 }
                 else
                 {
-                    logger.LogInformation("Collaborate retrieved at GetCollaborateById is null.");
-                    return null;
+                    _logger.LogWarning("No Collaborations instance found for collaborations ID: {collaborations}, at GetCollaborationById", collaborationsId);
+                    throw new CustomException("Collaborations instance retrieved at GetCollaborationById is null.");
                 }
             }
             catch (Exception exception)
             {
-                logger.LogInformation("Exception caught at GetCollaborateById: " + exception + ".");
-                return null;
+                _logger.LogError(exception, "Error retrieving Collaborations instance for collaborations ID: {bidDocumentId}, at GetCollaborationById: {errorMessage}", collaborationsId, exception);
+                throw new CustomException("Exception Caught at GetCollaborationById: " + exception + ".", exception);
             }
         }
 
         /// <summary>
-        /// Retrieves all the collaborates.
+        /// Retrieves all instances of <c>Collaborations</c>.
         /// </summary>
-        /// <returns>List of Collaborate?</returns>
-        public List<Collaborations>? GetAllCollaborates()
+        /// <returns>List of <see cref="Collaborations"/>? Instances</returns>
+        public List<Collaborations>? GetAllCollaborations()
         {
             try
             {
-                var listOfCollaborates = unitOfWork.GetDAL<ICollaborationsDAL>().GetAllRecords().ToList();
-                logger.LogInformation("Collaborates retrieved successfully at GetAllCollaborates.");
-                return listOfCollaborates;
+                // Garbage Collections
+                List<Collaborations> listOfCollaborations;
+                using (ICollaborationsDAL collaborationsDAL = _unitOfWork.GetDAL<ICollaborationsDAL>())
+                {
+                    listOfCollaborations = collaborationsDAL.GetAllRecords().ToList();
+                }
+
+                if (listOfCollaborations != null)
+                {
+                    _logger.LogInformation("All Collaborations instances retrieved successfully at GetAllCollaborations.");
+                }
+                else
+                {
+                    _logger.LogInformation("No Collaborations instances found at GetAllCollaborations.");
+                }
+                return listOfCollaborations;
             }
             catch (Exception exception)
             {
-                logger.LogInformation("Exception caught at GetAllCollaborates: " + exception + ".");
-                return null;
+                _logger.LogError(exception, "Error retrieving Collaborations instances at GetAllCollaborations: {errorMessage}", exception);
+                throw new CustomException("Exception Caught at GetAllCollaborations: " + exception + ".", exception);
             }
         }
 
         /// <summary>
-        /// Adds an instance of Collaborate to the database. Returns True if the operation was successful.
+        /// Adds an instance of <c>Collaborations</c> to the Database.
         /// </summary>
-        /// <param name="collaborate"></param>
+        /// <param name="collaboration"></param>
         /// <param name="userId"></param>
-        /// <returns>True or False</returns>
-        public bool AddCollaborate(Collaborations collaborate, int userId)
+        /// <returns>True if new instance of <see cref="Collaborations"/> added successfully.</returns>
+        public bool AddCollaboration(Collaborations collaboration, int userId)
         {
             try
             {
-                if (collaborate != null)
+                if (collaboration != null)
                 {
-                    collaborate.Status = EntityStatus.Active;
-                    collaborate.ModifiedBy = userId;
-                    collaborate.ModifiedOn = DateTime.Now;
+                    collaboration.Status = EntityStatus.Active;
+                    collaboration.ModifiedBy = userId;
+                    collaboration.ModifiedOn = DateTime.Now;
 
-                    unitOfWork.GetDAL<ICollaborationsDAL>().AddEntity(collaborate);
-                    unitOfWork.Commit();
-                    logger.LogInformation("Collaborate successfully added at AddCollaborate.");
+                    // Garbage Collection
+                    using (ICollaborationsDAL collaborationsDAL= _unitOfWork.GetDAL<ICollaborationsDAL>()) 
+                    {
+                        collaborationsDAL.AddEntity(collaboration);
+                    }
+                    _unitOfWork.Commit();
+                    _logger.LogInformation("New Collaborations instance successfully added at AddCollaboration.");
                     return true;
                 }
                 else
                 {
-                    logger.LogInformation("Collaborate is null at AddCollaborate");
-                    return false;
+                    _logger.LogWarning("New Collaborations instance is null. Failed to add new Collaborations instance at AddCollaboration.");
+                    throw new CustomException("New Collaborations instance is null. Failed to add new Collaborations instance at AddCollaboration.");
                 }
 
             }
             catch (Exception exception)
             {
-                logger.LogInformation("Exception caught at AddCollaborate: " + exception + ".");
-                return false;
+                _logger.LogError(exception, "Error adding new Collaborations instance at AddCollaboration: {errorMessage}", exception);
+                throw new CustomException("Exception Caught at AddCollaboration: " + exception + ".", exception);
             }
         }
 
         /// <summary>
-        /// Updates an existing instance of Collaborate. Returns True, if the update operation was successful.
+        /// Updates an existing instance of <c>Collaborations</c>.
         /// </summary>
-        /// <param name="newCollaborate"></param>
-        /// <returns>True or False</returns>
-        public bool UpdateCollaborate(Collaborations newCollaborate)
+        /// <param name="updatedCollaborations"></param>
+        /// <param name="userId"></param>
+        /// <returns>True if the update operation was successfull, False otherwise</returns>
+        public bool UpdateCollaboration(Collaborations updatedCollaborations, int userId)
         {
             try
             {
-                if (newCollaborate != null)
+                if (updatedCollaborations != null)
                 {
-                    Collaborations existingCollaborate = unitOfWork.GetDAL<ICollaborationsDAL>().GetEntityById(newCollaborate.Id);
+                    // Garbage Collection 
+                    Collaborations? existingCollaboration;
+                    using ICollaborationsDAL collaborationsDAL = _unitOfWork.GetDAL<ICollaborationsDAL>();
 
-                    // Update attributes if new values are not null or whitespace
-                    existingCollaborate.Status = newCollaborate.Status != EntityStatus.Pending ? newCollaborate.Status : existingCollaborate.Status;
-                    existingCollaborate.ModifiedOn = DateTime.Now;
-                    existingCollaborate.ModifiedBy = newCollaborate.ModifiedBy != 0 ? newCollaborate.ModifiedBy : existingCollaborate.ModifiedBy;
+                    existingCollaboration = collaborationsDAL.GetEntityById(updatedCollaborations.Id);
 
-                    unitOfWork.Commit();
+                    if (existingCollaboration != null)
+                    {
+                        existingCollaboration.Status = updatedCollaborations.Status;
+                        existingCollaboration.ModifiedBy = userId;
+                        existingCollaboration.ModifiedOn = DateTime.Now;
 
-                    logger.LogInformation("Collaborate updated successfully at UpdateCollaborate.");
-                    return true;
+                        collaborationsDAL.UpdateEntity(existingCollaboration);
+
+                        _unitOfWork.Commit();
+
+                        _logger.LogInformation("Collaborations instance with ID: {collaborationsId} updated successfully at UpdateCollaboration.", existingCollaboration.Id);
+                        return true;
+                    }
+                    else 
+                    {
+                        _logger.LogError("No Collaborations instance found for collaboration ID: {collaborationsId}, at UpdateCollaboration", updatedCollaborations.Id);
+                        throw new CustomException($"Existing Collaborations instance retrieved for collaboration ID: {updatedCollaborations.Id} is null at UpdateCollaboration.");
+                    }
                 }
-                else
+                else 
                 {
-                    logger.LogInformation("Collaborate passed at UpdateCollaborate is null.");
+                    _logger.LogWarning("Updated Collaborations instance passed is null. Failed to update Collaborations instance at UpdateCollaboration.");
+                    // We return False instead of an exception as it is very common to run update operations, without making any changes.
+                    // Thus, this must not be treated as an exception.
                     return false;
                 }
             }
             catch (Exception exception)
             {
-                logger.LogInformation("Exception caught at UpdateCollaborate: " + exception + ".");
-                return false;
+                _logger.LogError(exception, "Error updating Collaborations instance at UpdateCollaboration: {errorMessage}", exception);
+                throw new CustomException("Exception caught at UpdateCollaboration: " + exception + ".", exception);
             }
         }
     }

@@ -47,7 +47,7 @@ namespace StartupGateway.BusinessLogic
         /// </summary>
         /// <param name="bidDocumentsId"></param>
         /// <returns>Instance of <see cref="BidDocuments"/></returns>
-        public BidDocuments GetBidDocumentsById(int bidDocumentsId)
+        public BidDocuments GetBidDocumentById(int bidDocumentsId)
         {
             try
             {
@@ -60,26 +60,26 @@ namespace StartupGateway.BusinessLogic
                     
                 if (bidDocuments != null)
                 {
-                    _logger.LogInformation("BidDocuments instance retrieved succesfully for bid document ID: {bidDocumentId}, at GetBidDocumentsById.", bidDocumentsId);
+                    _logger.LogInformation("BidDocuments instance retrieved succesfully for bid document ID: {bidDocumentId}, at GetBidDocumentById.", bidDocumentsId);
                     return bidDocuments;
                 }
                 else
                 {
-                    _logger.LogWarning("No BidDocuments instance found for bid document ID: {bidDocumentId}, at GetBidDocumentsById", bidDocumentsId);
-                    throw new CustomException("BidDocuments instance retrieved at GetBidDocumentsById is null.");
+                    _logger.LogWarning("No BidDocuments instance found for bid document ID: {bidDocumentId}, at GetBidDocumentById", bidDocumentsId);
+                    throw new CustomException("BidDocuments instance retrieved at GetBidDocumentById is null.");
                 }
             }
             catch (Exception exception)
             {
-                _logger.LogError(exception,"Error retrieving BidDocuments instance for bid document ID: {bidDocumentId}, at GetBidDocumentsById: {errorMessage}",bidDocumentsId,exception);
-                throw new CustomException("Exception Caught at GetBidDocumentsById: " + exception + ".", exception);
+                _logger.LogError(exception, "Error retrieving BidDocuments instance for bid document ID: {bidDocumentId}, at GetBidDocumentById: {errorMessage}", bidDocumentsId,exception);
+                throw new CustomException("Exception Caught at GetBidDocumentById: " + exception + ".", exception);
             }
         }
 
         /// <summary>
         /// Retrieves all instances of <c>BidDocuments</c>.
         /// </summary>
-        /// <returns>List of <see cref="BidDocuments"/> Instances</returns>
+        /// <returns>List of <see cref="BidDocuments"/>? Instances</returns>
         public List<BidDocuments>? GetAllBidDocuments()
         {
             try
@@ -113,8 +113,8 @@ namespace StartupGateway.BusinessLogic
         /// </summary>
         /// <param name="bidDocuments"></param>
         /// <param name="userId"></param>
-        /// <returns>True if new instance of BidDocuments added successfully.</returns>
-        public bool AddBidDocuments(BidDocuments bidDocuments, int userId)
+        /// <returns>True if new instance of <see cref="BidDocuments"/> added successfully.</returns>
+        public bool AddBidDocument(BidDocuments bidDocuments, int userId)
         {
             try
             {
@@ -131,20 +131,20 @@ namespace StartupGateway.BusinessLogic
                         bidDocumentsDAL.AddEntity(bidDocuments);
                     }
                     _unitOfWork.Commit();
-                    _logger.LogInformation("New BidDocuments instance successfully added at AddBidDocuments.");
+                    _logger.LogInformation("New BidDocuments instance successfully added at AddBidDocument.");
                     return true;
                 }
                 else
                 {
-                    _logger.LogWarning("New BidDocuments instance is null. Failed to add new BidDocuments instance at AddBidDocuments.");
-                    throw new CustomException("New BidDocuments instance is null. Failed to add new BidDocuments instance at AddBidDocuments.");
+                    _logger.LogWarning("New BidDocuments instance is null. Failed to add new BidDocuments instance at AddBidDocument.");
+                    throw new CustomException("New BidDocuments instance is null. Failed to add new BidDocuments instance at AddBidDocument.");
                 }
 
             }
             catch (Exception exception)
             {
-                _logger.LogError(exception,"Error adding new BidDocuments instance at AddBidDocuments: {errorMessage}",exception);
-                throw new CustomException("Exception Caught at AddBidDocuments: " + exception + ".", exception);
+                _logger.LogError(exception, "Error adding new BidDocuments instance at AddBidDocument: {errorMessage}", exception);
+                throw new CustomException("Exception Caught at AddBidDocument: " + exception + ".", exception);
             }
         }
 
@@ -154,19 +154,15 @@ namespace StartupGateway.BusinessLogic
         /// <param name="updatedBidDocuments"></param>
         /// <param name="userId"></param>
         /// <returns>True if the update operation was successfull, False otherwise.</returns>
-        public bool UpdateBidDocuments(BidDocuments updatedBidDocuments, int userId)
+        public bool UpdateBidDocument(BidDocuments updatedBidDocuments, int userId)
         {
             try
             {
                 if (updatedBidDocuments != null)
                 {
                     // Garbage Collection
-                    BidDocuments? existingBidDocuments;
-                    using (IBidDocumentsDAL bidDocumentsDAL = _unitOfWork.GetDAL<IBidDocumentsDAL>()) 
-                    {
-                        existingBidDocuments = bidDocumentsDAL.GetEntityById(updatedBidDocuments.Id);
-                    }
-
+                    using IBidDocumentsDAL bidDocumentsDAL = _unitOfWork.GetDAL<IBidDocumentsDAL>();
+                    BidDocuments? existingBidDocuments = bidDocumentsDAL.GetEntityById(updatedBidDocuments.Id);
 
                     if (existingBidDocuments != null)
                     {
@@ -174,21 +170,23 @@ namespace StartupGateway.BusinessLogic
                         existingBidDocuments.ModifiedBy = userId;
                         existingBidDocuments.ModifiedOn = DateTime.Now;
 
+                        bidDocumentsDAL.UpdateEntity(existingBidDocuments);
+
                         _unitOfWork.Commit();
 
-                        _logger.LogInformation("BidDocuments instance with ID: {bidDocumentsId} updated successfully at UpdateBidDocuments.", existingBidDocuments.Id);
+                        _logger.LogInformation("BidDocuments instance with ID: {bidDocumentsId} updated successfully at UpdateBidDocument.", existingBidDocuments.Id);
                         return true;
                     }
-                    else 
+                    else
                     {
-                        _logger.LogError("No BidDocuments instance found for bid document ID: {bidDocumentId}, at UpdateBidDocuments", updatedBidDocuments.Id);
-                        throw new CustomException($"Existing BidDocuments instance retrieved for bid document ID: {updatedBidDocuments.Id} is null at updatedBidDocuments is null.");
+                        _logger.LogError("No BidDocuments instance found for bid document ID: {bidDocumentId}, at UpdateBidDocument", updatedBidDocuments.Id);
+                        throw new CustomException($"Existing BidDocuments instance retrieved for bid document ID: {updatedBidDocuments.Id} is null at UpdateBidDocument.");
                     }
-                    
+
                 }
                 else
                 {
-                    _logger.LogWarning("Updated BidDocuments instance passed is null. Failed to update BidDocuments instance at UpdateBidDocuments.");
+                    _logger.LogWarning("Updated BidDocuments instance passed is null. Failed to update BidDocuments instance at UpdateBidDocument.");
                     // We return False instead of an exception as it is very common to run update operations, without making any changes.
                     // Thus, this must not be treated as an exception.
                     return false;
@@ -196,8 +194,8 @@ namespace StartupGateway.BusinessLogic
             }
             catch (Exception exception)
             {
-                _logger.LogError(exception, "Error updating BidDocuments instance at UpdateBidDocuments: {errorMessage}",exception);
-                throw new CustomException("Exception caught at UpdateBidDocuments: " + exception + ".", exception);
+                _logger.LogError(exception, "Error updating BidDocuments instance at UpdateBidDocument: {errorMessage}", exception);
+                throw new CustomException("Exception caught at UpdateBidDocument: " + exception + ".", exception);
             }
         }
     }

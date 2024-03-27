@@ -43,7 +43,7 @@ namespace StartupGateway.BusinessLogic
         /// </summary>
         /// <param name="bidsId">The ID of the bids instance to retrieve.</param>
         /// <returns>Instance of <see cref="Bids"/></returns>
-        public Bids GetBidsById(int bidsId)
+        public Bids GetBidById(int bidsId)
         {
             try
             {
@@ -56,26 +56,26 @@ namespace StartupGateway.BusinessLogic
 
                 if (bids != null)
                 {
-                    _logger.LogInformation("Bids instance retrieved succesfully for bid ID: {bidsId}, at GetBidsById.", bidsId);
+                    _logger.LogInformation("Bids instance retrieved succesfully for bid ID: {bidsId}, at GetBidById.", bidsId);
                     return bids;
                 }
                 else
                 {
-                    _logger.LogWarning("No Bids instance found for bid ID: {bidDocumentId}, at GetBidsById", bidsId);
-                    throw new CustomException("Bids instance retrieved at GetBidsById is null.");
+                    _logger.LogWarning("No Bids instance found for bid ID: {bidDocumentId}, at GetBidById", bidsId);
+                    throw new CustomException("Bids instance retrieved at GetBidById is null.");
                 }
             }
             catch (Exception exception)
             {
-                _logger.LogError(exception, "Error retrieving Bids instance for bid ID: {bidId}, at GetBidsById: {errorMessage}",bidsId, exception);
-                throw new CustomException("Exception Caught at GetBidsById: " + exception + ".", exception);
+                _logger.LogError(exception, "Error retrieving Bids instance for bid ID: {bidId}, at GetBidById: {errorMessage}", bidsId, exception);
+                throw new CustomException("Exception Caught at GetBidById: " + exception + ".", exception);
             }
         }
 
         /// <summary>
         /// Retrieves all instances of <c>Bids</c>.
         /// </summary>
-        /// <returns>List of <see cref="Bids"/> Instances</returns>
+        /// <returns>List of <see cref="Bids"/>? Instances</returns>
         public List<Bids>? GetAllBids()
         {
             try
@@ -109,8 +109,8 @@ namespace StartupGateway.BusinessLogic
         /// </summary>
         /// <param name="bids">The bid to add.</param>
         /// <param name="userId"></param>
-        /// <returns>True if new instance of Bids added successfully.</returns>
-        public bool AddBids(Bids bids, int userId)
+        /// <returns>True if new instance of <see cref="Bids"/> added successfully.</returns>
+        public bool AddBid(Bids bids, int userId)
         {
             try
             {
@@ -127,19 +127,19 @@ namespace StartupGateway.BusinessLogic
                     }
 
                     _unitOfWork.Commit();
-                    _logger.LogInformation("New Bids instance successfully added at AddBids.");
+                    _logger.LogInformation("New Bids instance successfully added at AddBid.");
                     return true;
                 }
                 else 
                 {
                     _logger.LogWarning("New Bids instance is null. Failed to add new Bids instance at AddBids.");
-                    throw new CustomException("New Bids instance is null. Failed to add new Bids instance at AddBids.");
+                    throw new CustomException("New Bids instance is null. Failed to add new Bids instance at AddBid.");
                 }
             }
             catch (Exception exception)
             {
-                _logger.LogError(exception, "Error adding new Bids instance at AddBids: {errorMessage}", exception);
-                throw new CustomException("Exception Caught at AddBids: " + exception + ".", exception);
+                _logger.LogError(exception, "Error adding new Bids instance at AddBid: {errorMessage}", exception);
+                throw new CustomException("Exception Caught at AddBid: " + exception + ".", exception);
             }
         }
 
@@ -149,7 +149,7 @@ namespace StartupGateway.BusinessLogic
         /// <param name="updatedBids">The updated bid information.</param>
         /// <param name="userId"></param>
         /// <returns>True if the update operation was successfull, False otherwise.</returns>
-        public object UpdateBids(Bids updatedBids, int userId)
+        public object UpdateBid(Bids updatedBids, int userId)
         {
             try
             {
@@ -157,32 +157,34 @@ namespace StartupGateway.BusinessLogic
                 {
                     // Garbage Collection
                     Bids? existingBids;
-                    using (IBidsDAL bidsDAL = _unitOfWork.GetDAL<IBidsDAL>())
-                    {
-                        existingBids = bidsDAL.GetEntityById(updatedBids.Id);
-                    }
+                    using IBidsDAL bidsDAL = _unitOfWork.GetDAL<IBidsDAL>();
+                    existingBids = bidsDAL.GetEntityById(updatedBids.Id);
+
 
                     if (existingBids != null)
                     {
+                        existingBids.InvestmentBudget = existingBids.InvestmentBudget;
+
                         existingBids.Status = updatedBids.Status;
                         existingBids.ModifiedBy = updatedBids.ModifiedBy;
                         existingBids.ModifiedOn = DateTime.Now;
 
+                        bidsDAL.UpdateEntity(existingBids);
                         _unitOfWork.Commit();
 
-                        _logger.LogInformation("Bids instance with ID: {bidsId} updated successfully at UpdateBids.", existingBids.Id);
+                        _logger.LogInformation("Bids instance with ID: {bidsId} updated successfully at UpdateBid.", existingBids.Id);
                         return true;
                     }
                     else
                     {
-                        _logger.LogError("No Bids instance found for bid ID: {bidsId}, at UpdateBids", updatedBids.Id);
-                        throw new CustomException($"Existing Bids instance retrieved for bid ID: {updatedBids.Id} is null at UpdateBids is null.");
+                        _logger.LogError("No Bids instance found for bid ID: {bidsId}, at UpdateBid", updatedBids.Id);
+                        throw new CustomException($"Existing Bids instance retrieved for bid ID: {updatedBids.Id} is null at UpdateBid.");
                     }
 
                 }
                 else 
                 {
-                    _logger.LogWarning("Updated Bids instance passed is null. Failed to update Bids instance at UpdateBids.");
+                    _logger.LogWarning("Updated Bids instance passed is null. Failed to update Bids instance at UpdateBid.");
                     // We return False instead of an exception as it is very common to run update operations, without making any changes.
                     // Thus, this must not be treated as an exception.
                     return false;
@@ -190,8 +192,8 @@ namespace StartupGateway.BusinessLogic
             }
             catch (Exception exception)
             {
-                _logger.LogError(exception, "Error updating Bids instance at UpdateBids: {errorMessage}", exception);
-                throw new CustomException("Exception caught at UpdateBids: " + exception + ".", exception);
+                _logger.LogError(exception, "Error updating Bids instance at UpdateBid: {errorMessage}", exception);
+                throw new CustomException("Exception caught at UpdateBid: " + exception + ".", exception);
             }
         }
     }

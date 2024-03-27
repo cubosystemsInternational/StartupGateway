@@ -22,146 +22,177 @@ using static StartupGateway.Shared.Share;
 namespace StartupGateway.BusinessLogic
 {
     /// <summary>
-    /// Business logic layer for managing operations related to model ComsDocument.
+    /// Business logic layer for managing operations related to model <see cref="CommunicationDocuments"/>.
     /// </summary>
     public class CommunicationDocumentsBLL
     {
-        private readonly ILogger<ChatDetailsBLL> logger;
-        private readonly IUnitOfWork unitOfWork;
+        private readonly ILogger<ChatDetailsBLL> _logger;
+        private readonly IUnitOfWork _unitOfWork;
 
         /// <summary>
-        /// Constructor to intialize ComsDocumentsBLL with necessary dependencies.
+        /// Constructor to intialize CommunicationDocumentsBLL with necessary dependencies.
         /// </summary>
         /// <param name="logger">Instance of Logger for logging information.</param>
         /// <param name="unitOfWork">Instance of Unit of Work.</param>
         public CommunicationDocumentsBLL(ILogger<ChatDetailsBLL> logger, IUnitOfWork unitOfWork)
         {
-            this.logger = logger;
-            this.unitOfWork = unitOfWork;
+            this._logger = logger;
+            this._unitOfWork = unitOfWork;
         }
 
         /// <summary>
-        /// Retrieve the ComsDocument instance information for the id passed.
+        /// Retrieves the <c>CommunicationDocuments</c> instance information for the Id passed.
         /// </summary>
-        /// <param name="comsDocumentId"></param>
-        /// <returns>ComsDocuments?</returns>
-        public CommunicationDocuments GetComsDocumentsById(int comsDocumentId)
+        /// <param name="communicationDocumentId"></param>
+        /// <returns>Instance of <see cref="CommunicationDocuments"/></returns>
+        public CommunicationDocuments GetCommunicationDocumentById(int communicationDocumentId)
         {
             try
             {
-                var comsDocuments = unitOfWork.GetDAL<ICommunicationDocumentsDAL>().GetEntityById(comsDocumentId);
-                if (comsDocuments != null)
+                // Garbage Collection
+                CommunicationDocuments? communicationDocuments;
+                using (ICommunicationDocumentsDAL communicationDocumentsDAL= _unitOfWork.GetDAL<ICommunicationDocumentsDAL>()) 
                 {
-                    logger.LogInformation("ComsDocuments instance retrieved succesfully at GetComsDocumentsById.");
-                    return comsDocuments;
+                    communicationDocuments = communicationDocumentsDAL.GetEntityById(communicationDocumentId);
+                }
+                   
+                if (communicationDocuments != null)
+                {
+                    _logger.LogInformation("CommunicationDocuments instance retrieved succesfully for communication document ID: {communicationDocumentId}, at GetCommunicationDocumentById.", communicationDocumentId);
+                    return communicationDocuments;
                 }
                 else
                 {
-                    logger.LogInformation("ComsDocuments instance retrieved at GetComsDocumentsById is null.");
-                    throw new CustomException("ComsDocuments instance retrieved at GetComsDocumentsById is null.");
+                    _logger.LogWarning("No CommunicationDocuments instance found for communication document ID: {communicationDocumentId}, at GetCommunicationDocumentById", communicationDocumentId);
+                    throw new CustomException("CommunicationDocuments instance retrieved at GetCommunicationDocumentById is null.");
                 }
             }
             catch (Exception exception)
             {
-                logger.LogInformation("Exception Caught at GetComsDocumentsById: " + exception + ".");
-                throw new CustomException("Exception Caught at GetComsDocumentsById: " + exception + ".");
+                _logger.LogError(exception, "Error retrieving CommunicationDocuments instance for communication document ID: {communicationDocumentId}, at GetCommunicationDocumentById: {errorMessage}", communicationDocumentId, exception);
+                throw new CustomException("Exception Caught at GetCommunicationDocumentById: " + exception + ".", exception);
             }
         }
 
         /// <summary>
-        /// Retrieve all instances of ComsDocuments.
+        /// Retrieves all instances of <c>CommunicationDocuments</c>.
         /// </summary>
-        /// <returns>List of ComsDocuments?</returns>
-        public List<CommunicationDocuments> GetAllComsDocuments()
+        /// <returns>List of <see cref="CommunicationDocuments"/>? Instances</returns>
+        public List<CommunicationDocuments>? GetAllCommunicationDocuments()
         {
             try
             {
-                var listOfComsDocuments = unitOfWork.GetDAL<ICommunicationDocumentsDAL>().GetAllRecords().ToList();
-                if (listOfComsDocuments != null)
+                // Garbage Collection
+                List<CommunicationDocuments> lisOfCommunicationsDocuments;
+                using (ICommunicationDocumentsDAL communicationDocumentsDAL = _unitOfWork.GetDAL<ICommunicationDocumentsDAL>()) 
                 {
-                    logger.LogInformation("ComsDocuments instances retrieved successfully at GetAllComsDocuments.");
-                    return listOfComsDocuments;
+                    lisOfCommunicationsDocuments=communicationDocumentsDAL.GetAllRecords().ToList();
                 }
-                else 
+                if (lisOfCommunicationsDocuments != null)
                 {
-                    logger.LogInformation("Instances of ComsDocuments retrieved is null at GetAllComsDocuments.");
-                    throw new CustomException("Instances of ComsDocuments retrieved is null at GetAllComsDocuments.");
+                    _logger.LogInformation("All CommunicationDocuments instances retrieved successfully at GetAllCommunicationDocuments.");
                 }
+                else
+                {
+                    _logger.LogInformation("No CommunicationDocuments instances found at GetAllCommunicationDocuments.");
+                }
+                return lisOfCommunicationsDocuments;
             }
             catch (Exception exception)
             {
-                logger.LogInformation("Exception Caught at GetAllComsDocuments: " + exception + ".");
-                throw new CustomException("Exception Caught at GetAllComsDocuments: " + exception + ".");
+                _logger.LogError(exception, "Error retrieving BidDocuments instances at GetAllCommunicationDocuments: {errorMessage}", exception);
+                throw new CustomException("Exception Caught at GetAllCommunicationDocuments: " + exception + ".", exception);
             }
         }
 
         /// <summary>
-        /// Adds instance of ComsDocuments to the Database. Returns True if operation was successful.
+        /// Adds an instance of <c>CommunicationDocuments</c> to the Database.
         /// </summary>
-        /// <param name="comsDocument">New Instace of ComsDocument to be saved.</param>
-        /// <returns>True or False</returns>
-        public bool AddComsDocuments(CommunicationDocuments comsDocument)
+        /// <param name="communicationDocument">New Instance of CommunicationDocuments to be saved.</param>
+        /// <param name="userId"></param>
+        /// <returns>True if new instance of <see cref="BidDocuments"/> added successfully.</returns>
+        public bool AddCommunicationDocument(CommunicationDocuments communicationDocument, int userId)
         {
             try
             {
-                if (comsDocument != null)
+                if (communicationDocument != null)
                 {
-                    comsDocument.Status = EntityStatus.Active;
-                    comsDocument.ModifiedBy = comsDocument.UserId;
-                    comsDocument.ModifiedOn = DateTime.Now;
+                    communicationDocument.Status = EntityStatus.Active;
+                    communicationDocument.ModifiedBy = userId;
+                    communicationDocument.ModifiedOn = DateTime.Now;
 
-                    unitOfWork.GetDAL<ICommunicationDocumentsDAL>().AddEntity(comsDocument);
-                    unitOfWork.Commit();
-                    logger.LogInformation("ComsDocuments instance successfully added at AddComsDocuments.");
+                    // Garbage Collection
+                    using (ICommunicationDocumentsDAL communicationDocumentsDAL = _unitOfWork.GetDAL<ICommunicationDocumentsDAL>()) 
+                    {
+                        communicationDocumentsDAL.AddEntity(communicationDocument);
+                    }
+                    _unitOfWork.Commit();
+                    _logger.LogInformation("New CommunicationDocuments instance successfully added at AddCommunicationDocument.");
                     return true;
                 }
                 else
                 {
-                    logger.LogInformation("ComsDocuments instance is null at AddComsDocuments.");
-                    throw new CustomException("ComsDocuments instance is null at AddComsDocuments.");
+                    _logger.LogWarning("New CommunicationDocuments instance is null. Failed to add new CommunicationDocuments instance at AddCommunicationDocument.");
+                    throw new CustomException("New CommunicationDocuments instance is null. Failed to add new CommunicationDocuments instance at AddCommunicationDocument.");
                 }
 
             }
             catch (Exception exception)
             {
-                logger.LogInformation("Exception Caught at AddComsDocuments: " + exception + ".");
-                throw new CustomException("Exception Caught at AddComsDocuments: " + exception + ".");
+                _logger.LogError(exception, "Error adding new CommunicationDocuments instance at AddCommunicationDocument: {errorMessage}", exception);
+                throw new CustomException("Exception Caught at CommunicationDocuments: " + exception + ".", exception);
             }
         }
 
         /// <summary>
-        /// Updates an existing instance of ComsDocuments. Returns True if the update operation was successful.
+        /// Updates an existing instance of <c>CommunicationDocuments</c>.
         /// </summary>
-        /// <param name="comsDocument"></param>
-        /// <returns>True or False</returns>
-        public bool UpdateComsDocuments(CommunicationDocuments newComsDocument)
+        /// <param name="updatedCommunicationDocument"></param>
+        /// <param name="userId"></param>
+        /// <returns>True if the update operation was successfull, False otherwise.</returns>
+        public bool UpdateCommunicationDocument(CommunicationDocuments updatedCommunicationDocument, int userId)
         {
             try
             {
-                if (newComsDocument != null)
+                if (updatedCommunicationDocument != null)
                 {
-                    CommunicationDocuments existingComsDocument = unitOfWork.GetDAL<ICommunicationDocumentsDAL>().GetEntityById(newComsDocument.Id);
 
-                    existingComsDocument.Status = newComsDocument.Status;
-                    existingComsDocument.ModifiedBy = newComsDocument.UserId;
-                    existingComsDocument.ModifiedOn = DateTime.Now;
+                    // Garbage Collection
+                    CommunicationDocuments? existingCommunicationDocuments;
+                    using ICommunicationDocumentsDAL communicationDocumentsDAL = _unitOfWork.GetDAL<ICommunicationDocumentsDAL>();
 
-                    unitOfWork.GetDAL<ICommunicationDocumentsDAL>().UpdateEntity(existingComsDocument);
-                    unitOfWork.Commit();
+                    existingCommunicationDocuments = communicationDocumentsDAL.GetEntityById(updatedCommunicationDocument.Id);
 
-                    logger.LogInformation("ComsDocuments instance updated successfully at UpdateComsDocuments.");
-                    return true;
+                    if (existingCommunicationDocuments != null)
+                    {
+                        existingCommunicationDocuments.Status = updatedCommunicationDocument.Status;
+                        existingCommunicationDocuments.ModifiedBy = userId;
+                        existingCommunicationDocuments.ModifiedOn = DateTime.Now;
+
+                        communicationDocumentsDAL.UpdateEntity(existingCommunicationDocuments);
+                        _unitOfWork.Commit();
+
+                        _logger.LogInformation("CommunicationDocuments instance with ID: {communicationDocumentId} updated successfully at UpdateCommunicationDocument.", existingCommunicationDocuments.Id);
+                        return true;
+                    }
+                    else 
+                    {
+                        _logger.LogError("No CommunicationDocuments instance found for bid document ID: {communicationDocumentId}, at UpdateCommunicationDocument", updatedCommunicationDocument.Id);
+                        throw new CustomException($"Existing CommunicationDocuments instance retrieved for bid document ID: {updatedCommunicationDocument.Id} is null at UpdateCommunicationDocument.");
+                    }
                 }
                 else
                 {
-                    logger.LogInformation("ComsDocuments instance passed at UpdateComsDocuments are null.");
-                    throw new CustomException("ComsDocuments instance passed at UpdateComsDocuments are null.");
+                    _logger.LogWarning("Updated CommunicationDocuments instance passed is null. Failed to update CommunicationDocuments instance at UpdateCommunicationDocument.");
+                    // We return False instead of an exception as it is very common to run update operations, without making any changes.
+                    // Thus, this must not be treated as an exception.
+                    return false;
                 }
             }
             catch (Exception exception)
             {
-                logger.LogInformation("Exception Caught at UpdateComsDocuments: " + exception + ".");
-                throw new CustomException("Exception Caught at UpdateComsDocuments: " + exception + ".");
+                _logger.LogError(exception, "Error updating CommunicationDocuments instance at UpdateCommunicationDocument: {errorMessage}", exception);
+                throw new CustomException("Exception caught at UpdateCommunicationDocument: " + exception + ".", exception);
             }
         }
 

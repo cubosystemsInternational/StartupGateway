@@ -22,12 +22,12 @@ using static StartupGateway.Shared.Share;
 namespace StartupGateway.BusinessLogic
 {
     /// <summary>
-    /// Business logic layer for managing operations related to model CommunicationsBLL.
+    /// Business logic layer for managing operations related to model <see cref="Communications"/>.
     /// </summary>
     public class CommunicationsBLL
     {
-        private readonly ILogger<CommunicationsBLL> logger;
-        private readonly IUnitOfWork unitOfWork;
+        private readonly ILogger<CommunicationsBLL> _logger;
+        private readonly IUnitOfWork _unitOfWork;
 
         /// <summary>
         /// Constructor to intialize CommunicationsBLL with necessary dependencies.
@@ -36,61 +36,67 @@ namespace StartupGateway.BusinessLogic
         /// </summary>
         public CommunicationsBLL(ILogger<CommunicationsBLL> logger, IUnitOfWork unitOfWork)
         {
-            this.logger = logger;
-            this.unitOfWork = unitOfWork;
+            this._logger = logger;
+            this._unitOfWork = unitOfWork;
         }
 
         /// <summary>
-        /// Retrieves the Communications instance information for the id passed.
+        /// Retrieves the <c>Communications</c> instance information for the Id passed.
         /// </summary>
         /// <param name="communicationsId"></param>
-        /// <returns>Communications</returns>
-        public Communications GetCommunicationsById(int communicationsId) 
+        /// <returns>Instance of <see cref="Communications"/></returns>
+        public Communications GetCommunicationById(int communicationsId) 
         {
             try
             {
-                var communications = unitOfWork.GetDAL<ICommunicationsDAL>().GetEntityById(communicationsId);
+                // Garbage Collection
+                Communications? communications;
+                using (ICommunicationsDAL communicationsDAL= _unitOfWork.GetDAL<ICommunicationsDAL>()) 
+                {
+                    communications=communicationsDAL.GetEntityById(communicationsId);
+                }
+                    
                 if (communications != null)
                 {
-                    logger.LogInformation("Communications instance retrieved succesfully at GetCommunicationsById.");
+                    _logger.LogInformation("Communications instance retrieved succesfully for communication ID: {communicationsId}, at GetCommunicationById.", communicationsId);
                     return communications;
                 }
                 else
                 {
-                    logger.LogInformation("Communications instance retrieved at GetCommunicationsById is null.");
-                    throw new CustomException("Communications instance retrieved at GetCommunicationsById is null.");
+                    _logger.LogWarning("No Communications instance found for communication ID: {communicationsId}, at GetCommunicationById", communicationsId);
+                    throw new CustomException("Communications instance retrieved at GetCommunicationById is null.");
                 }
             }
             catch (Exception exception)
             {
-                logger.LogInformation("Exception Caught at GetCommunicationsById: " + exception + ".");
-                throw new CustomException("Exception Caught at GetCommunicationsById: " + exception + ".");
+                _logger.LogError(exception, "Error retrieving Communications instance for communication ID: {communicationsId}, at GetCommunicationById: {errorMessage}", communicationsId, exception);
+                throw new CustomException("Exception Caught at GetCommunicationById: " + exception + ".", exception);
             }
         }
 
         /// <summary>
-        /// Retrieves all instances of Communications.
+        /// Retrieves all instances of <c>Communications</c>.
         /// </summary>
-        /// <returns>List of Communications</returns>
-        public List<Communications> GetAllCommunications() 
+        /// <returns>List of <see cref="Communications"/>? Instances</returns>
+        public List<Communications>? GetAllCommunications() 
         {
             try
             {
-                var listOfCommunications = unitOfWork.GetDAL<ICommunicationsDAL>().GetAllRecords().ToList();
+                var listOfCommunications = _unitOfWork.GetDAL<ICommunicationsDAL>().GetAllRecords().ToList();
                 if (listOfCommunications != null)
                 {
-                    logger.LogInformation("Communications instances retrieved successfully at GetAllCommunications.");
+                    _logger.LogInformation("Communications instances retrieved successfully at GetAllCommunications.");
                     return listOfCommunications;
                 }
                 else
                 {
-                    logger.LogInformation("Instances of Communications retrieved is null at GetAllCommunications.");
+                    _logger.LogInformation("Instances of Communications retrieved is null at GetAllCommunications.");
                     throw new CustomException("Instances of Communications retrieved is null at GetAllCommunications.");
                 }
             }
             catch (Exception exception)
             {
-                logger.LogInformation("Exception Caught at GetAllCommunications: " + exception + ".");
+                _logger.LogInformation("Exception Caught at GetAllCommunications: " + exception + ".");
                 throw new CustomException("Exception Caught at GetAllCommunications: " + exception + ".");
             }
         }
@@ -98,75 +104,97 @@ namespace StartupGateway.BusinessLogic
 
 
         /// <summary>
-        /// Adds an instance of AddCommmunications to the DataBase. Returns True if operation was successfull.
+        /// Adds an instance of <c>Communications</c> to the Database. 
         /// </summary>
         /// <param name="communications"></param>
-        /// <returns>True or False</returns>
-        public bool AddCommmunications(Communications communications) 
+        /// <param name="userId"></param>
+        /// <returns>True if new instance of <see cref="Communications"/> added successfully.</returns>
+        public bool AddCommmunication(Communications communications, int userId) 
         {
             try
             {
                 if (communications != null)
                 {
                     communications.Status = EntityStatus.Active;
-                    communications.ModifiedBy = communications.UserId;
+                    communications.ModifiedBy = userId;
                     communications.ModifiedOn = DateTime.Now;
 
-                    unitOfWork.GetDAL<ICommunicationsDAL>().AddEntity(communications);
-                    unitOfWork.Commit();
-                    logger.LogInformation("Communications instance successfully added at AddCommmunications.");
+                    // Garbage Collection
+                    using (ICommunicationsDAL communicationsDAL = _unitOfWork.GetDAL<ICommunicationsDAL>())
+                    {
+                        communicationsDAL.AddEntity(communications);
+                    }
+
+                    _unitOfWork.Commit();
+                    _logger.LogInformation("New Communications instance successfully added at AddCommmunication.");
                     return true;
                 }
                 else
                 {
-                    logger.LogInformation("Communications instance is null at AddCommmunications.");
-                    throw new CustomException("Communications instance is null at AddCommmunications.");
+                    _logger.LogWarning("New Communications instance is null. Failed to add new Communications instance at AddCommmunication.");
+                    throw new CustomException("New Communications instance is null. Failed to add new Communications instance at AddCommmunication.");
                 }
 
             }
             catch (Exception exception)
             {
-                logger.LogInformation("Exception Caught at AddCommmunications: " + exception + ".");
-                throw new CustomException("Exception Caught at AddCommmunications: " + exception + ".");
+                _logger.LogError(exception, "Error adding new Communications instance at AddCommmunication: {errorMessage}", exception);
+                throw new CustomException("Exception Caught at AddCommmunication: " + exception + ".", exception);
             }
         }
 
         /// <summary>
-        /// Updates an existing instance of UpdateCommunications. Returns True, if the update operation was successfull
+        /// Updates an existing instance of <c>Communications</c>.
         /// </summary>
-        /// <param name="newCommunications"></param>
-        /// <returns>True of False</returns>
-        public bool UpdateCommunications(Communications newCommunications) 
+        /// <param name="updatedCommunications"></param>
+        /// <param name="userId"></param>
+        /// <returns>True if the update operation was successfull, False otherwise.</returns>
+        public bool UpdateCommunication(Communications updatedCommunications, int userId) 
         {
             try
             {
-                if (newCommunications != null)
+                if (updatedCommunications != null)
                 {
-                    Communications existingCommunications = unitOfWork.GetDAL<ICommunicationsDAL>().GetEntityById(newCommunications.Id);
+                    // Garbage Collection
+                    Communications? existingCommunications;
+                    using ICommunicationsDAL communicationsDAL = _unitOfWork.GetDAL<ICommunicationsDAL>();
+                    existingCommunications = communicationsDAL.GetEntityById(updatedCommunications.Id);
 
-                    existingCommunications.Subject = newCommunications.Subject;
-                    existingCommunications.Message = newCommunications.Message?? null;
+                    if (existingCommunications != null)
+                    {
 
-                    existingCommunications.Status = newCommunications.Status;
-                    existingCommunications.ModifiedBy = newCommunications.UserId;
-                    existingCommunications.ModifiedOn = DateTime.Now;
+                        existingCommunications.Subject = !string.IsNullOrWhiteSpace(updatedCommunications.Subject) ? updatedCommunications.Subject : existingCommunications.Subject;
+                        existingCommunications.Message = !string.IsNullOrWhiteSpace(updatedCommunications.Message) ? updatedCommunications.Message : existingCommunications.Message;
 
-                    unitOfWork.GetDAL<ICommunicationsDAL>().UpdateEntity(existingCommunications);
-                    unitOfWork.Commit();
+                        existingCommunications.Status = updatedCommunications.Status;
+                        existingCommunications.ModifiedBy = userId;
+                        existingCommunications.ModifiedOn = DateTime.Now;
 
-                    logger.LogInformation("Communications instance updated successfully at UpdateCommunications.");
-                    return true;
+                        communicationsDAL.UpdateEntity(existingCommunications);
+
+                        _unitOfWork.Commit();
+
+                        _logger.LogInformation("Communications instance with ID: {communicationId} updated successfully at UpdateCommunication.", existingCommunications.Id);
+                        return true;
+                    }
+                    else
+                    {
+                        _logger.LogError("No Communications instance found for communication ID: {communicationId}, at UpdateCommunication", updatedCommunications.Id);
+                        throw new CustomException($"Existing Communications instance retrieved for communication ID: {updatedCommunications.Id} is null at UpdateCommunication.");
+                    }
                 }
                 else
                 {
-                    logger.LogInformation("Communications instance passed at UpdateCommunications are null.");
-                    throw new CustomException("Communications instance passed at UpdateCommunications are null.");
+                    _logger.LogWarning("Updated Communications instance passed is null. Failed to update Communications instance at UpdateCommunication.");
+                    // We return False instead of an exception as it is very common to run update operations, without making any changes.
+                    // Thus, this must not be treated as an exception.
+                    return false;
                 }
             }
             catch (Exception exception)
             {
-                logger.LogInformation("Exception Caught at UpdateCommunications: " + exception + ".");
-                throw new CustomException("Exception Caught at UpdateCommunications: " + exception + ".");
+                _logger.LogError(exception, "Error updating Communications instance at UpdateCommunication: {errorMessage}", exception);
+                throw new CustomException("Exception caught at UpdateCommunication: " + exception + ".", exception);
             }
         }
     }

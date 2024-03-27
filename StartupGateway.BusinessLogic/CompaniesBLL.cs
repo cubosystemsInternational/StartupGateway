@@ -16,80 +16,102 @@ using System.Collections.Generic;
 using System.Linq;
 using StartupGateway.BusinessEntities;
 using static StartupGateway.Shared.Share;
+using StartupGateway.Shared;
 
 namespace StartupGateway.BusinessLogic
 {
+    /// <summary>
+    /// Business logic layer for managing operations related to model <see cref="Companies"/>.
+    /// </summary>
     public class CompaniesBLL
     {
-        private readonly ILogger<CompaniesBLL> logger;
-        private readonly IUnitOfWork unitOfWork;
+        private readonly ILogger<CompaniesBLL> _logger;
+        private readonly IUnitOfWork _unitOfWork;
 
         /// <summary>
         /// Constructor to initialize CompaniesBLL with necessary dependencies.
         /// </summary>
+        /// /// <param name="logger">Instance of Logger for logging information.</param>
+        /// <param name="unitOfWork">Instance of Unit of Work.</param>
         public CompaniesBLL(ILogger<CompaniesBLL> logger, IUnitOfWork unitOfWork)
         {
-            this.logger = logger;
-            this.unitOfWork = unitOfWork;
+            this._logger = logger;
+            this._unitOfWork = unitOfWork;
         }
 
         /// <summary>
-        /// Retrieves the Company information for the Id passed.
+        /// Retrieves the <c>Companies</c> instance information for the Id passed.
         /// </summary>
         /// <param name="companyId"></param>
-        /// <returns>Company?</returns>
+        /// <returns>Instance of <see cref="Companies"/></returns>
         public Companies GetCompanyById(int companyId)
         {
             try
             {
-                var company = unitOfWork.GetDAL<ICompaniesDAL>().GetEntityById(companyId);
-                if (company != null)
+                // Garbage Collection
+                Companies? companies;
+                using (ICompaniesDAL companiesDAL = _unitOfWork.GetDAL<ICompaniesDAL>()) 
+                { 
+                    companies = companiesDAL.GetEntityById(companyId);
+                }
+
+                if (companies != null)
                 {
-                    logger.LogInformation($"Company with ID {companyId} retrieved successfully.");
-                    return company;
+                    _logger.LogInformation("Companies instance retrieved succesfully for company ID: {companyId}, at GetCompanyById.", companyId);
+                    return companies;
                 }
                 else
                 {
-                    // Log the absence of the company and throw a KeyNotFoundException
-                    var message = $"Company with ID {companyId} not found.";
-                    logger.LogError(message);
-                    throw new KeyNotFoundException(message);
+                    _logger.LogWarning("No Companies instance found for company ID: {companyId}, at GetCompanyById", companyId);
+                    throw new CustomException("Companies instance retrieved at GetCompanyById is null.");
                 }
             }
             catch (Exception exception)
             {
-                // Log and rethrow any other exceptions that occur during execution
-                logger.LogError($"Exception caught at GetCompanyById: {exception}.");
-                throw;
+                _logger.LogError(exception, "Error retrieving Companies instance for company ID: {companyId}, at GetCompanyById: {errorMessage}", companyId, exception);
+                throw new CustomException("Exception Caught at GetCompanyById: " + exception + ".", exception);
             }
         }
 
 
         /// <summary>
-        /// Retrieves all the companies.
+        /// Retrieves all instances of <c>Companies</c>.
         /// </summary>
-        /// <returns>List of Company?</returns>
-        public List<Companies> GetAllCompanies()
+        /// <returns>List of <see cref="Companies"/>? Instances</returns>
+        public List<Companies>? GetAllCompanies()
         {
             try
             {
-                var listOfCompanies = unitOfWork.GetDAL<ICompaniesDAL>().GetAllRecords().ToList();
-                logger.LogInformation("Companies retrieved successfully at GetAllCompanies.");
+                // Garbage Collection
+                List<Companies> listOfCompanies;
+                using (ICompaniesDAL companiesDAL = _unitOfWork.GetDAL<ICompaniesDAL>()) 
+                {
+                    listOfCompanies = companiesDAL.GetAllRecords().ToList();
+                }
+
+                if (listOfCompanies != null)
+                {
+                    _logger.LogInformation("All Companies instances retrieved successfully at GetAllCompanies.");
+                }
+                else 
+                {
+                    _logger.LogInformation("No Companies instances found at GetAllCompanies.");
+                }
                 return listOfCompanies;
             }
             catch (Exception exception)
             {
-                logger.LogInformation("Exception caught at GetAllCompanies: " + exception + ".");
-                throw;
+                _logger.LogError(exception, "Error retrieving Companies instances at GetAllCompanies: {errorMessage}", exception);
+                throw new CustomException("Exception Caught at GetAllCompanies: " + exception + ".", exception);
             }
         }
 
         /// <summary>
-        /// Adds an instance of Company to the database. Returns True if the operation was successful.
+        /// Adds an instance of <c>Companies</c> to the Database. 
         /// </summary>
         /// <param name="company"></param>
         /// <param name="userId"></param>
-        /// <returns>True or False</returns>
+        /// <returns>True if new instance of <see cref="Companies"/> added successfully.</returns>
         public bool AddCompany(Companies company, int userId)
         {
             try
@@ -100,60 +122,81 @@ namespace StartupGateway.BusinessLogic
                     company.ModifiedBy = userId;
                     company.ModifiedOn = DateTime.Now;
 
-                    unitOfWork.GetDAL<ICompaniesDAL>().AddEntity(company);
-                    unitOfWork.Commit();
-                    logger.LogInformation("Company successfully added at AddCompany.");
+                    // Garbage Collection
+                    using (ICompaniesDAL companiesDAL = _unitOfWork.GetDAL<ICompaniesDAL>()) 
+                    {
+                        companiesDAL.AddEntity(company);
+                    }
+
+                    _unitOfWork.Commit();
+                    _logger.LogInformation("New Companies instance successfully added at AddCompany.");
                     return true;
                 }
                 else
                 {
-                    logger.LogInformation("Company is null at AddCompany");
-                    return false;
+                    _logger.LogWarning("New Companies instance is null. Failed to add new Companies instance at AddCompany.");
+                    throw new CustomException("New Companies instance is null. Failed to add new Companies instance at AddCompany.");
                 }
 
             }
             catch (Exception exception)
             {
-                logger.LogInformation("Exception caught at AddCompany: " + exception + ".");
-                return false;
+                _logger.LogError(exception, "Error adding new Companies instance at AddCompany: {errorMessage}", exception);
+                throw new CustomException("Exception Caught at AddCompany: " + exception + ".", exception);
             }
         }
 
         /// <summary>
-        /// Updates an existing instance of Company. Returns True, if the update operation was successful.
+        /// Updates an existing instance of <c>Companies</c>.
         /// </summary>
-        /// <param name="newCompany"></param>
-        /// <returns>True or False</returns>
-        public bool UpdateCompany(Companies newCompany)
+        /// <param name="updatedCompany"></param>
+        /// <param name="userId"></param>
+        /// <returns>True if the update operation was successfull, False otherwise.</returns>
+        public bool UpdateCompany(Companies updatedCompany,int userId)
         {
             try
             {
-                if (newCompany != null)
+                if (updatedCompany != null)
                 {
-                    Companies existingCompany = unitOfWork.GetDAL<ICompaniesDAL>().GetEntityById(newCompany.Id);
+                    // Garbage Collection
+                    Companies? existingCompany;
+                    using ICompaniesDAL companiesDAL = _unitOfWork.GetDAL<ICompaniesDAL>();
+                    existingCompany = companiesDAL.GetEntityById(updatedCompany.Id);
 
-                    // Update attributes if new values are not null or whitespace
-                    existingCompany.CompanyName = !string.IsNullOrWhiteSpace(newCompany.CompanyName) ? newCompany.CompanyName : existingCompany.CompanyName;
-                    existingCompany.Description = newCompany.Description ?? existingCompany.Description; // Update only if not null
-                    existingCompany.Status = newCompany.Status != EntityStatus.Pending ? newCompany.Status : existingCompany.Status;
-                    existingCompany.ModifiedOn = DateTime.Now;
-                    existingCompany.ModifiedBy = newCompany.ModifiedBy != 0 ? newCompany.ModifiedBy : existingCompany.ModifiedBy;
+                    if (existingCompany != null)
+                    {
+                        existingCompany.CompanyName = !string.IsNullOrWhiteSpace(updatedCompany.CompanyName)? updatedCompany.CompanyName: existingCompany.CompanyName;
+                        existingCompany.Description = !string.IsNullOrWhiteSpace(updatedCompany.Description) ? updatedCompany.Description : existingCompany.Description;
 
-                    unitOfWork.Commit();
+                        existingCompany.Status = updatedCompany.Status;
+                        existingCompany.ModifiedBy = userId;
+                        existingCompany.ModifiedOn = DateTime.Now;
 
-                    logger.LogInformation("Company updated successfully at UpdateCompany.");
-                    return true;
+                        companiesDAL.UpdateEntity(existingCompany);
+                        _unitOfWork.Commit();
+
+                        _logger.LogInformation("Companies instance with ID: {companyId} updated successfully at UpdateCompany.", existingCompany.Id);
+                        return true;
+                    }
+                    else 
+                    {
+                        _logger.LogError("No Companies instance found for company ID: {companyId}, at UpdateCompany", updatedCompany.Id);
+                        throw new CustomException($"Existing Companies instance retrieved for company ID: {updatedCompany.Id} is null at UpdateCompany.");
+                    }
+
                 }
                 else
                 {
-                    logger.LogInformation("Company passed at UpdateCompany is null.");
+                    _logger.LogWarning("Updated Companies instance passed is null. Failed to update Companies instance at UpdateCompany.");
+                    // We return False instead of an exception as it is very common to run update operations, without making any changes.
+                    // Thus, this must not be treated as an exception.
                     return false;
                 }
             }
             catch (Exception exception)
             {
-                logger.LogInformation("Exception caught at UpdateCompany: " + exception + ".");
-                return false;
+                _logger.LogError(exception, "Error updating Companies instance at UpdateCompany: {errorMessage}", exception);
+                throw new CustomException("Exception caught at UpdateCompany: " + exception + ".", exception);
             }
         }
     }

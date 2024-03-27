@@ -20,12 +20,12 @@ using static StartupGateway.Shared.Share;
 namespace StartupGateway.BusinessLogic
 {
     /// <summary>
-    /// Business logic layer for managing operations related to model ChatDetailsBLL.
+    /// Business logic layer for managing operations related to model <see cref="ContactUs"/>.
     /// </summary>
     public class ContactUsBLL
     {
-        private readonly ILogger<ChatDetailsBLL> logger;
-        private readonly IUnitOfWork unitOfWork;
+        private readonly ILogger<ChatDetailsBLL> _logger;
+        private readonly IUnitOfWork _unitOfWork;
 
         /// <summary>
         /// Constructor to intialize ContactUsBLL with necessary dependencies.
@@ -34,71 +34,82 @@ namespace StartupGateway.BusinessLogic
         /// <param name="unitOfWork">Instance of Unit of Work.</param>
         public ContactUsBLL(ILogger<ChatDetailsBLL> logger, IUnitOfWork unitOfWork)
         {
-            this.logger = logger;
-            this.unitOfWork = unitOfWork;
+            this._logger = logger;
+            this._unitOfWork = unitOfWork;
         }
 
         /// <summary>
-        /// Retrieves the GetContactUsById instance information for the id passed.
+        /// Retrieves the <c>ContactUs</c> instance information for the Id passed.
         /// </summary>
         /// <param name="contactUsId"></param>
-        /// <returns>ContactUs</returns>
+        /// <returns>Instance of <see cref="ContactUs"/></returns>
         public ContactUs GetContactUsById(int contactUsId) 
         {
             try
             {
-                var contactUs = unitOfWork.GetDAL<IContactUsDAL>().GetEntityById(contactUsId);
+                // Garbage Collection
+                ContactUs? contactUs;
+                using (IContactUsDAL contactUsDAL = _unitOfWork.GetDAL<IContactUsDAL>()) 
+                { 
+                    contactUs= contactUsDAL.GetEntityById(contactUsId);
+                }
+
                 if (contactUs != null)
                 {
-                    logger.LogInformation("ContactUs instance retrieved succesfully at GetContactUsById.");
+                    _logger.LogInformation("ContactUs instance retrieved succesfully for contact us ID: {contactUsId}, at GetContactUsById.", contactUsId);
                     return contactUs;
                 }
                 else
                 {
-                    logger.LogInformation("ContactUs instance retrieved at GetContactUsById is null.");
+                    _logger.LogWarning("No ContactUs instance found for contact us ID: {contactUsId}, at GetContactUsById", contactUsId);
                     throw new CustomException("ContactUs instance retrieved at GetContactUsById is null.");
                 }
             }
             catch (Exception exception)
             {
-                logger.LogInformation("Exception Caught at GetContactUsById: " + exception + ".");
-                throw new CustomException("Exception Caught at GetContactUsById: " + exception + ".");
+                _logger.LogError(exception, "Error retrieving ContactUs instance for contact us ID: {contactUsId}, at GetContactUsById: {errorMessage}", contactUsId, exception);
+                throw new CustomException("Exception Caught at GetContactUsById: " + exception + ".", exception);
             }
         }
 
         /// <summary>
-        /// Retrieves all instances of ContactUs.
+        /// Retrieves all instances of <c>ContactUs</c>.
         /// </summary>
-        /// <returns>List of ContactUs</returns>
-        public List<ContactUs> GetAllContactUs() 
+        /// <returns>List of <see cref="ContactUs"/>? Instances</returns>
+        public List<ContactUs>? GetAllContactUs() 
         {
             try
             {
-                var listOfContactUs = unitOfWork.GetDAL<IContactUsDAL>().GetAllRecords().ToList();
+                // Garbage Collections
+                List<ContactUs> listOfContactUs;
+                using (IContactUsDAL contactUsDAL = _unitOfWork.GetDAL<IContactUsDAL>())
+                {
+                    listOfContactUs = contactUsDAL.GetAllRecords().ToList();
+                }
+
                 if (listOfContactUs != null)
                 {
-                    logger.LogInformation("ContactUs instances retrieved successfully at GetAllContactUs.");
-                    return listOfContactUs;
+                    _logger.LogInformation("All ContactUs instances retrieved successfully at GetAllContactUs.");
                 }
                 else
                 {
-                    logger.LogInformation("Instances of ContactUs retrieved is null at GetAllContactUs.");
-                    throw new CustomException("Instances of ContactUs retrieved is null at GetAllContactUs.");
+                    _logger.LogInformation("No ContactUs instances found at GetAllContactUs.");
                 }
+                return listOfContactUs;
             }
             catch (Exception exception)
             {
-                logger.LogInformation("Exception Caught at GetAllContactUs: " + exception + ".");
-                throw new CustomException("Exception Caught at GetAllContactUs: " + exception + ".");
+                _logger.LogError(exception, "Error retrieving ContactUs instances at GetAllContactUs: {errorMessage}", exception);
+                throw new CustomException("Exception Caught at GetAllContactUs: " + exception + ".", exception);
             }
         }
 
         /// <summary>
-        /// Adds an instance of ContactUs to the DataBase. Returns True if operation was successfull.
+        /// Adds an instance of <c>ContactUs</c> to the Database. 
         /// </summary>
         /// <param name="contactUs"></param>
         /// <param name="userId"></param>
-        /// <returns>True or False</returns>
+        /// <returns>True if new instance of <see cref="ContactUs"/> added successfully.</returns>
         public bool AddContactUs(ContactUs contactUs, int userId) 
         {
             try
@@ -109,60 +120,82 @@ namespace StartupGateway.BusinessLogic
                     contactUs.ModifiedBy = userId;
                     contactUs.ModifiedOn = DateTime.Now;
 
-                    unitOfWork.GetDAL<IContactUsDAL>().AddEntity(contactUs);
-                    unitOfWork.Commit();
-                    logger.LogInformation("ContactUs instance successfully added at AddContactUs.");
+                    using (IContactUsDAL contactUsDAL = _unitOfWork.GetDAL<IContactUsDAL>()) 
+                    { 
+                        contactUsDAL.AddEntity(contactUs);
+                    }
+
+                    _unitOfWork.Commit();
+                    _logger.LogInformation("New ContactUs instance successfully added at AddContactUs.");
                     return true;
                 }
                 else
                 {
-                    logger.LogInformation("ContactUs instance is null at AddContactUs.");
-                    throw new CustomException("ContactUs instance is null at AddContactUs.");
+                    _logger.LogWarning("New ContactUs instance is null. Failed to add new ContactUs instance at AddContactUs.");
+                    throw new CustomException("New ContactUs instance is null. Failed to add new ContactUs instance at AddContactUs.");
                 }
 
             }
             catch (Exception exception)
             {
-                logger.LogInformation("Exception Caught at AddContactUs: " + exception + ".");
-                throw new CustomException("Exception Caught at AddContactUs: " + exception + ".");
+                _logger.LogError(exception, "Error adding new ContactUs instance at AddContactUs: {errorMessage}", exception);
+                throw new CustomException("Exception Caught at AddContactUs: " + exception + ".", exception);
             }
         }
 
         /// <summary>
-        /// Updates an existing instance of ContactUs. Returns True, if the update operation was successfull.
+        /// Updates an existing instance of <c>ContactUs</c>.
         /// </summary>
-        /// <param name="newContactUs"></param>
+        /// <param name="updatedContactUs"></param>
         /// <param name="userId"></param>
-        /// <returns>True of False</returns>
-        public bool UpdatedContactUs(ContactUs newContactUs, int userId) 
+        /// <returns>True if the update operation was successfull, False otherwise.</returns>
+        public bool UpdatedContactUs(ContactUs updatedContactUs, int userId) 
         {
             try
             {
-                if (newContactUs != null)
+                if (updatedContactUs != null)
                 {
-                    ContactUs existingChatDetails = unitOfWork.GetDAL<IContactUsDAL>().GetEntityById(newContactUs.Id);
 
-                   
-                    existingChatDetails.Status = newContactUs.Status;
-                    existingChatDetails.ModifiedBy = userId;
-                    existingChatDetails.ModifiedOn = DateTime.Now;
+                    // Garbage Collection
+                    using IContactUsDAL contactUsDAL = _unitOfWork.GetDAL<IContactUsDAL>();
+                    ContactUs? existingContactUs = contactUsDAL.GetEntityById(updatedContactUs.Id);
 
-                    unitOfWork.GetDAL<IContactUsDAL>().UpdateEntity(existingChatDetails);
-                    unitOfWork.Commit();
+                    if (existingContactUs != null)
+                    {
+                        existingContactUs.Email = !string.IsNullOrWhiteSpace(updatedContactUs.Email) ? updatedContactUs.Email : existingContactUs.Email;
+                        existingContactUs.Subject = !string.IsNullOrWhiteSpace(updatedContactUs.Subject) ? updatedContactUs.Subject : existingContactUs.Subject;
+                        existingContactUs.Message = !string.IsNullOrWhiteSpace(updatedContactUs.Message) ? updatedContactUs.Message : existingContactUs.Message;
 
-                    logger.LogInformation("ContactUs instance updated successfully at UpdatedContactUs.");
-                    return true;
+                        existingContactUs.Status = updatedContactUs.Status;
+                        existingContactUs.ModifiedBy = userId;
+                        existingContactUs.ModifiedOn = DateTime.Now;
+
+                        contactUsDAL.UpdateEntity(existingContactUs);
+
+                        _unitOfWork.Commit();
+
+                        _logger.LogInformation("ContactUs instance with ID: {contactUsId} updated successfully at UpdatedContactUs.", existingContactUs.Id);
+                        return true;
+
+                    }
+                    else 
+                    {
+                        _logger.LogError("No ContactUs instance found for contact us ID: {contactUsId}, at UpdatedContactUs", updatedContactUs.Id);
+                        throw new CustomException($"Existing ContactUs instance retrieved for contact us ID: {updatedContactUs.Id} is null at UpdatedContactUs.");
+                    }
                 }
                 else
                 {
-                    logger.LogInformation("ContactUs instance passed at UpdatedContactUs are null.");
-                    throw new CustomException("ContactUs instance passed at UpdatedContactUs are null.");
+                    _logger.LogWarning("Updated ContactUs instance passed is null. Failed to update ContactUs instance at UpdatedContactUs.");
+                    // We return False instead of an exception as it is very common to run update operations, without making any changes.
+                    // Thus, this must not be treated as an exception.
+                    return false;
                 }
             }
             catch (Exception exception)
             {
-                logger.LogInformation("Exception Caught at UpdatedContactUs: " + exception + ".");
-                throw new CustomException("Exception Caught at UpdatedContactUs: " + exception + ".");
+                _logger.LogError(exception, "Error updating ContactUs instance at UpdatedContactUs: {errorMessage}", exception);
+                throw new CustomException("Exception caught at UpdatedContactUs: " + exception + ".", exception);
             }
         }
     }
