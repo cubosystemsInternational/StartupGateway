@@ -10,90 +10,107 @@ using StartupGateway.BusinessEntities;
 using StartupGateway.DAL.Interfaces;
 using StartupGateway.Shared;
 using StartupGateway.UoW.Interfaces;
+using System;
 using static StartupGateway.Shared.Share;
 
 namespace StartupGateway.BusinessLogic
 {
     /// <summary>
-    /// Business logic layer for managing operations related to model UserComsBLL.
+    /// Business logic layer for managing operations related to model <see cref="UserCommunications"/>.
     /// </summary>
     public class UserCommunicationsBLL
     {
-        private readonly ILogger<ChatDetailsBLL> logger;
-        private readonly IUnitOfWork unitOfWork;
+        private readonly ILogger<ChatDetailsBLL> _logger;
+        private readonly IUnitOfWork _unitOfWork;
 
         /// <summary>
         /// Constructor to intialize UserCommunicationsBLL with necessary dependencies.
         /// </summary>
-        /// <param name="logger">Instance of Logger for logging information.</param>
-        /// <param name="unitOfWork">Instance of Unit of Work.</param>
+        /// <param name="_logger">Instance of Logger for logging information.</param>
+        /// <param name="_unitOfWork">Instance of Unit of Work.</param>
         public UserCommunicationsBLL(ILogger<ChatDetailsBLL> logger, IUnitOfWork unitOfWork)
         {
-            this.logger = logger;
-            this.unitOfWork = unitOfWork;
+            this._logger = logger;
+            this._unitOfWork = unitOfWork;
         }
 
         /// <summary>
-        /// Retrieves the UserCommunications instance information for the id passed.
+        /// Retrieves the <c>UserCommunications</c> instance information for the Id passed.
         /// </summary>
-        /// <param name="userCommunicationsId"></param>
-        /// <returns>UserComs?</returns>
+        /// <param name="UserCommunications"></param>
+        /// <returns>Instance of <see cref="UserCommunications"/></returns>
         public UserCommunications GetUserCommunicationsById(int userCommunicationsId)
         {
             try
             {
-                var userCommunications = unitOfWork.GetDAL<IUserCommunicationsDAL>().GetEntityById(userCommunicationsId);
+
+                // Garbage Collection 
+                UserCommunications? userCommunications;
+                using(IUserCommunicationsDAL userCommunicationsDAL = _unitOfWork.GetDAL<IUserCommunicationsDAL>())
+                {
+                    userCommunications = userCommunicationsDAL.GetEntityById(userCommunicationsId);
+                }
+
+
                 if (userCommunications != null)
                 {
-                    logger.LogInformation("UserCommunications instance retrieved succesfully at GetUserCommunicationsById.");
+                    _logger.LogInformation("UserCommunications instance retrieved succesfully for user communications ID: {userCommunicationsId} , at GetUserCommunicationsById.", userCommunicationsId);
                     return userCommunications;
                 }
                 else
                 {
-                    logger.LogInformation("UserCommunications instance retrieved at GetUserCommunicationsById is null.");
+                    _logger.LogInformation("No UserCommunications instances found for user communications ID: {userCommunicationsId}, at GetUserCommunicationsById", userCommunicationsId);
                     throw new CustomException("UserCommunications instance retrieved at GetUserCommunicationsById is null.");
+
+                    
                 }
             }
             catch (Exception exception)
             {
-                logger.LogInformation("Exception Caught at GetUserCommunicationsById: " + exception + ".");
-                throw new CustomException("Exception Caught at GetUserCommunicationsById: " + exception + ".");
+                _logger.LogError(exception, "Error retrieving UserCommunications instance for user communications ID: {userCommunicationsId}, at GetUserCommunicationsById: {errorMessage}", userCommunicationsId, exception);
+                throw new CustomException("Exception Caught at GetBidDocumentById: " + exception + ".", exception);
+
+
             }
         }
 
         /// <summary>
-        /// Retrieves all instances of UserCommunications.
+        /// Retrieves all instances of <c>UserCommunications</c>.
         /// </summary>
-        /// <returns>List of UserComs?</returns>
-        public List<UserCommunications> GetAllUserCommunnications()
+        /// <returns>List of <see cref="UserCommunications"/>? Instances</returns>
+        public List<UserCommunications>? GetAllUserCommunnications()
         {
             try
             {
-                var listOfUserCommunications = unitOfWork.GetDAL<IUserCommunicationsDAL>().GetAllRecords().ToList();
-
+                List<UserCommunications> listOfUserCommunications;
+                using (IUserCommunicationsDAL userCommunicationsDAL = _unitOfWork.GetDAL<IUserCommunicationsDAL>())
+                {
+                    listOfUserCommunications = userCommunicationsDAL.GetAllRecords().ToList();
+                }
                 if (listOfUserCommunications != null)
                 {
-                    logger.LogInformation("UserCommunications instances retrieved successfully at GetAllUserCommunnications.");
-                    return listOfUserCommunications;
+                    _logger.LogInformation("All UserCommunications instances retrieved successfully at GetAllUserCommunnications.");
                 }
                 else
                 {
-                    logger.LogInformation("Instance of UserCommunications retrieved is null at GetAllUserCommunnications.");
-                    throw new CustomException("Instance of UserCommunications retrieved is null at GetAllUserCommunnications.");
+                    _logger.LogInformation("No UserCommunications Instance found at GetAllUserCommunnications.");
+                  
                 }
+                return listOfUserCommunications;
             }
             catch (Exception exception)
             {
-                logger.LogInformation("Exception Caught at GetAllUserCommunnications: " + exception + ".");
-                throw new CustomException("Exception Caught at GetAllUserCommunnications: " + exception + ".");
+                _logger.LogError(exception, "Error retrieving UserCommunications instances at GetAllCommunications: {errorMessage}", exception);
+                throw new CustomException("Exception Caught at GetAllCommunications: " + exception + ".", exception);
+
             }
         }
 
         /// <summary>
-        /// Adds an instance of UserCommunications to the Database. Returns True if operation was successful.
+        /// Adds an instance of <c>UserCommunications</c>. to the Database. 
         /// </summary>
-        /// <param name="userCommunications"></param>
-        /// <returns>True or False</returns>
+        /// <param name="UserCommunications"></param>
+        /// <returns>True if new instance of <see cref="UserCommunications"/> added successfully.</returns>
         public bool AddUserCommunications(UserCommunications userCommunications)
         {
             try
@@ -104,22 +121,27 @@ namespace StartupGateway.BusinessLogic
                     userCommunications.ModifiedBy = userCommunications.UserId;
                     userCommunications.ModifiedOn = DateTime.Now;
 
-                    unitOfWork.GetDAL<IUserCommunicationsDAL>().AddEntity(userCommunications);
-                    unitOfWork.Commit();
-                    logger.LogInformation("UserCommunications instance successfully added at AddUserCommunications.");
+                    using(IUserCommunicationsDAL userCommunicationsDAL = _unitOfWork.GetDAL<IUserCommunicationsDAL>())
+                    {
+                        userCommunicationsDAL.AddEntity(userCommunications);
+                    }
+
+                    _unitOfWork.Commit();
+                    _logger.LogInformation("New UserCommunications instance successfully added at AddUserCommunications.");
                     return true;
                 }
                 else
                 {
-                    logger.LogInformation("UserCommunications instance is null at AddUserCommunications.");
-                    throw new CustomException("UserCommunications instance is null at AddUserCommunications.");
+
+                    _logger.LogWarning("New UserCommunications instance is null. Failed to add new UserCommunications instance at AddUserCommunications.");
+                    throw new CustomException("New UserCommunications instance is null. Failed to add new UserCommunications instance at AddUserCommunications.");
                 }
 
             }
             catch (Exception exception)
             {
-                logger.LogInformation("Exception Caught at AddUserCommunications: " + exception + ".");
-                throw new CustomException("Exception Caught at AddUserCommunications: " + exception + ".");
+                _logger.LogError(exception, "Error adding new UserCommunications instance at AddUserCommunications: {errorMessage}", exception);
+                throw new CustomException("Exception Caught at AddUserCommunications: " + exception + ".", exception);
             }
         }
 
@@ -127,36 +149,48 @@ namespace StartupGateway.BusinessLogic
         /// Updates an existing instance of UserCommunications. Returns True, if the update operation was successful.
         /// </summary>
         /// <param name="newUserCommunications"></param>
+        /// <param name="userId"></param>
         /// <returns>True or False</returns>
-        public bool UpdateUserCommunications(UserCommunications newUserCommunications)
+        public bool UpdateUserCommunications(UserCommunications updatedUserCommunications, int userId)
         {
             try
             {
-                if (newUserCommunications != null)
+
+                if (updatedUserCommunications != null)
                 {
-                    UserCommunications existingUserCommunications = unitOfWork.GetDAL<IUserCommunicationsDAL>().GetEntityById(newUserCommunications.Id);
 
+                    using IUserCommunicationsDAL userCommunicationsDAL = _unitOfWork.GetDAL<IUserCommunicationsDAL>();
+                    UserCommunications? existingUserCommunications = userCommunicationsDAL.GetEntityById(updatedUserCommunications.Id);
 
-                    existingUserCommunications.Status = newUserCommunications.Status;
-                    existingUserCommunications.ModifiedBy = newUserCommunications.UserId;
-                    existingUserCommunications.ModifiedOn = DateTime.Now;
+                    if(existingUserCommunications != null)
+                    {
+                        existingUserCommunications.Status = updatedUserCommunications.Status;
+                        existingUserCommunications.ModifiedBy = userId;
+                        existingUserCommunications.ModifiedOn = DateTime.Now;
 
-                    unitOfWork.GetDAL<IUserCommunicationsDAL>().UpdateEntity(existingUserCommunications);
-                    unitOfWork.Commit();
+                        _unitOfWork.Commit();
+                        _logger.LogInformation("userCommunications instance with ID: {userCommunicationsId} updated successfully at UpdatedUserCommunications.", existingUserCommunications.Id);
+                        return true;
+                    }
+                    else
+                    {
+                        _logger.LogError("No userCommunications instance found for bid document ID: {userCommunications}, at UpdatedUserCommunications", updatedUserCommunications.Id);
+                        throw new CustomException($"Existing userCommunications instance retrieved for bid document ID: {updatedUserCommunications.Id} is null at UpdatedUserCommunications.");
 
-                    logger.LogInformation("UserCommunications instance updated successfully at UpdateUserCommunications.");
-                    return true;
+                    }
                 }
                 else
                 {
-                    logger.LogInformation("UserCommunications instance passed at UpdateUserCommunications are null.");
-                    throw new CustomException("UserCommunications instance passed at UpdateUserCommunications are null.");
+                    _logger.LogWarning("Updated userCommunications instance passed is null. Failed to update userCommunications instance at UpdatedUserCommunications.");
+                    // We return False instead of an exception as it is very common to run update operations, without making any changes.
+                    // Thus, this must not be treated as an exception.
+                    return false;
                 }
             }
             catch (Exception exception)
             {
-                logger.LogInformation("Exception Caught at UpdateUserCommunications: " + exception + ".");
-                throw new CustomException("Exception Caught at UpdateUserCommunications: " + exception + ".");
+                _logger.LogError(exception, "Error updating userCommunications instance at UpdatedUserCommunications: {errorMessage}", exception);
+                throw new CustomException("Exception caught at UpdatedUserCommunications: " + exception + ".", exception);
             }
         }
     }
