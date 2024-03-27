@@ -19,7 +19,7 @@ namespace StartupGateway.BusinessEntities
     public class User
     {
         [Key]
-        public int UserId { get; set; }
+        public int Id { get; set; }
         public required string UserName { get; set; }
         public required string Email { get; set; }
         public  int UserType { get; set; }

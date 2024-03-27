@@ -120,7 +120,7 @@ namespace StartupGateway.BusinessLogic
             try
             {
                 using var userRepository = _unitOfWork.GetDAL<IUserDAL>();
-                var existingUser = userRepository.GetEntityById(updatedUser.UserId);
+                var existingUser = userRepository.GetEntityById(updatedUser.Id);
 
                 if (existingUser != null)
                 {
@@ -140,7 +140,7 @@ namespace StartupGateway.BusinessLogic
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while updating user with ID: {UserId}.", updatedUser.UserId);
+                _logger.LogError(ex, "Error occurred while updating user with ID: {UserId}.", updatedUser.Id);
                 throw; // Re-throw the exception to be handled by the caller
             }
         }
