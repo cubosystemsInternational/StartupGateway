@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace StartupGateway.DAL.Implementation
 {
-    internal class DeviceTypeDAL : BaseDAL<DeviceType>, IDeviceTypeDAL
+    public class DeviceTypeDAL : BaseDAL<DeviceType>, IDeviceTypeDAL
     {
         public DeviceTypeDAL(DataContext context) : base(context)
         {

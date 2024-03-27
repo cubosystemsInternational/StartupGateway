@@ -1,4 +1,8 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using StartupGateway.BusinessEntities;
 using StartupGateway.BusinessLogic;
 using StartupGateway.DAL;
@@ -21,13 +25,29 @@ builder.Services.AddLogging(builder =>
     builder.AddDebug();
     // Add other logging providers if required
 });
+
+// Add CORS policy
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigins",
+        builder =>
+        {
+            builder.WithOrigins("http://localhost:3000",  // React development server
+                                "http://localhost:5173") // Your React application origin
+                   .AllowAnyHeader()
+                   .AllowAnyMethod();
+        });
+});
+
+
 builder.Services.AddDbContext<DataContext>(options =>
 {
     options.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-//builder.Services.AddScoped<IProjectDAL<Project>, ProjectDAL<Project>>();
-builder.Services.AddScoped<ProjectBLL>();
+builder.Services.AddScoped<IUserDAL, UserDAL>();
+builder.Services.AddScoped<UserBLL>();
 
 var app = builder.Build();
 
@@ -39,6 +59,11 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseRouting();
+
+// Use CORS middleware
+app.UseCors("AllowSpecificOrigins");
 
 app.UseAuthorization();
 
